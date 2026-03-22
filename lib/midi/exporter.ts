@@ -1,263 +1,219 @@
-/**
- * MIDI Export module
- * Converts the current AppState into a 3-track MIDI file (Chords / Bass / Drums)
- * using midi-writer-js.
- */
-// @ts-expect-error - Library has broken type resolution for Next.js bundler mode in package.json exports
-import MidiWriter from 'midi-writer-js';
-
-import { getChordNotes, getNoteIndex, NOTES_SHARP } from '@/lib/music/chords';
+// @ts-expect-error
+import * as MidiWriter from 'midi-writer-js';
 import { drumPatterns } from '@/data/drum-patterns';
 import { bassPatterns } from '@/data/bass-patterns';
-import { AppState } from '@/lib/store';
-import { BassPatternStep, DrumPatternStep } from '@/types/audio';
+import { getNoteIndex } from '@/lib/music/chords';
+import { NoteName } from '@/types/music';
+import { Section } from '@/types/music';
 
 // ---------------------------------------------------------------------------
-// Constants
+// Constants & Configuration
 // ---------------------------------------------------------------------------
 
-/** MIDI note number for C4 (Middle C). */
-
-/** Octave offset to produce octave 4 voicing (C4 = 60, C2 = 36). */
 const CHORD_OCTAVE = 4;
 const BASS_OCTAVE = 2;
 
-/** General MIDI drum note numbers (channel 10). */
-const DRUM_KICK = 36;  // C2
-const DRUM_SNARE = 38; // D2
-const DRUM_HIHAT_CLOSED = 42; // F#2
-const DRUM_HIHAT_OPEN = 46;   // A#2
+// midi-writer-js duration string
+// '1' = whole note, '2' = half, '4' = quarter, '8' = 8th, '16' = 16th
+const DUR_16TH = '16';
 
-/** Duration strings understood by midi-writer-js. */
-const DUR_WHOLE = '1';     // 全音符
-const DUR_HALF = '2';      // 2分音符
-const DUR_QUARTER = '4';   // 4分音符
-const DUR_8TH = '8';       // 8分音符
-const DUR_16TH = '16';     // 16分音符
+// General MIDI Percussion Mapping (Channel 10)
+const DRUM_KICK = 36;        // Acoustic Bass Drum
+const DRUM_SNARE = 38;       // Acoustic Snare
+const DRUM_HIHAT_CLOSED = 42;// Closed Hi-Hat
+const DRUM_HIHAT_OPEN = 46;  // Open Hi-Hat
 
-/** Number of bars to output (4 bars × 2 loops = 8). */
-const TOTAL_LOOPS = 2;
+export type ExportConfig = {
+  mode: 'section';
+  chords: string[];
+  tempo: number;
+  drumPatternId: string;
+  bassPatternId: string;
+} | {
+  mode: 'song';
+  sections: Section[];
+  tempo: number;
+};
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 /**
- * Returns MIDI note strings for a named chord voiced in the given octave,
- * formatted as 'C4', 'E4', 'G4' etc. (as expected by midi-writer-js).
- * @param chordName - Chord name e.g. 'Cmaj7', 'Am', 'F#m7'
- * @param octave - Target octave (default 4 for chords)
- * @returns Array of pitch strings like ['C4', 'E4', 'G4']
+ * Parses a chord symbol and returns an array of MIDI pitches.
+ * Simplistic implementation supporting basic triads and 7ths.
  */
-function chordToMidiPitches(chordName: string, octave: number = CHORD_OCTAVE): string[] {
-  const notes = getChordNotes(chordName);
-  return notes.map(n => {
-    const noteIndex = getNoteIndex(n);
-    // Ensure notes stay close together (close voicing within one octave)
-    const sharpNote = NOTES_SHARP[noteIndex];
-    return `${sharpNote}${octave}`;
-  });
-}
+function chordToMidiPitches(chordName: string, octave: number): number[] {
+  if (!chordName || chordName === 'N.C.') return [];
 
-/**
- * Returns the root note MIDI pitch string for a chord, used in bass track.
- * @param chordName - Chord name
- * @param octave - Target octave (default 2 for bass)
- * @returns Pitch string like 'C2'
- */
-function chordRootPitch(chordName: string, octave: number = BASS_OCTAVE): string {
-  const notes = getChordNotes(chordName);
-  if (notes.length === 0) return `C${octave}`;
-  const rootIndex = getNoteIndex(notes[0]);
-  const sharpNote = NOTES_SHARP[rootIndex];
-  return `${sharpNote}${octave}`;
-}
+  const rootMatch = chordName.match(/^[A-G][#b]?/);
+  if (!rootMatch) return [];
 
-/**
- * Returns the octave-up root pitch for a chord (used in bass OCT steps).
- * @param chordName - Chord name
- * @param octave - Base octave
- * @returns Pitch string like 'C3'
- */
-function chordRootOctavePitch(chordName: string, octave: number = BASS_OCTAVE): string {
-  return chordRootPitch(chordName, octave + 1);
-}
+  const rootStr = rootMatch[0];
+  const rootIndex = getNoteIndex(rootStr as NoteName);
+  const baseMidi = octave * 12 + 12 + rootIndex; // Convert to MIDI standard (C4 = 60)
 
-/**
- * Maps a BassPatternStep duration string to a midi-writer-js duration string.
- */
-function bassStepDuration(duration: BassPatternStep['duration']): string {
-  switch (duration) {
-    case '16n': return DUR_16TH;
-    case '8n':  return DUR_8TH;
-    case '4n':  return DUR_QUARTER;
-    case '2n':  return DUR_HALF;
-    case '1m':  return DUR_WHOLE;
-    default:    return DUR_QUARTER;
+  const pitches = [baseMidi, baseMidi + 4, baseMidi + 7]; // Major triad
+
+  // Simple modifier parsing
+  if (chordName.includes('m') && !chordName.includes('maj')) {
+    pitches[1] = baseMidi + 3; // minor third
   }
-}
-
-// ---------------------------------------------------------------------------
-// Track builders
-// ---------------------------------------------------------------------------
-
-/**
- * Builds the Chord track (Piano – GM program 0).
- * Each chord occupies one whole note bar, looped TOTAL_LOOPS times.
- * @param chords - Array of chord names
- * @param tempo - BPM
- * @returns Configured MidiWriter Track
- */
-function buildChordTrack(chords: string[], tempo: number): InstanceType<typeof MidiWriter.Track> {
-  const track = new MidiWriter.Track();
-  track.setTempo(tempo);
-  track.setTimeSignature(4, 4, 24, 8);
-  track.addTrackName('Chords');
-
-  // GM program 0: Acoustic Grand Piano
-  track.addEvent(new MidiWriter.ProgramChangeEvent({ instrument: 0 }));
-
-  for (let loop = 0; loop < TOTAL_LOOPS; loop++) {
-    for (const chord of chords) {
-      const pitches = chordToMidiPitches(chord, CHORD_OCTAVE);
-      track.addEvent(
-        new MidiWriter.NoteEvent({
-          pitch: pitches,
-          duration: DUR_WHOLE,
-          velocity: 80,
-        })
-      );
+  if (chordName.includes('dim')) {
+    pitches[1] = baseMidi + 3;
+    pitches[2] = baseMidi + 6;
+  }
+  if (chordName.includes('aug')) {
+    pitches[2] = baseMidi + 8;
+  }
+  if (chordName.includes('7')) {
+    if (chordName.includes('maj7') || chordName.includes('M7')) {
+      pitches.push(baseMidi + 11); // major 7th
+    } else if (chordName.includes('m7b5')) {
+      pitches[1] = baseMidi + 3;
+      pitches[2] = baseMidi + 6;
+      pitches.push(baseMidi + 10);
+    } else {
+      pitches.push(baseMidi + 10); // dominant 7th
     }
   }
 
-  return track;
+  return pitches;
 }
 
-/**
- * Builds the Bass track (Acoustic Bass – GM program 32).
- * Each chord bar is filled by the selected bass pattern's steps.
- * @param chords - Array of chord names
- * @param bassPatternId - ID of the selected bass pattern
- * @param tempo - BPM
- * @returns Configured MidiWriter Track
- */
-function buildBassTrack(
-  chords: string[],
-  bassPatternId: string,
-  tempo: number
+/** Returns the root pitch note for bass. */
+function chordRootPitch(chordName: string, octave: number): number {
+  if (!chordName || chordName === 'N.C.') return 0;
+  const rootMatch = chordName.match(/^[A-G][#b]?/);
+  if (!rootMatch) return 0;
+  const rootIndex = getNoteIndex(rootMatch[0] as NoteName);
+  return octave * 12 + 12 + rootIndex;
+}
+
+function chordRootOctavePitch(chordName: string, octave: number): number {
+  return chordRootPitch(chordName, octave + 1);
+}
+
+/** Convert pattern duration strings to midi-writer durations */
+function bassStepDuration(dur: string): string {
+  switch (dur) {
+    case '16n': return '16';
+    case '8n': return '8';
+    case '4n': return '4';
+    case '8n.': return '8d';
+    case '2n': return '2';
+    case '1m': return '1';
+    default: return '16';
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Track Builders
+// ---------------------------------------------------------------------------
+
+function buildChordTrack(
+  allChords: string[],
+  tempo: number,
+  ticksPerBar: number
 ): InstanceType<typeof MidiWriter.Track> {
   const track = new MidiWriter.Track();
   track.setTempo(tempo);
   track.setTimeSignature(4, 4, 24, 8);
-  track.addTrackName('Bass');
+  track.addTrackName('Chords');
+  
+  track.addEvent(new MidiWriter.ProgramChangeEvent({ instrument: 0 }));
 
-  // GM program 32: Acoustic Bass
+  allChords.forEach((chordName, barIndex) => {
+    if (chordName !== 'N.C.') {
+      const pitches = chordToMidiPitches(chordName, CHORD_OCTAVE);
+      const velocity = 80;
+
+      const event = new MidiWriter.NoteEvent({
+        pitch: pitches,
+        duration: '1', 
+        startTick: barIndex * ticksPerBar,
+        velocity: velocity,
+      });
+      track.addEvent(event);
+    }
+  });
+
+  return track;
+}
+
+function buildBassTrack(
+  allChords: string[],
+  allBassPatternIds: string[],
+  tempo: number,
+  ticksPerBar: number,
+  ticksPer16th: number
+): InstanceType<typeof MidiWriter.Track> {
+  const track = new MidiWriter.Track();
+  track.setTempo(tempo);
+  track.addTrackName('Bass');
+  
   track.addEvent(new MidiWriter.ProgramChangeEvent({ instrument: 32 }));
 
-  const pattern = bassPatterns.find(p => p.id === bassPatternId) ?? bassPatterns[0];
+  allBassPatternIds.forEach((bId, barIndex) => {
+    const bassPattern = bassPatterns.find(p => p.id === bId) || bassPatterns[0];
+    const chordName = allChords[barIndex];
 
-  for (let loop = 0; loop < TOTAL_LOOPS; loop++) {
-    for (const chord of chords) {
-      const rootPitch = chordRootPitch(chord, BASS_OCTAVE);
-      const octPitch = chordRootOctavePitch(chord, BASS_OCTAVE);
+    if (chordName !== 'N.C.') {
+      const rootPitch = chordRootPitch(chordName, BASS_OCTAVE);
+      const octPitch = chordRootOctavePitch(chordName, BASS_OCTAVE);
 
-      for (const step of pattern.steps) {
-        if (step.type === 'REST') {
-          // Add a rest by inserting a note with wait equal to its duration
-          track.addEvent(
-            new MidiWriter.NoteEvent({
-              pitch: [rootPitch],
-              duration: bassStepDuration(step.duration),
-              velocity: 0,
-              wait: bassStepDuration(step.duration),
-            })
-          );
-        } else {
+      bassPattern.steps.forEach((step, stepIndex) => {
+        if (step.type !== 'REST') {
           const pitch = step.type === 'OCT' ? octPitch : rootPitch;
           track.addEvent(
             new MidiWriter.NoteEvent({
               pitch: [pitch],
               duration: bassStepDuration(step.duration),
               velocity: 90,
+              startTick: barIndex * ticksPerBar + (stepIndex * ticksPer16th),
             })
           );
         }
-      }
+      });
     }
-  }
+  });
 
   return track;
 }
 
-/**
- * Builds one bar of drum events from a DrumPatternStep array.
- * MIDI channel 10 (1-based = 10, but midi-writer-js uses 0-based channel 9 internally).
- * We encode kicks/snares/hihats as separate NoteEvents in the same track.
- * Steps are assumed to be 16th-note grid.
- * @param steps - 16-step drum grid
- * @returns Array of NoteEvents
- */
-function buildDrumBarEvents(steps: DrumPatternStep[]): InstanceType<typeof MidiWriter.NoteEvent>[] {
-  const events: InstanceType<typeof MidiWriter.NoteEvent>[] = [];
-
-  for (const step of steps) {
-    const activeDrums: number[] = [];
-    if (step.kick) activeDrums.push(DRUM_KICK);
-    if (step.snare) activeDrums.push(DRUM_SNARE);
-    if (step.hihatOpen) activeDrums.push(DRUM_HIHAT_OPEN);
-    else if (step.hihatClosed) activeDrums.push(DRUM_HIHAT_CLOSED);
-
-    if (activeDrums.length > 0) {
-      events.push(
-        new MidiWriter.NoteEvent({
-          pitch: activeDrums,
-          duration: DUR_16TH,
-          channel: 10, // GM Percussion channel
-          velocity: 100,
-        })
-      );
-    } else {
-      // Silent 16th-note rest to maintain timing
-      events.push(
-        new MidiWriter.NoteEvent({
-          pitch: [DRUM_KICK],
-          duration: DUR_16TH,
-          channel: 10,
-          velocity: 0,
-          wait: DUR_16TH,
-        })
-      );
-    }
-  }
-
-  return events;
-}
-
-/**
- * Builds the Drum track (Channel 10).
- * Each chord bar plays the drum pattern once (loops TOTAL_LOOPS × chords.length times).
- * @param chordsCount - Number of chords (bars per loop)
- * @param drumPatternId - ID of the selected drum pattern
- * @param tempo - BPM
- * @returns Configured MidiWriter Track
- */
 function buildDrumTrack(
-  chordsCount: number,
-  drumPatternId: string,
-  tempo: number
+  allDrumPatternIds: string[],
+  tempo: number,
+  ticksPerBar: number,
+  ticksPer16th: number
 ): InstanceType<typeof MidiWriter.Track> {
   const track = new MidiWriter.Track();
   track.setTempo(tempo);
-  track.setTimeSignature(4, 4, 24, 8);
   track.addTrackName('Drums');
 
-  const pattern = drumPatterns.find(p => p.id === drumPatternId) ?? drumPatterns[0];
-  const totalBars = chordsCount * TOTAL_LOOPS;
+  allDrumPatternIds.forEach((dId, barIndex) => {
+    const drumPattern = drumPatterns.find(p => p.id === dId) || drumPatterns[0];
 
-  for (let bar = 0; bar < totalBars; bar++) {
-    const barEvents = buildDrumBarEvents(pattern.steps);
-    track.addEvent(barEvents);
-  }
+    drumPattern.steps.forEach((step, stepIndex) => {
+      const pitches: number[] = [];
+      if (step.kick) pitches.push(DRUM_KICK);
+      if (step.snare) pitches.push(DRUM_SNARE);
+      if (step.hihatClosed) pitches.push(DRUM_HIHAT_CLOSED);
+      if (step.hihatOpen) pitches.push(DRUM_HIHAT_OPEN);
+
+      if (pitches.length > 0) {
+        track.addEvent(
+          new MidiWriter.NoteEvent({
+            pitch: pitches,
+            duration: DUR_16TH,
+            channel: 10,
+            velocity: 100,
+            startTick: barIndex * ticksPerBar + (stepIndex * ticksPer16th),
+          })
+        );
+      }
+    });
+  });
 
   return track;
 }
@@ -266,31 +222,39 @@ function buildDrumTrack(
 // Main export
 // ---------------------------------------------------------------------------
 
-/**
- * Exports the current application state as a MIDI file Blob.
- * Creates 3 tracks:
- *   - Track 1 "Chords": Piano (GM 0), whole notes per bar
- *   - Track 2 "Bass": Acoustic Bass (GM 32), bass pattern per bar
- *   - Track 3 "Drums": Channel 10, drum pattern per bar
- * Total length: 8 bars (chords array × 2 loops).
- *
- * @param state - The current Zustand AppState
- * @returns Blob of type 'audio/midi'
- */
-export function exportToMidi(state: Pick<AppState, 'chords' | 'tempo' | 'drumPatternId' | 'bassPatternId'>): Blob {
-  const { chords, tempo, drumPatternId, bassPatternId } = state;
+export function exportToMidi(config: ExportConfig): Blob {
+  const { tempo } = config;
 
-  const chordTrack = buildChordTrack(chords, tempo);
-  const bassTrack = buildBassTrack(chords, bassPatternId, tempo);
-  const drumTrack = buildDrumTrack(chords.length, drumPatternId, tempo);
+  let allChords: string[] = [];
+  let allBassPatternIds: string[] = [];
+  let allDrumPatternIds: string[] = [];
+
+  if (config.mode === 'section') {
+    // Current section
+    allChords = allChords.concat(config.chords);
+    allBassPatternIds = allBassPatternIds.concat(Array(config.chords.length).fill(config.bassPatternId));
+    allDrumPatternIds = allDrumPatternIds.concat(Array(config.chords.length).fill(config.drumPatternId));
+  } else {
+    config.sections.forEach(section => {
+      for (let i = 0; i < section.repeat; i++) {
+        allChords = allChords.concat(section.chords);
+        allBassPatternIds = allBassPatternIds.concat(Array(section.chords.length).fill(section.bassPatternId));
+        allDrumPatternIds = allDrumPatternIds.concat(Array(section.chords.length).fill(section.drumPatternId));
+      }
+    });
+  }
+
+  const ticksPerBeat = 128; // Standard midi-writer-js ticksperbeat
+  const beatsPerBar = 4;
+  const ticksPerBar = ticksPerBeat * beatsPerBar;
+  const ticksPer16th = ticksPerBeat / 4;
+
+  const chordTrack = buildChordTrack(allChords, tempo, ticksPerBar);
+  const bassTrack = buildBassTrack(allChords, allBassPatternIds, tempo, ticksPerBar, ticksPer16th);
+  const drumTrack = buildDrumTrack(allDrumPatternIds, tempo, ticksPerBar, ticksPer16th);
 
   const writer = new MidiWriter.Writer([chordTrack, bassTrack, drumTrack]);
   const uint8 = writer.buildFile();
-  // Copy to a plain ArrayBuffer to satisfy strict Blob typings
-  const buffer = uint8.buffer.slice(
-    uint8.byteOffset,
-    uint8.byteOffset + uint8.byteLength
-  ) as ArrayBuffer;
-
-  return new Blob([buffer], { type: 'audio/midi' });
+  
+  return new Blob([uint8], { type: 'audio/midi' });
 }

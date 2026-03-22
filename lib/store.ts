@@ -3,6 +3,11 @@ import { SongSearchResult, NoteName } from '@/types/music';
 import { chordPresets } from '@/data/presets';
 import { transposeProgression } from './music/transpose';
 import { getNoteIndex } from './music/chords';
+import { InstrumentPresetId } from '@/types/audio';
+import { instrumentPresets } from '@/data/instrument-presets';
+import { Section, SectionType } from '@/types/music';
+import { STRUCTURE_TEMPLATES } from '@/data/structure-templates';
+import { createEmptySection, duplicateSectionData } from './music/section-utils';
 
 export interface AppState {
   // Key & Tempo
@@ -17,8 +22,15 @@ export interface AppState {
   drumPatternId: string;
   bassPatternId: string;
   backingPatternId: string;
+  instrumentPresetId: InstrumentPresetId;
+  
+  // Section Builder state
+  sections: Section[];
+  activeSectionIndex: number;
+  isStructureMode: boolean;
   
   // Playback state
+  playbackMode: 'section' | 'song';
   isPlaying: boolean;
   currentBar: number;       
   isAudioInitialized: boolean;
@@ -40,14 +52,29 @@ export interface AppState {
   setDrumPattern: (id: string) => void;
   setBassPattern: (id: string) => void;
   setBackingPattern: (id: string) => void;
+  setInstrumentPreset: (id: InstrumentPresetId) => void;
   togglePlay: () => void;
   stop: () => void;
   setCurrentBar: (bar: number) => void;
+  setPlaybackMode: (mode: 'section' | 'song') => void;
   setMoodTags: (tags: string[]) => void;
   openChordEditor: (barIndex: number) => void;
   closeChordEditor: () => void;
   randomize: () => void;
   setAudioInitialized: (init: boolean) => void;
+
+  // Section Builder actions
+  enableStructureMode: () => void;
+  disableStructureMode: () => void;
+  applyStructureTemplate: (templateId: string) => void;
+  addSection: (type: SectionType, afterIndex?: number) => void;
+  removeSection: (sectionId: string) => void;
+  duplicateSection: (sectionId: string) => void;
+  moveSection: (sectionId: string, direction: 'up' | 'down') => void;
+  setActiveSection: (index: number) => void;
+  updateSectionChords: (sectionId: string, chords: string[]) => void;
+  updateSectionPattern: (sectionId: string, field: 'drumPatternId' | 'bassPatternId' | 'backingPatternId' | 'instrumentPresetId', value: string) => void;
+  updateSectionBars: (sectionId: string, bars: number) => void;
 }
 
 /**
@@ -87,10 +114,17 @@ export const useStore = create<AppState>((set, get) => ({
   drumPatternId: '8beat-basic',
   bassPatternId: 'bass-8beat',
   backingPatternId: 'backing-4beat',
+  instrumentPresetId: 'release-cut-piano',
+  
+  // Section Builder state
+  sections: [],
+  activeSectionIndex: 0,
+  isStructureMode: false,
   
   // Playback state
+  playbackMode: 'section',
   isPlaying: false,
-  currentBar: -1,
+  currentBar: -1,       
   isAudioInitialized: false,
   
   // UI state
@@ -138,17 +172,72 @@ export const useStore = create<AppState>((set, get) => ({
     const newChords = [...get().chords];
     if (barIndex >= 0 && barIndex < newChords.length) {
       newChords[barIndex] = chord;
-      set({ chords: newChords, selectedPresetId: null }); // 手動変更時はプリセット選択状態を解除
+      
+      const updates: Partial<AppState> = { chords: newChords, selectedPresetId: null };
+      
+      // Update active section if in structure mode
+      const { isStructureMode, activeSectionIndex, sections } = get();
+      if (isStructureMode && sections.length > activeSectionIndex) {
+         const newSections = [...sections];
+         newSections[activeSectionIndex] = {
+           ...newSections[activeSectionIndex],
+           chords: newChords
+         };
+         updates.sections = newSections;
+      }
+      
+      set(updates);
     }
   },
 
-  setDrumPattern: (id: string) => set({ drumPatternId: id }),
-  setBassPattern: (id: string) => set({ bassPatternId: id }),
-  setBackingPattern: (id: string) => set({ backingPatternId: id }),
+  setDrumPattern: (id: string) => {
+    const { isStructureMode, activeSectionIndex, sections } = get();
+    if (isStructureMode && sections.length > activeSectionIndex) {
+      const newSections = [...sections];
+      newSections[activeSectionIndex] = { ...newSections[activeSectionIndex], drumPatternId: id };
+      set({ drumPatternId: id, sections: newSections });
+    } else {
+      set({ drumPatternId: id });
+    }
+  },
+  
+  setBassPattern: (id: string) => {
+    const { isStructureMode, activeSectionIndex, sections } = get();
+    if (isStructureMode && sections.length > activeSectionIndex) {
+      const newSections = [...sections];
+      newSections[activeSectionIndex] = { ...newSections[activeSectionIndex], bassPatternId: id };
+      set({ bassPatternId: id, sections: newSections });
+    } else {
+      set({ bassPatternId: id });
+    }
+  },
+  
+  setBackingPattern: (id: string) => {
+    const { isStructureMode, activeSectionIndex, sections } = get();
+    if (isStructureMode && sections.length > activeSectionIndex) {
+      const newSections = [...sections];
+      newSections[activeSectionIndex] = { ...newSections[activeSectionIndex], backingPatternId: id };
+      set({ backingPatternId: id, sections: newSections });
+    } else {
+      set({ backingPatternId: id });
+    }
+  },
+  
+  setInstrumentPreset: (id: InstrumentPresetId) => {
+    const { isStructureMode, activeSectionIndex, sections } = get();
+    if (isStructureMode && sections.length > activeSectionIndex) {
+      const newSections = [...sections];
+      newSections[activeSectionIndex] = { ...newSections[activeSectionIndex], instrumentPresetId: id };
+      set({ instrumentPresetId: id, sections: newSections });
+    } else {
+      set({ instrumentPresetId: id });
+    }
+  },
   
   togglePlay: () => set(state => ({ isPlaying: !state.isPlaying })),
   stop: () => set({ isPlaying: false, currentBar: -1 }),
   setCurrentBar: (bar: number) => set({ currentBar: bar }),
+  setPlaybackMode: (mode: 'section' | 'song') => set({ playbackMode: mode }),
   
   setMoodTags: (tags: string[]) => set({ activeMoodTags: tags }),
   openChordEditor: (barIndex: number) => set({ editingBarIndex: barIndex }),
@@ -159,11 +248,208 @@ export const useStore = create<AppState>((set, get) => ({
     const randomKey = keys[Math.floor(Math.random() * keys.length)];
     const randomTempo = Math.floor(Math.random() * (160 - 80 + 1)) + 80;
     const randomPreset = chordPresets[Math.floor(Math.random() * chordPresets.length)];
+    const randomInstrument = instrumentPresets[Math.floor(Math.random() * instrumentPresets.length)].id;
     
     // keyとtempoをセットしてからプリセットを適用する
-    set({ key: randomKey, tempo: randomTempo });
+    set({ key: randomKey, tempo: randomTempo, instrumentPresetId: randomInstrument });
     get().applyPreset(randomPreset.id);
   },
 
-  setAudioInitialized: (init: boolean) => set({ isAudioInitialized: init })
+  setAudioInitialized: (init: boolean) => set({ isAudioInitialized: init }),
+
+  // Section Builder actions
+  enableStructureMode: () => {
+    const state = get();
+    if (state.isStructureMode) return;
+    
+    // Migrate current state to a single section
+    const initialSection: Section = {
+      id: crypto.randomUUID(),
+      type: 'verse1',
+      label: '最初のセクション',
+      chords: state.chords,
+      bars: state.chords.length,
+      drumPatternId: state.drumPatternId,
+      bassPatternId: state.bassPatternId,
+      backingPatternId: state.backingPatternId,
+      instrumentPresetId: state.instrumentPresetId,
+      repeat: 1
+    };
+    
+    set({
+      isStructureMode: true,
+      sections: [initialSection],
+      activeSectionIndex: 0
+    });
+  },
+
+  disableStructureMode: () => {
+    // Just clear sections and flag, current chords remain in flat mode state
+    set({
+      isStructureMode: false,
+      sections: [],
+      activeSectionIndex: 0
+    });
+  },
+
+  applyStructureTemplate: (templateId: string) => {
+    const template = STRUCTURE_TEMPLATES.find(t => t.id === templateId);
+    if (!template) return;
+    
+    const state = get();
+    const defaults = {
+      key: state.key,
+      drumPatternId: state.drumPatternId,
+      bassPatternId: state.bassPatternId,
+      backingPatternId: state.backingPatternId,
+      instrumentPresetId: state.instrumentPresetId
+    };
+    
+    const newSections: Section[] = [];
+    template.sectionSequence.forEach(seq => {
+      newSections.push(createEmptySection(seq.type, defaults, newSections, seq.bars));
+    });
+    
+    set({
+      isStructureMode: true,
+      sections: newSections,
+      activeSectionIndex: 0
+    });
+    get().setActiveSection(0);
+  },
+
+  addSection: (type: SectionType, afterIndex?: number) => {
+    const state = get();
+    const defaults = {
+      key: state.key,
+      drumPatternId: state.drumPatternId,
+      bassPatternId: state.bassPatternId,
+      backingPatternId: state.backingPatternId,
+      instrumentPresetId: state.instrumentPresetId
+    };
+    
+    const newSection = createEmptySection(type, defaults, state.sections);
+    const newSections = [...state.sections];
+    
+    const targetIndex = afterIndex !== undefined ? afterIndex + 1 : newSections.length;
+    newSections.splice(targetIndex, 0, newSection);
+    
+    set({ sections: newSections });
+    get().setActiveSection(targetIndex);
+  },
+
+  removeSection: (sectionId: string) => {
+    const state = get();
+    const newSections = state.sections.filter(s => s.id !== sectionId);
+    if (newSections.length === 0) return; // Must have at least one
+    
+    let newIndex = state.activeSectionIndex;
+    if (newIndex >= newSections.length) {
+      newIndex = newSections.length - 1;
+    }
+    
+    set({ sections: newSections });
+    get().setActiveSection(newIndex);
+  },
+
+  duplicateSection: (sectionId: string) => {
+    const state = get();
+    const idx = state.sections.findIndex(s => s.id === sectionId);
+    if (idx === -1) return;
+    
+    const duplicated = duplicateSectionData(state.sections[idx], state.sections);
+    const newSections = [...state.sections];
+    newSections.splice(idx + 1, 0, duplicated);
+    
+    set({ sections: newSections });
+    get().setActiveSection(idx + 1);
+  },
+
+  moveSection: (sectionId: string, direction: 'up' | 'down') => {
+    const state = get();
+    const idx = state.sections.findIndex(s => s.id === sectionId);
+    if (idx === -1) return;
+    if (direction === 'up' && idx === 0) return;
+    if (direction === 'down' && idx === state.sections.length - 1) return;
+    
+    const newSections = [...state.sections];
+    const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+    
+    const item = newSections.splice(idx, 1)[0];
+    newSections.splice(targetIdx, 0, item);
+    
+    const currentActiveSection = state.sections[state.activeSectionIndex];
+    set({ sections: newSections });
+    
+    // Find where the active section went
+    const newlyMovedActiveIndex = newSections.findIndex(s => s.id === currentActiveSection.id);
+    get().setActiveSection(newlyMovedActiveIndex !== -1 ? newlyMovedActiveIndex : 0);
+  },
+
+  setActiveSection: (index: number) => {
+    const state = get();
+    if (index < 0 || index >= state.sections.length) return;
+    
+    const section = state.sections[index];
+    set({
+      activeSectionIndex: index,
+      chords: [...section.chords],
+      drumPatternId: section.drumPatternId,
+      bassPatternId: section.bassPatternId,
+      backingPatternId: section.backingPatternId,
+      instrumentPresetId: section.instrumentPresetId
+    });
+  },
+
+  updateSectionChords: (sectionId: string, chords: string[]) => {
+    const state = get();
+    const idx = state.sections.findIndex(s => s.id === sectionId);
+    if (idx === -1) return;
+    
+    const newSections = [...state.sections];
+    newSections[idx] = { ...newSections[idx], chords };
+    set({ sections: newSections });
+    
+    if (idx === state.activeSectionIndex) {
+      set({ chords: [...chords] });
+    }
+  },
+
+  updateSectionPattern: (sectionId: string, field: 'drumPatternId' | 'bassPatternId' | 'backingPatternId' | 'instrumentPresetId', value: string) => {
+    const state = get();
+    const idx = state.sections.findIndex(s => s.id === sectionId);
+    if (idx === -1) return;
+    
+    const newSections = [...state.sections];
+    newSections[idx] = { ...newSections[idx], [field]: value };
+    set({ sections: newSections });
+    
+    if (idx === state.activeSectionIndex) {
+      set({ [field]: value });
+    }
+  },
+
+  updateSectionBars: (sectionId: string, bars: number) => {
+    const state = get();
+    const idx = state.sections.findIndex(s => s.id === sectionId);
+    if (idx === -1) return;
+    
+    const section = state.sections[idx];
+    let newChords = [...section.chords];
+    
+    // Adjust chords array size
+    if (bars > section.bars) {
+      newChords = [...newChords, ...Array(bars - section.bars).fill(newChords[newChords.length - 1] || 'C')];
+    } else if (bars < section.bars) {
+      newChords = newChords.slice(0, bars);
+    }
+    
+    const newSections = [...state.sections];
+    newSections[idx] = { ...section, bars, chords: newChords };
+    set({ sections: newSections });
+    
+    if (idx === state.activeSectionIndex) {
+      set({ chords: [...newChords] });
+    }
+  }
 }));

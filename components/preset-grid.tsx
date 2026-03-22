@@ -18,7 +18,12 @@ function degreeToChordInC(degree: string): string {
 }
 
 export default function PresetGrid() {
-  const { key, activeMoodTags, selectedPresetId, applyPreset } = useStore();
+  const {
+    key, selectedPresetId, applyPreset, activeMoodTags,
+    isStructureMode, sections, activeSectionIndex
+  } = useStore();
+
+  const activeSection = isStructureMode ? sections[activeSectionIndex] : null;
 
   const filteredPresets = chordPresets.filter(preset => {
     if (activeMoodTags.length === 0) return true;
@@ -30,11 +35,21 @@ export default function PresetGrid() {
 
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-bold mb-4 text-slate-200">おすすめ進行リスト</h2>
+      <div className="flex justify-between items-end mb-4">
+        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-100">
+          <span className="text-pink-400">✧</span>
+          コードプリセット
+        </h2>
+        {isStructureMode && activeSection && (
+          <div className="text-xs text-slate-400 pb-1">
+            {activeSection.label} に適用
+          </div>
+        )}
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
         {filteredPresets.map((preset) => {
           const isActive = preset.id === selectedPresetId;
-          
+
           // 現在のキーでの最初の4コードを計算
           const previewDegrees = preset.degrees.slice(0, 4);
           const chordsInC = previewDegrees.map(degreeToChordInC);

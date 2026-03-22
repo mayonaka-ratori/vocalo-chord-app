@@ -8,96 +8,144 @@ import { useStore } from '@/lib/store';
 import { usePlayback } from '@/hooks/use-playback';
 import { exportToMidi } from '@/lib/midi/exporter';
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 interface ToastState {
   message: string;
   type: 'success' | 'error';
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
-/** Playback transport and MIDI export bar shown only on desktop (md+). */
-export const TransportControls = () => {
-  const { isPlaying, randomize, chords, tempo, key, drumPatternId, bassPatternId } = useStore();
+export function TransportControls() {
+  const { 
+    isPlaying, tempo, randomize, currentBar, chords, drumPatternId, bassPatternId, 
+    key, isStructureMode, playbackMode, setPlaybackMode, sections, activeSectionIndex
+  } = useStore();
   const { toggle, stop } = usePlayback();
 
   const [toast, setToast] = useState<ToastState | null>(null);
 
-  // Auto-clear toast after 2 seconds
   useEffect(() => {
     if (!toast) return;
     const timer = setTimeout(() => setToast(null), 2000);
     return () => clearTimeout(timer);
   }, [toast]);
 
-  /** Triggers MIDI file download from current state. */
   const handleMidiExport = useCallback(() => {
     try {
-      const blob = exportToMidi({ chords, tempo, drumPatternId, bassPatternId });
+      const blob = exportToMidi(
+        isStructureMode && playbackMode === 'song'
+          ? { mode: 'song', sections, tempo }
+          : { mode: 'section', chords, tempo, drumPatternId, bassPatternId }
+      );
       const url = URL.createObjectURL(blob);
-
-      // Sanitize key for filename (e.g. 'F#' -> 'Fs', 'Bb' -> 'Bb')
       const safeKey = key.replace('#', 's');
-      const filename = `vocalo-chord-${safeKey}-${tempo}bpm.mid`;
+      
+      const filename = isStructureMode && playbackMode === 'song'
+        ? `vocalo-song-${safeKey}-${tempo}bpm-${sections.length}sections.mid`
+        : `vocalo-chord-${safeKey}-${tempo}bpm.mid`;
 
       const anchor = document.createElement('a');
       anchor.href = url;
       anchor.download = filename;
       anchor.click();
 
-      // Release object URL after a short delay to ensure download starts
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-
       setToast({ message: 'MIDIファイルをダウンロードしました！', type: 'success' });
     } catch (err) {
       console.error('MIDI export failed:', err);
       setToast({ message: 'MIDI書き出しに失敗しました', type: 'error' });
     }
-  }, [chords, tempo, key, drumPatternId, bassPatternId]);
+  }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections]);
 
   return (
     <div className="hidden md:flex flex-col items-center my-8">
       {/* Control bar */}
-      <div className="flex justify-center items-center space-x-4 bg-slate-900/50 p-4 rounded-2xl border border-slate-800 shadow-inner shadow-black/20 w-full">
-        <button
-          id="transport-play-pause"
-          onClick={toggle}
-          className="px-8 py-3 rounded-xl font-bold transition-all bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 text-white shadow-lg shadow-pink-500/25 flex items-center justify-center space-x-2"
-        >
-          <span>{isPlaying ? '⏸ 一時停止' : '▶ 再生'}</span>
-        </button>
+      <div className="flex justify-between items-center bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-inner shadow-black/20 w-full min-w-[700px]">
+        
+        {/* Left: Randomize */}
+        <div className="flex-1 flex justify-start">
+          <button
+            onClick={randomize}
+            className="px-6 py-3 rounded-xl font-bold transition-all border border-cyan-500/50 hover:bg-cyan-500/10 text-cyan-400 flex items-center space-x-2"
+          >
+            <span>🎲 ランダム生成</span>
+          </button>
+        </div>
 
-        <button
-          id="transport-stop"
-          onClick={stop}
-          className="px-6 py-3 rounded-xl font-bold transition-all bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 flex items-center space-x-2 shadow-sm"
-        >
-          <span>⏹ 停止</span>
-        </button>
+        {/* Center: Play/Stop & Timeline & Mode */}
+        <div className="flex-[2] flex flex-col items-center">
+          {isStructureMode && (
+            <div className="flex bg-slate-900 rounded-full p-1 border border-slate-700 mb-4 scale-90">
+              <button 
+                onClick={() => setPlaybackMode('section')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${playbackMode === 'section' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                🔁 セクション
+              </button>
+              <button 
+                onClick={() => setPlaybackMode('song')}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${playbackMode === 'song' ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                ▶️ 通し再生
+              </button>
+            </div>
+          )}
 
-        <button
-          id="transport-randomize"
-          onClick={randomize}
-          className="px-6 py-3 rounded-xl font-bold transition-all border border-cyan-500/50 hover:bg-cyan-500/10 text-cyan-400 flex items-center space-x-2"
-        >
-          <span>🎲 ランダム生成</span>
-        </button>
+          <div className="flex items-center gap-4 mb-4">
+            <button
+              onClick={stop}
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700 active:scale-95 transition-all outline-none"
+              aria-label="停止"
+              title="停止 (先頭に戻る)"
+            >
+              <span className="text-xl">⏹</span>
+            </button>
+            
+            <button
+              onClick={toggle}
+              className={`w-16 h-16 flex items-center justify-center rounded-full text-white shadow-lg active:scale-95 transition-all outline-none ${
+                isPlaying 
+                  ? 'bg-gradient-to-tr from-pink-600 to-purple-600' 
+                  : 'bg-gradient-to-tr from-pink-500 to-purple-500 hover:scale-105'
+              }`}
+              aria-label={isPlaying ? '一時停止' : '再生'}
+            >
+              <span className={`text-3xl ${isPlaying ? 'translate-x-0' : 'translate-x-1'}`}>
+                {isPlaying ? '⏸' : '▶'}
+              </span>
+            </button>
+          </div>
+          
+          {isStructureMode && playbackMode === 'song' && isPlaying ? (
+            <div className="text-xs text-pink-300 font-bold bg-pink-500/10 px-3 py-1 rounded-full animate-pulse border border-pink-500/20">
+              再生中: セクション {activeSectionIndex + 1}/{sections.length} — {sections[activeSectionIndex]?.label}
+            </div>
+          ) : (
+            <div className="flex w-full max-w-[200px] h-1.5 bg-slate-800 rounded-full overflow-hidden">
+              {chords.map((_, idx) => (
+                <div 
+                  key={idx} 
+                  className={`flex-1 transition-all duration-100 ${
+                    currentBar === idx 
+                      ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]' 
+                      : 'bg-transparent'
+                  }`} 
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
-        <button
-          id="transport-midi-export"
-          onClick={handleMidiExport}
-          className="px-6 py-3 rounded-xl font-bold transition-all border border-green-500/50 hover:bg-green-500/10 text-green-400 flex items-center space-x-2 active:scale-95"
-        >
-          <span>📥 MIDI書き出し</span>
-        </button>
+        {/* Right: Export */}
+        <div className="flex-1 flex justify-end">
+          <button
+            onClick={handleMidiExport}
+            className="px-6 py-3 rounded-xl font-bold transition-all border border-green-500/50 hover:bg-green-500/10 text-green-400 flex items-center space-x-2 active:scale-95"
+          >
+            <span>📥 MIDI書き出し</span>
+          </button>
+        </div>
+
       </div>
 
-      {/* Toast notification */}
       {toast && (
         <div
           role="status"
@@ -116,4 +164,4 @@ export const TransportControls = () => {
       )}
     </div>
   );
-};
+}

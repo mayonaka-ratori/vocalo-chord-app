@@ -1,0 +1,39 @@
+
+> vocalo-idea@0.1.0 lint
+> eslint
+
+
+C:\tools\vocalo-idea\components\chord-timeline.tsx
+  71:25  warning  'isPlaying' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\tools\vocalo-idea\components\instrument-selector.tsx
+  22:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\tools\vocalo-idea\components\section-nav.tsx
+  5:10  warning  'SectionType' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\tools\vocalo-idea\hooks\use-playback.ts
+  22:48  warning  'sectionIndex' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\tools\vocalo-idea\lib\audio\backing.ts
+  27:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  29:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\tools\vocalo-idea\lib\midi\exporter.ts
+   1:1   error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+   3:10  warning  'chordPresets' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+   7:10  warning  'AppState' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+   8:10  warning  'DrumPatternStep' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+   8:27  warning  'BassPatternStep' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+  20:7   warning  'DUR_WHOLE' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  56:45  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  59:7   error    'pitches' is never reassigned. Use 'const' instead                                                                   prefer-const
+  92:50  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+C:\tools\vocalo-idea\lib\store.ts
+   8:32  warning  'SongStructure' is defined but never used       @typescript-eslint/no-unused-vars
+  10:52  warning  'calculateTotalBars' is defined but never used  @typescript-eslint/no-unused-vars
+
+笨・17 problems (7 errors, 10 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

@@ -51,3 +51,22 @@ export interface BackingPattern {
 }
 
 export type InstrumentType = 'CHORD' | 'PAD' | 'BASS' | 'KICK' | 'SNARE' | 'HIHAT';
+
+export type InstrumentPresetId =
+  | 'release-cut-piano'
+  | 'pluck-synth'
+  | 'synth-pad'
+  | 'bell-tone'
+  | 'rock-guitar'
+  | '8bit-chiptune'
+  | 'strings'
+  | 'edm-bass';
+
+export interface InstrumentPreset {
+  id: InstrumentPresetId;
+  name: string;           // Japanese display name
+  icon: string;           // Emoji icon
+  description: string;    // One-line Japanese description
+  tags: string[];         // Mood tags (Japanese)
+  exampleSongs: string[]; // 2-3 famous songs using this sound
+}

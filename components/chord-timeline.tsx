@@ -67,7 +67,12 @@ function getFuncStyle(func: string): {
  * - 再生中の小節をハイライト＆モバイルでは自動スクロール
  */
 export default function ChordTimeline() {
-  const { chords, currentBar, key, openChordEditor } = useStore();
+  const { 
+    chords, currentBar, openChordEditor,
+    isStructureMode, activeSectionIndex, sections, key
+  } = useStore();
+
+  const activeSection = isStructureMode ? sections[activeSectionIndex] : null;
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -83,14 +88,29 @@ export default function ChordTimeline() {
     }
   }, [currentBar]);
 
+  // 小節数によってグリッド列数を変更
+  const colsClass = chords.length === 4 
+    ? "grid-cols-4" 
+    : "grid-cols-4 md:grid-cols-8";
+
   return (
-    <div className="mb-8 bg-slate-900/40 p-4 rounded-2xl border border-slate-800">
-      <h2 className="text-xl font-bold mb-4 text-slate-200">コード進行</h2>
-      
+    <div className="mb-8">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-100">
+          <span className="text-pink-400">✧</span>
+          コード進行
+        </h2>
+        {isStructureMode && activeSection && (
+          <div className="text-sm font-bold bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700">
+            {activeSection.label} ({activeSection.bars}小節)
+          </div>
+        )}
+      </div>
+
       {/* タイムライングリッド */}
       <div
         ref={containerRef}
-        className="grid grid-cols-4 md:flex md:flex-wrap gap-2 md:gap-3 mb-4 overflow-x-auto"
+        className={`grid ${colsClass} gap-3 md:gap-4 mb-4 overflow-x-auto bg-slate-900/40 p-4 rounded-2xl border border-slate-800`}
       >
         {chords.map((chord, i) => {
           const isActivePlay = currentBar === i;

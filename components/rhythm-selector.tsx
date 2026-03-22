@@ -7,7 +7,12 @@ import { backingPatterns } from '@/data/backing-patterns';
 
 export const RhythmSelector: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'drum' | 'bass' | 'backing'>('drum');
-  const { drumPatternId, bassPatternId, backingPatternId, setDrumPattern, setBassPattern, setBackingPattern } = useStore();
+  const { 
+    drumPatternId, setDrumPattern, 
+    bassPatternId, setBassPattern, 
+    backingPatternId, setBackingPattern,
+    isStructureMode
+  } = useStore();
 
   const renderCards = (
     patterns: { id: string; name: string; description?: string }[], 
@@ -31,59 +36,73 @@ export const RhythmSelector: React.FC = () => {
   };
 
   return (
-    <section className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-      {/* Mobile Tabs */}
-      <div className="flex md:hidden border-b border-slate-800">
-        {[
-          { id: 'drum', label: '🥁 ドラム' },
-          { id: 'bass', label: '🎸 ベース' },
-          { id: 'backing', label: '🎹 バッキング' }
-        ].map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as 'drum'|'bass'|'backing')}
-            className={`flex-1 py-3 text-sm font-bold transition-colors ${
-              activeTab === tab.id
-                ? 'text-orange-400 border-b-2 border-orange-400'
-                : 'text-slate-400'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+    <div className="mb-8">
+      <div className="flex items-end justify-between mb-4">
+        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-100">
+          <span className="text-pink-400">✧</span>
+          リズム・伴奏の設定
+        </h2>
+        {isStructureMode && (
+          <div className="text-xs text-slate-400 pb-1 hidden md:block">
+            このセクションのリズム設定
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        {/* Mobile View: Single Category */}
-        <div className="md:hidden space-y-2">
-          {activeTab === 'drum' && renderCards(drumPatterns, drumPatternId, setDrumPattern)}
-          {activeTab === 'bass' && renderCards(bassPatterns, bassPatternId, setBassPattern)}
-          {activeTab === 'backing' && renderCards(backingPatterns, backingPatternId, setBackingPattern)}
+      <section className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+        {/* Mobile Tabs */}
+        <div className="flex md:hidden border-b border-slate-800">
+          {[
+            { id: 'drum', label: '🥁 ドラム' },
+            { id: 'bass', label: '🎸 ベース' },
+            { id: 'backing', label: '🎹 バッキング' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as 'drum'|'bass'|'backing')}
+              className={`flex-1 py-3 text-sm font-bold transition-colors ${
+                activeTab === tab.id
+                  ? 'text-orange-400 border-b-2 border-orange-400'
+                  : 'text-slate-400'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        {/* Desktop View: 3 Columns Grid */}
-        <div className="hidden md:grid grid-cols-3 gap-6">
-          <div>
-            <h3 className="text-sm font-bold text-slate-300 mb-3">🥁 ドラムパターン</h3>
-            <div className="grid grid-cols-1 gap-2">
-              {renderCards(drumPatterns, drumPatternId, setDrumPattern)}
-            </div>
+        {/* Content */}
+        <div className="p-4">
+          {/* Mobile View: Single Category */}
+          <div className="md:hidden space-y-2">
+            {activeTab === 'drum' && renderCards(drumPatterns, drumPatternId, setDrumPattern)}
+            {activeTab === 'bass' && renderCards(bassPatterns, bassPatternId, setBassPattern)}
+            {activeTab === 'backing' && renderCards(backingPatterns, backingPatternId, setBackingPattern)}
           </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-300 mb-3">🎸 ベースパターン</h3>
-            <div className="grid grid-cols-1 gap-2">
-              {renderCards(bassPatterns, bassPatternId, setBassPattern)}
+
+          {/* Desktop View: 3 Columns Grid */}
+          <div className="hidden md:grid grid-cols-3 gap-6">
+            <div>
+              <h3 className="text-sm font-bold text-slate-300 mb-3">🥁 ドラムパターン</h3>
+              <div className="grid grid-cols-1 gap-2">
+                {renderCards(drumPatterns, drumPatternId, setDrumPattern)}
+              </div>
             </div>
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-300 mb-3">🎹 バッキングパターン</h3>
-            <div className="grid grid-cols-1 gap-2">
-              {renderCards(backingPatterns, backingPatternId, setBackingPattern)}
+            <div>
+              <h3 className="text-sm font-bold text-slate-300 mb-3">🎸 ベースパターン</h3>
+              <div className="grid grid-cols-1 gap-2">
+                {renderCards(bassPatterns, bassPatternId, setBassPattern)}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-300 mb-3">🎹 バッキングパターン</h3>
+              <div className="grid grid-cols-1 gap-2">
+                {renderCards(backingPatterns, backingPatternId, setBackingPattern)}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };

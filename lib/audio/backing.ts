@@ -21,21 +21,31 @@ export function playBackingStep(pattern: BackingPattern, stepIndex: number, time
   
   const rootPitch = `${notes[0]}${baseOctave}`;
 
+  const playNotes = (pitches: string | string[], duration: string | number, time: number) => {
+    if (synth.name !== 'PolySynth' && Array.isArray(pitches)) {
+      // MonoSynth or PluckSynth cannot play arrays reliably in this context, fallback to the root note
+      synth.triggerAttackRelease(pitches[0], duration, time);
+    } else {
+      // @ts-expect-error - triggerAttackRelease exists on all types but types are strict
+      synth.triggerAttackRelease(pitches, duration, time);
+    }
+  };
+
   switch (currentStep.type) {
     case 'BLOCK':
-      synth.triggerAttackRelease(chordPitches, currentStep.duration, time);
+      playNotes(chordPitches, currentStep.duration, time);
       break;
     case 'ARP_ROOT':
-      synth.triggerAttackRelease(rootPitch, currentStep.duration, time);
+      playNotes(rootPitch, currentStep.duration, time);
       break;
     case 'ARP_CHORD':
       // ARPのバリエーションとして、ルート以外の和音を鳴らすなど
       // ここでは簡単に上の音2つを鳴らすとする
       const upperPitches = chordPitches.slice(1);
       if (upperPitches.length > 0) {
-         synth.triggerAttackRelease(upperPitches, currentStep.duration, time);
+         playNotes(upperPitches, currentStep.duration, time);
       } else {
-         synth.triggerAttackRelease(rootPitch, currentStep.duration, time);
+         playNotes(rootPitch, currentStep.duration, time);
       }
       break;
   }

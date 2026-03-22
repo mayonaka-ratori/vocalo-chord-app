@@ -1,14 +1,8 @@
 import Header from "@/components/header";
 import ClientOnly from "@/components/client-only";
-import KeyTempoSelector from "@/components/key-tempo-selector";
-import MoodTagFilter from "@/components/mood-tag-filter";
-import PresetGrid from "@/components/preset-grid";
-import ChordTimeline from "@/components/chord-timeline";
 import ChordEditModal from "@/components/chord-edit-modal";
-import { SongSearchBar } from "@/components/song-search-bar";
-import { RhythmSelector } from "@/components/rhythm-selector";
-import { TransportControls } from "@/components/transport-controls";
 import { FloatingPlayer } from "@/components/floating-player";
+import { MainAppContent } from "@/components/main-app-content";
 
 export default function Home() {
   return (
@@ -17,13 +11,7 @@ export default function Home() {
         <Header />
         
         <ClientOnly>
-          <SongSearchBar />
-          <KeyTempoSelector />
-          <MoodTagFilter />
-          <PresetGrid />
-          <ChordTimeline />
-          <RhythmSelector />
-          <TransportControls />
+          <MainAppContent />
         </ClientOnly>
       </div>
 

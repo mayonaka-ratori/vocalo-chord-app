@@ -9,26 +9,19 @@ import { usePlayback } from '@/hooks/use-playback';
 import { chordPresets } from '@/data/presets';
 import { exportToMidi } from '@/lib/midi/exporter';
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 interface ToastState {
   message: string;
   type: 'success' | 'error';
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
 /** Mobile-only floating playback bar fixed to the bottom of the screen. */
 export const FloatingPlayer = () => {
   const {
     isPlaying, tempo, selectedPresetId, randomize, currentBar, chords,
-    key, drumPatternId, bassPatternId
+    key, drumPatternId, bassPatternId, isStructureMode, activeSectionIndex, sections,
+    playbackMode, setPlaybackMode
   } = useStore();
-  const { toggle, stop } = usePlayback();
+  const { toggle, stop, globalBar } = usePlayback();
 
   const [toast, setToast] = useState<ToastState | null>(null);
 
@@ -36,21 +29,29 @@ export const FloatingPlayer = () => {
     ? chordPresets.find(p => p.id === selectedPresetId)?.name ?? 'カスタム進行'
     : 'カスタム進行';
 
-  // Auto-clear toast after 2 seconds
+  const displayLabel = isStructureMode && sections[activeSectionIndex]
+    ? `${sections[activeSectionIndex].label}`
+    : presetName;
+
   useEffect(() => {
     if (!toast) return;
     const timer = setTimeout(() => setToast(null), 2000);
     return () => clearTimeout(timer);
   }, [toast]);
 
-  /** Triggers MIDI file download from current state. */
   const handleMidiExport = useCallback(() => {
     try {
-      const blob = exportToMidi({ chords, tempo, drumPatternId, bassPatternId });
+      const blob = exportToMidi(
+        isStructureMode && playbackMode === 'song'
+          ? { mode: 'song', sections, tempo }
+          : { mode: 'section', chords, tempo, drumPatternId, bassPatternId }
+      );
       const url = URL.createObjectURL(blob);
-
       const safeKey = key.replace('#', 's');
-      const filename = `vocalo-chord-${safeKey}-${tempo}bpm.mid`;
+      
+      const filename = isStructureMode && playbackMode === 'song'
+        ? `vocalo-song-${safeKey}-${tempo}bpm-${sections.length}sections.mid`
+        : `vocalo-chord-${safeKey}-${tempo}bpm.mid`;
 
       const anchor = document.createElement('a');
       anchor.href = url;
@@ -63,7 +64,17 @@ export const FloatingPlayer = () => {
       console.error('MIDI export failed:', err);
       setToast({ message: 'MIDI書き出しに失敗しました', type: 'error' });
     }
-  }, [chords, tempo, key, drumPatternId, bassPatternId]);
+  }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections]);
+
+  const handleModeToggle = () => {
+    if (isStructureMode) {
+      setPlaybackMode(playbackMode === 'section' ? 'song' : 'section');
+    }
+  };
+
+  // Calculate song mode progress
+  const totalBarsInSong = isStructureMode ? sections.reduce((acc, sec) => acc + (sec.bars * sec.repeat), 0) : 0;
+  const songProgressPct = totalBarsInSong > 0 ? (globalBar / totalBarsInSong) * 100 : 0;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/80 pb-[max(env(safe-area-inset-bottom),16px)] shadow-[0_-8px_16px_rgba(0,0,0,0.5)]">
@@ -84,32 +95,48 @@ export const FloatingPlayer = () => {
         </div>
       )}
 
-      {/* Progress bar (dots representing current bar) */}
-      <div className="h-1 w-full flex space-x-0.5 bg-slate-950/50 px-0.5 pt-0.5">
-        {chords.map((_, idx) => (
-          <div
-            key={idx}
-            className={`flex-1 h-full rounded-full transition-colors duration-100 ${
-              currentBar === idx ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]' : 'bg-slate-800'
-            }`}
+      {/* Progress representation */}
+      {isStructureMode && playbackMode === 'song' ? (
+        <div className="h-1.5 w-full bg-slate-950/50">
+          <div 
+            className="h-full bg-gradient-to-r from-pink-500 to-orange-500 transition-all duration-300 ease-linear"
+            style={{ width: `${Math.min(100, songProgressPct)}%` }}
           />
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="h-1 w-full flex space-x-0.5 bg-slate-950/50 px-0.5 pt-0.5">
+          {chords.map((_, idx) => (
+            <div
+              key={idx}
+              className={`flex-1 h-full rounded-full transition-colors duration-100 ${
+                currentBar === idx ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]' : 'bg-slate-800'
+              }`}
+            />
+          ))}
+        </div>
+      )}
 
-      <div className="flex items-center justify-between px-5 pt-3">
-        <div className="flex flex-col truncate pr-4 max-w-[45%]">
-          <div className="text-sm font-bold text-slate-100 truncate">{presetName}</div>
-          <div className="text-xs text-slate-400 font-mono mt-0.5">BPM {tempo}</div>
+      <div className="flex items-center justify-between px-4 pt-3">
+        <div 
+          className={`flex flex-col truncate pr-2 max-w-[45%] ${isStructureMode ? 'cursor-pointer active:scale-95 transition-transform' : ''}`}
+          onClick={handleModeToggle}
+        >
+          <div className="flex items-center gap-1.5 text-sm font-bold text-slate-100 truncate">
+            {isStructureMode && (
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-sm ${playbackMode === 'song' ? 'bg-pink-500/20 text-pink-300' : 'bg-slate-800 text-slate-400'}`}>
+                {playbackMode === 'song' ? '通し' : 'セクション'}
+              </span>
+            )}
+            <span className="truncate">{displayLabel}</span>
+          </div>
+          <div className="text-xs text-slate-400 font-mono mt-0.5 pl-[2px]">BPM {tempo}</div>
         </div>
 
         <div className="flex items-center space-x-2 shrink-0">
-          {/* MIDI export button */}
           <button
-            id="floating-midi-export"
             onClick={handleMidiExport}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-800 text-green-400 border border-slate-700/80 hover:bg-slate-700 active:scale-95 transition-all outline-none"
             aria-label="MIDI書き出し"
-            title="MIDI書き出し"
           >
             <span className="text-base leading-none">📥</span>
           </button>
