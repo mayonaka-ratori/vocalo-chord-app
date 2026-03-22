@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { SongSearchResult, NoteName } from '@/types/music';
+import { SongSearchResult, NoteName, ChordVariation } from '@/types/music';
+import { generateVariations as computeVariations } from './music/variation';
 import { chordPresets } from '@/data/presets';
 import { transposeProgression } from './music/transpose';
 import { getNoteIndex } from './music/chords';
@@ -43,7 +44,13 @@ export interface AppState {
   searchQuery: string;
   searchResults: SongSearchResult[];
   isSearching: boolean;
-  
+
+  // Variation suggestions
+  variations: ChordVariation[];
+  showVariations: boolean;
+  previewChords: string[] | null;
+  previewChangedIndices: number[] | null;
+
   // Actions
   setKey: (key: string) => void;
   setTempo: (tempo: number) => void;
@@ -62,6 +69,13 @@ export interface AppState {
   closeChordEditor: () => void;
   randomize: () => void;
   setAudioInitialized: (init: boolean) => void;
+
+  // Variation actions
+  generateVariationSuggestions: () => void;
+  applyVariation: (variationId: string) => void;
+  dismissVariations: () => void;
+  previewVariation: (variationId: string) => void;
+  clearPreview: () => void;
 
   // Section Builder actions
   enableStructureMode: () => void;
@@ -135,6 +149,12 @@ export const useStore = create<AppState>((set, get) => ({
   searchQuery: '',
   searchResults: [],
   isSearching: false,
+
+  // Variation suggestions
+  variations: [],
+  showVariations: false,
+  previewChords: null,
+  previewChangedIndices: null,
   
   // Actions
   setKey: (newKey: string) => {
@@ -173,7 +193,7 @@ export const useStore = create<AppState>((set, get) => ({
     if (barIndex >= 0 && barIndex < newChords.length) {
       newChords[barIndex] = chord;
       
-      const updates: Partial<AppState> = { chords: newChords, selectedPresetId: null };
+      const updates: Partial<AppState> = { chords: newChords, selectedPresetId: null, previewChords: null, previewChangedIndices: null };
       
       // Update active section if in structure mode
       const { isStructureMode, activeSectionIndex, sections } = get();
@@ -256,6 +276,88 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   setAudioInitialized: (init: boolean) => set({ isAudioInitialized: init }),
+
+  // --------------------------------
+  // Variation suggestion actions
+  // --------------------------------
+
+  /**
+   * 現在のコード進行に対してバリエーション提案を生成し、パネルを表示する
+   */
+  generateVariationSuggestions: () => {
+    const { isStructureMode, activeSectionIndex, sections, chords, key } = get();
+    const targetChords = isStructureMode && sections.length > activeSectionIndex
+      ? sections[activeSectionIndex].chords
+      : chords;
+    const variations = computeVariations(targetChords, key, 5);
+    set({ variations, showVariations: true });
+  },
+
+  /**
+   * 指定IDのバリエーションを現在のコード進行に適用する
+   */
+  applyVariation: (variationId: string) => {
+    const { variations, isStructureMode, activeSectionIndex, sections } = get();
+    const variation = variations.find(v => v.id === variationId);
+    if (!variation) return;
+
+    const newChords = [...variation.modifiedChords];
+
+    if (isStructureMode && sections.length > activeSectionIndex) {
+      const newSections = [...sections];
+      newSections[activeSectionIndex] = {
+        ...newSections[activeSectionIndex],
+        chords: newChords,
+      };
+      set({
+        sections: newSections,
+        chords: newChords,
+        showVariations: false,
+        selectedPresetId: null,
+        previewChords: null,
+        previewChangedIndices: null,
+      });
+    } else {
+      set({
+        chords: newChords,
+        showVariations: false,
+        selectedPresetId: null,
+        previewChords: null,
+        previewChangedIndices: null,
+      });
+    }
+  },
+
+  /**
+   * バリエーションパネルを非表示にする
+   */
+  dismissVariations: () => set({ 
+    showVariations: false, 
+    previewChords: null, 
+    previewChangedIndices: null 
+  }),
+
+  /**
+   * バリエーションを一時的にプレビュー設定する
+   */
+  previewVariation: (variationId: string) => {
+    const { variations } = get();
+    const variation = variations.find(v => v.id === variationId);
+    if (!variation) return;
+
+    set({
+      previewChords: variation.modifiedChords,
+      previewChangedIndices: variation.changedIndices,
+    });
+  },
+
+  /**
+   * プレビュー状態を解除する
+   */
+  clearPreview: () => set({ 
+    previewChords: null, 
+    previewChangedIndices: null 
+  }),
 
   // Section Builder actions
   enableStructureMode: () => {

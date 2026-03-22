@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useStore } from '@/lib/store';
 import KeyTempoSelector from "@/components/key-tempo-selector";
 import MoodTagFilter from "@/components/mood-tag-filter";
@@ -13,6 +14,11 @@ import { InstrumentSelector } from "@/components/instrument-selector";
 import { SectionNav } from "@/components/section-nav";
 import { SectionOverview } from "@/components/section-overview";
 import { StructureTemplatePicker } from "@/components/structure-template-picker";
+
+const VariationPanel = dynamic(
+  () => import("@/components/variation-panel").then(mod => mod.VariationPanel),
+  { ssr: false }
+);
 
 export function MainAppContent() {
   const { isStructureMode, disableStructureMode } = useStore();
@@ -43,6 +49,7 @@ export function MainAppContent() {
           </div>
           <div className="lg:w-7/12">
             <ChordTimeline />
+            <VariationPanel />
           </div>
         </div>
 
@@ -85,6 +92,7 @@ export function MainAppContent() {
 
       <InstrumentSelector />
       <ChordTimeline />
+      <VariationPanel />
       <RhythmSelector />
       <TransportControls />
 

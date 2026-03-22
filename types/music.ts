@@ -12,7 +12,41 @@ export type MoodTag =
   | '疾走感' 
   | '中毒性' 
   | 'ダーク' 
-  | 'ボカロP';
+  | 'ボカロP'
+  | '意外性';
+
+/**
+ * リハーモナイズ技法の種別
+ */
+export type VariationTechnique =
+  | 'minor-iv'             // IV → IVm (サブドミナントマイナー)
+  | 'secondary-dominant'   // IIIm → III7 など (セカンダリドミナント)
+  | 'add-seventh'          // トライアド → セブンスコード
+  | 'tritone-sub'          // V7 → bII7 (トリトーン代理)
+  | 'diminished-pass'      // 全音差にdimを挟む
+  | 'sus4-resolve'         // V → Vsus4
+  | 'pedal-point'          // ペダルポイントを追加
+  | 'modal-interchange'    // 同主調からの借用
+  | 'two-five'             // II-V挿入
+  | 'chromatic-approach'   // 半音アプローチコード
+  | 'relative-major-minor'; // 平行調の切り替え
+
+/**
+ * コード進行バリエーション提案
+ * ユーザーに「もっとエモく」「もっとオシャレに」といった変化を提示するための型
+ */
+export interface ChordVariation {
+  id: string;
+  name: string;              // 日本語ラベル (例: "エモさUP")
+  icon: string;              // 絵文字アイコン
+  description: string;       // 初心者向け日本語解説
+  originalChords: string[];  // 変更前のコード配列
+  modifiedChords: string[];  // 変更後のコード配列
+  changedIndices: number[];  // 変更された小節インデックスの配列
+  technique: VariationTechnique; // 使用したリハーモナイズ技法
+  moodShift: string;         // 雰囲気の変化方向: "エモい", "オシャレ", "切ない", "ダーク", "明るい", "意外性"
+  impactScore: number;       // インパクト度スコア (ソート用、1-10)
+}
 
 // コード表記におけるルート音
 export type NoteName = 
