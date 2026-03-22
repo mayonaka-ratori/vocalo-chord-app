@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import { useStore } from '@/lib/store';
-import { ChordVariation } from '@/types/music';
 
 export function VariationPanel() {
   const {

@@ -1,4 +1,4 @@
-// @ts-expect-error
+// @ts-expect-error - midi-writer-js lacks proper TypeScript definitions
 import * as MidiWriter from 'midi-writer-js';
 import { drumPatterns } from '@/data/drum-patterns';
 import { bassPatterns } from '@/data/bass-patterns';

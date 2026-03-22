@@ -5,8 +5,8 @@
  * バリエーション提案を生成する。
  */
 
-import { ChordVariation, VariationTechnique } from '@/types/music';
-import { NOTES_SHARP, NOTES_FLAT, getNoteIndex, getNoteFromIndex, parseChord } from './chords';
+import { ChordVariation } from '@/types/music';
+import { NOTES_SHARP, NOTES_FLAT, getNoteIndex, parseChord } from './chords';
 import { NoteName } from '@/types/music';
 
 // =============================
@@ -27,7 +27,7 @@ function parseKey(key: string): { root: string; isMinor: boolean } {
  * シャープ系キー: C, G, D, A, E, B
  * フラット系キー: F, Bb, Eb, Ab, Db, Gb
  */
-function useFlatNotation(keyRoot: string): boolean {
+function isFlatNotation(keyRoot: string): boolean {
   const flatKeys = ['F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'];
   return flatKeys.includes(keyRoot);
 }
@@ -37,7 +37,7 @@ function useFlatNotation(keyRoot: string): boolean {
  */
 function noteFromIndexForKey(index: number, keyRoot: string): NoteName {
   const normalized = ((index % 12) + 12) % 12;
-  if (useFlatNotation(keyRoot)) {
+  if (isFlatNotation(keyRoot)) {
     return NOTES_FLAT[normalized] as NoteName;
   }
   return NOTES_SHARP[normalized] as NoteName;
@@ -57,16 +57,7 @@ function getSemitoneFromKey(chordRoot: string, keyRoot: string): number {
  * メジャースケールの7つの音の半音インデックス（ルートからの差）
  * [I=0, II=2, IIIm=4, IV=5, V=7, VIm=9, VIIdim=11]
  */
-const MAJOR_SCALE_SEMITONES = [0, 2, 4, 5, 7, 9, 11];
 
-/**
- * コードが特定のスケール度数（半音差）に対応するか判定する
- * 付加音（7th等）があっても、ルートが一致すれば度数はマッチするとみなす
- */
-function isDegree(chordName: string, keyRoot: string, semitone: number): boolean {
-  const { root } = parseChord(chordName);
-  return getSemitoneFromKey(root, keyRoot) === semitone;
-}
 
 /**
  * コードがメジャークオリティ（付加音なし、またはmaj7）かどうか判定する

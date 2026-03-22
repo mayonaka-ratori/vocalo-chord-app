@@ -14,7 +14,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['Abmaj7', 'G7', 'Cm7', 'Bbm7', 'Eb7'] }
     ],
     tags: ['オシャレ', '中毒性', 'ボカロP'],
-    searchAliases: ['よるにかける', 'yoru ni kakeru', 'racing into the night', 'yorunikakeru']
+    searchAliases: ['よるにかける', 'yoru ni kakeru', 'racing into the night', 'yorunikakeru'],
+    category: 'recent-hit'
   },
   {
     id: 'idol',
@@ -28,7 +29,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['Db', 'Eb', 'Cm', 'Fm', 'Dbmaj7', 'C7', 'Fm', 'Eb'] }
     ],
     tags: ['エモい', '疾走感', '中毒性'],
-    searchAliases: ['あいどる', 'oshi no ko', '推しの子']
+    searchAliases: ['あいどる', 'oshi no ko', '推しの子'],
+    category: 'recent-hit'
   },
   {
     id: 'senbonzakura',
@@ -42,7 +44,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['G', 'A', 'F#m', 'Bm', 'G', 'A', 'F#m', 'Bm'] }
     ],
     tags: ['疾走感', 'エモい'],
-    searchAliases: ['せんぼんざくら', 'senbonzakura', '千本桜', 'kuro usa p', '黒うさ']
+    searchAliases: ['せんぼんざくら', 'senbonzakura', '千本桜', 'kuro usa p', '黒うさ'],
+    category: 'vocaloid'
   },
   {
     id: 'charles',
@@ -56,7 +59,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['C', 'D', 'Bm', 'Em', 'C', 'D', 'G', 'G'] }
     ],
     tags: ['エモい', '疾走感', '切ない'],
-    searchAliases: ['しゃるる', 'sharuru', 'balloon', 'バルーン']
+    searchAliases: ['しゃるる', 'sharuru', 'balloon', 'バルーン'],
+    category: 'vocaloid'
   },
   {
     id: 'lemon',
@@ -70,7 +74,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['E', 'F#', 'D#m', 'G#m', 'E', 'F#', 'B', 'B'] }
     ],
     tags: ['切ない', 'エモい'],
-    searchAliases: ['れもん', 'yonezu kenshi', '米津玄師', 'kenshi yonezu']
+    searchAliases: ['れもん', 'yonezu kenshi', '米津玄師', 'kenshi yonezu'],
+    category: 'recent-hit'
   },
   {
     id: 'roki',
@@ -84,7 +89,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['G', 'A', 'F#m', 'Bm', 'G', 'A', 'Bm', 'Bm'] }
     ],
     tags: ['疾走感', 'ダーク', '中毒性'],
-    searchAliases: ['ろき', 'mikito p', 'みきとp']
+    searchAliases: ['ろき', 'mikito p', 'みきとp'],
+    category: 'vocaloid'
   },
   {
     id: 'phony',
@@ -98,7 +104,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['Bb', 'C', 'Am', 'Dm', 'Bb', 'C', 'Dm', 'Dm'] }
     ],
     tags: ['疾走感', '中毒性', 'ダーク'],
-    searchAliases: ['ふぉにい', 'phony', 'tsumiki', 'ツミキ']
+    searchAliases: ['ふぉにい', 'phony', 'tsumiki', 'ツミキ'],
+    category: 'vocaloid'
   },
   {
     id: 'goodbye-sengen',
@@ -111,7 +118,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['D', 'A', 'Bm', 'G', 'D', 'A', 'Bm', 'G'] }
     ],
     tags: ['明るい', '疾走感'],
-    searchAliases: ['ぐっばいせんげん', 'goodbye declaration', 'goodbye sengen', 'chinozo']
+    searchAliases: ['ぐっばいせんげん', 'goodbye declaration', 'goodbye sengen', 'chinozo'],
+    category: 'vocaloid'
   },
   {
     id: 'king',
@@ -125,7 +133,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['Eb', 'F', 'Dm', 'Gm', 'Eb', 'F', 'Gm', 'Gm'] }
     ],
     tags: ['ダーク', '中毒性', '疾走感'],
-    searchAliases: ['きんぐ', 'kanaria', 'かなりあ']
+    searchAliases: ['きんぐ', 'kanaria', 'かなりあ'],
+    category: 'vocaloid'
   },
   {
     id: 'melt',
@@ -139,7 +148,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['G', 'A', 'F#m', 'Bm', 'G', 'A', 'D', 'D'] }
     ],
     tags: ['明るい', '切ない'],
-    searchAliases: ['めると', 'melt', 'ryo', 'supercell']
+    searchAliases: ['めると', 'melt', 'ryo', 'supercell'],
+    category: 'vocaloid'
   },
   {
     id: 'lost-ones-weeping',
@@ -152,7 +162,8 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['Bm', 'G', 'A', 'D', 'Bm', 'G', "A", "Bm"] }
     ],
     tags: ['エモい', '疾走感', 'ダーク'],
-    searchAliases: ['ろすとわんのごうこく', 'lost ones weeping', 'neru', 'ねる']
+    searchAliases: ['ろすとわんのごうこく', 'lost ones weeping', 'neru', 'ねる'],
+    category: 'vocaloid'
   },
   {
     id: 'villain',
@@ -166,6 +177,445 @@ export const famousSongs: FamousSong[] = [
       { label: 'サビ', chords: ['F', 'G', 'Em', 'Am', 'F', 'G', 'Am', 'Am'] }
     ],
     tags: ['ダーク', 'オシャレ', '中毒性'],
-    searchAliases: ['ヴィラン', 'びらん', 'villain', 'teniwoha', 'てにをは']
+    searchAliases: ['ヴィラン', 'びらん', 'villain', 'teniwoha', 'てにをは'],
+    category: 'vocaloid'
+  },
+
+  // --- Batch 1 ---
+  {
+    id: "plastic-love",
+    title: "プラスティック・ラブ",
+    artist: "竹内まりや",
+    year: 1984,
+    key: "Dm",
+    bpm: 108,
+    sections: [{ label: 'サビ', chords: ["Gm7", "C7", "Am7", "Dm7"] }],
+    tags: ["オシャレ"],
+    category: "citypop",
+    searchAliases: ["plastic love", "plasticlove", "takeuchi mariya", "竹内まりや"]
+  },
+  {
+    id: "mayonaka-no-door",
+    title: "真夜中のドア〜Stay With Me",
+    artist: "松原みき",
+    year: 1979,
+    key: "F",
+    bpm: 108,
+    sections: [{ label: 'サビ', chords: ["Am7", "Gm7", "C7", "Fmaj7"] }],
+    tags: ["オシャレ"],
+    category: "citypop",
+    searchAliases: ["mayonaka no door", "stay with me", "matsubara miki", "松原みき"]
+  },
+  {
+    id: "christmas-eve",
+    title: "クリスマス・イブ",
+    artist: "山下達郎",
+    year: 1983,
+    key: "D",
+    bpm: 120,
+    sections: [{ label: 'サビ', chords: ["D", "A/C#", "Bm", "D/A", "G", "D/F#", "Em", "A"] }],
+    tags: ["エモい"],
+    category: "citypop",
+    searchAliases: ["christmas eve", "yamashita tatsuro", "山下達郎"]
+  },
+  {
+    id: "ride-on-time",
+    title: "RIDE ON TIME",
+    artist: "山下達郎",
+    year: 1980,
+    key: "A",
+    bpm: 118,
+    sections: [{ label: 'サビ', chords: ["Amaj7", "G#m7", "C#m7", "F#m7"] }],
+    tags: ["明るい"],
+    category: "citypop",
+    searchAliases: ["ride on time", "yamashita"]
+  },
+  {
+    id: "marunouchi-sadistic",
+    title: "丸ノ内サディスティック",
+    artist: "椎名林檎",
+    year: 1999,
+    key: "Eb",
+    bpm: 100,
+    sections: [{ label: 'サビ', chords: ["AbM7", "G7", "Cm7", "Bbm7", "Eb7"] }],
+    tags: ["オシャレ"],
+    category: "citypop",
+    searchAliases: ["marunouchi sadistic", "shiina ringo", "椎名林檎", "丸サ"]
+  },
+  {
+    id: "september-takeuchi",
+    title: "September",
+    artist: "竹内まりや",
+    year: 1979,
+    key: "C",
+    bpm: 112,
+    sections: [{ label: 'サビ', chords: ["Cmaj7", "Am7", "Dm7", "G7"] }],
+    tags: ["明るい"],
+    category: "citypop",
+    searchAliases: ["september", "takeuchi"]
+  },
+  {
+    id: "chuo-freeway",
+    title: "中央フリーウェイ",
+    artist: "荒井由実",
+    year: 1976,
+    key: "D",
+    bpm: 110,
+    sections: [{ label: 'サビ', chords: ["Dmaj7", "D7", "Gmaj7", "Gm6"] }],
+    tags: ["オシャレ"],
+    category: "citypop",
+    searchAliases: ["chuo freeway", "arai yumi", "yuming", "荒井由実", "ユーミン"]
+  },
+  {
+    id: "seppun",
+    title: "接吻",
+    artist: "ORIGINAL LOVE",
+    year: 1993,
+    key: "D",
+    bpm: 114,
+    sections: [{ label: 'サビ', chords: ["Gm7", "A7", "F#m7", "Bm7"] }],
+    tags: ["オシャレ"],
+    category: "citypop",
+    searchAliases: ["kiss", "seppun", "original love"]
+  },
+  {
+    id: "sweet-memories",
+    title: "SWEET MEMORIES",
+    artist: "松田聖子",
+    year: 1983,
+    key: "F",
+    bpm: 72,
+    sections: [{ label: 'サビ', chords: ["Fmaj7", "Em7", "A7", "Dm7"] }],
+    tags: ["切ない"],
+    category: "citypop",
+    searchAliases: ["sweet memories", "matsuda seiko", "松田聖子"]
+  },
+  {
+    id: "yume-no-naka-e",
+    title: "夢の中へ",
+    artist: "井上陽水",
+    year: 1973,
+    key: "G",
+    bpm: 124,
+    sections: [{ label: 'サビ', chords: ["G", "C", "D", "Em"] }],
+    tags: ["明るい"],
+    category: "citypop",
+    searchAliases: ["yume no naka e", "inoue yosui", "井上陽水"]
+  },
+  {
+    id: "senbonzakura-v1",
+    title: "千本桜",
+    artist: "黒うさP feat. 初音ミク",
+    year: 2011,
+    key: "Bm",
+    bpm: 154,
+    sections: [{ label: 'サビ', chords: ["Bm", "F#m", "G", "D", "Em", "Bm", "Em", "F#"] }],
+    tags: ["明るい", "エモい"],
+    category: "vocaloid",
+    searchAliases: ["senbonzakura", "senbon zakura", "kurousa", "千本桜"]
+  },
+  {
+    id: "charles-v1",
+    title: "シャルル",
+    artist: "バルーン feat. flower",
+    year: 2016,
+    key: "Fm",
+    bpm: 95,
+    sections: [{ label: 'サビ', chords: ["Fm", "Db", "Ab", "Eb"] }],
+    tags: ["切ない"],
+    category: "vocaloid",
+    searchAliases: ["charles", "syaruru", "シャルル", "balloon", "バルーン"]
+  },
+
+  // --- Batch 2 ---
+  {
+    id: "roki-v2",
+    title: "ロキ",
+    artist: "みきとP feat. 初音ミク&鏡音リン",
+    year: 2018,
+    key: "Bm",
+    bpm: 200,
+    sections: [{ label: 'サビ', chords: ["Bm", "G", "D", "A", "Em", "F#"] }],
+    tags: ["明るい", "エモい"],
+    category: "vocaloid",
+    searchAliases: ["roki", "mikitop", "みきとP"]
+  },
+  {
+    id: "inochi-ni-kirawareteiru",
+    title: "命に嫌われている。",
+    artist: "カンザキイオリ feat. 初音ミク",
+    year: 2017,
+    key: "Bm",
+    bpm: 162,
+    sections: [{ label: 'サビ', chords: ["Bm", "G", "D", "A"] }],
+    tags: ["エモい", "ダーク"],
+    category: "vocaloid",
+    searchAliases: ["inochi ni kirawareteiru", "命に嫌われている", "カンザキイオリ"]
+  },
+  {
+    id: "ghost-rule",
+    title: "ゴーストルール",
+    artist: "DECO*27 feat. 初音ミク",
+    year: 2016,
+    key: "Am",
+    bpm: 210,
+    sections: [{ label: 'サビ', chords: ["Am", "F", "C", "G"] }],
+    tags: ["エモい"],
+    category: "vocaloid",
+    searchAliases: ["ghost rule", "deco27", "ゴーストルール"]
+  },
+  {
+    id: "rolling-girl",
+    title: "ローリンガール",
+    artist: "wowaka feat. 初音ミク",
+    year: 2010,
+    key: "Bm",
+    bpm: 195,
+    sections: [{ label: 'サビ', chords: ["Bm", "G", "D", "F#m"] }],
+    tags: ["エモい", "ダーク"],
+    category: "vocaloid",
+    searchAliases: ["rolling girl", "wowaka", "ローリンガール"]
+  },
+  {
+    id: "melt-v2",
+    title: "メルト",
+    artist: "ryo(supercell) feat. 初音ミク",
+    year: 2007,
+    key: "D",
+    bpm: 172,
+    sections: [{ label: 'サビ', chords: ["D", "A", "Bm", "G"] }],
+    tags: ["明るい", "エモい"],
+    category: "vocaloid",
+    searchAliases: ["melt", "メルト", "supercell", "ryo"]
+  },
+  {
+    id: "love-is-war",
+    title: "恋は戦争",
+    artist: "ryo(supercell) feat. 初音ミク",
+    year: 2008,
+    key: "Dm",
+    bpm: 175,
+    sections: [{ label: 'サビ', chords: ["Dm", "Bb", "C", "A"] }],
+    tags: ["エモい"],
+    category: "vocaloid",
+    searchAliases: ["love is war", "恋は戦争", "supercell"]
+  },
+  {
+    id: "kagerou-days",
+    title: "カゲロウデイズ",
+    artist: "じん feat. 初音ミク",
+    year: 2011,
+    key: "Em",
+    bpm: 200,
+    sections: [{ label: 'サビ', chords: ["Em7", "Bm7", "Cmaj7", "D"] }],
+    tags: ["エモい", "明るい"],
+    category: "vocaloid",
+    searchAliases: ["kagerou days", "カゲロウデイズ", "jin", "じん", "カゲプロ"]
+  },
+  {
+    id: "musekinin-shuugoutai",
+    title: "㋰責任集合体",
+    artist: "マサラダ feat. 重音テト",
+    year: 2023,
+    key: "E",
+    bpm: 135,
+    sections: [{ label: 'サビ', chords: ["Am", "C#m", "Dm", "F#m", "E", "G#"] }],
+    tags: ["明るい", "エモい"],
+    category: "vocaloid",
+    searchAliases: ["musekinin", "無責任集合体", "ム責任集合体", "㋰責任", "UTLAWS", "マサラダ", "masarada"]
+  },
+  {
+    id: "tetris-hiiragi",
+    title: "テトリス",
+    artist: "柊マグネタイト feat. 重音テト",
+    year: 2024,
+    key: "C#m",
+    bpm: 170,
+    sections: [{ label: 'サビ', chords: ["C#m", "G#7", "C#m", "G#7"] }],
+    tags: ["エモい", "ダーク"],
+    category: "vocaloid",
+    searchAliases: ["tetris", "テトリス", "柊マグネタイト", "hiiragi magnetite"]
+  },
+  {
+    id: "quiet-room",
+    title: "quiet room",
+    artist: "有機酸 feat. 初音ミク",
+    year: 2017,
+    key: "F",
+    bpm: 93,
+    sections: [{ label: 'サビ', chords: ["BbM7", "A7sus4", "Am7", "Dm7"] }],
+    tags: ["オシャレ", "切ない"],
+    category: "vocaloid",
+    searchAliases: ["quiet room", "有機酸", "uki3", "ewe"]
+  },
+  {
+    id: "non-breath-oblige",
+    title: "ノンブレスオブリージュ",
+    artist: "ピノキオピー feat. 初音ミク",
+    year: 2021,
+    key: "C",
+    bpm: 148,
+    sections: [{ label: 'サビ', chords: ["Fmaj7", "E7", "Am7", "C7"] }],
+    tags: ["オシャレ"],
+    category: "vocaloid",
+    searchAliases: ["non breath oblige", "ノンブレスオブリージュ", "pinocchiop", "ピノキオピー"]
+  },
+  {
+    id: "shinzou-wo-sasageyo",
+    title: "心臓を捧げよ！",
+    artist: "Linked Horizon",
+    year: 2017,
+    key: "Am",
+    bpm: 184,
+    sections: [{ label: 'サビ', chords: ["Am", "G", "F", "E"] }],
+    tags: ["エモい", "明るい"],
+    category: "vocaloid",
+    searchAliases: ["shinzou wo sasageyo", "心臓を捧げよ", "linked horizon", "進撃の巨人"]
+  },
+  {
+    id: "blessing-plu",
+    title: "ブレス",
+    artist: "ポルノグラフィティ",
+    year: 2018,
+    key: "G",
+    bpm: 164,
+    sections: [{ label: 'サビ', chords: ["G", "D", "Em", "C"] }],
+    tags: ["明るい", "エモい"],
+    category: "vocaloid",
+    searchAliases: ["blessing", "breath", "ブレス", "ポルノグラフィティ"]
+  },
+
+  // --- Batch 3 ---
+  {
+    id: "lemon-v3",
+    title: "Lemon",
+    artist: "米津玄師",
+    year: 2018,
+    key: "G#m",
+    bpm: 87,
+    sections: [{ label: 'サビ', chords: ["G#m", "E", "B", "F#"] }],
+    tags: ["切ない", "エモい"],
+    category: "vocaloP-artist",
+    searchAliases: ["lemon", "レモン", "yonezu kenshi", "米津玄師"]
+  },
+  {
+    id: "kick-back",
+    title: "KICK BACK",
+    artist: "米津玄師",
+    year: 2022,
+    key: "C#m",
+    bpm: 204,
+    sections: [{ label: 'サビ', chords: ["C#m", "B", "A", "G#"] }],
+    tags: ["明るい", "エモい"],
+    category: "vocaloP-artist",
+    searchAliases: ["kick back", "kickback", "米津玄師", "chainsaw man", "チェンソーマン"]
+  },
+  {
+    id: "iris-out",
+    title: "IRIS OUT",
+    artist: "米津玄師",
+    year: 2023,
+    key: "Em",
+    bpm: 135,
+    sections: [{ label: 'サビ', chords: ["Am", "Em", "B7", "G"] }],
+    tags: ["オシャレ", "エモい"],
+    category: "vocaloP-artist",
+    searchAliases: ["iris out", "米津玄師", "yonezu"]
+  },
+  {
+    id: "haru-dorobou",
+    title: "春泥棒",
+    artist: "ヨルシカ",
+    year: 2021,
+    key: "G",
+    bpm: 130,
+    sections: [{ label: 'サビ', chords: ["G", "D", "Em", "C"] }],
+    tags: ["明るい"],
+    category: "vocaloP-artist",
+    searchAliases: ["haru dorobou", "春泥棒", "yorushika", "ヨルシカ"]
+  },
+  {
+    id: "odoriko",
+    title: "踊り子",
+    artist: "Vaundy",
+    year: 2021,
+    key: "Dm",
+    bpm: 113,
+    sections: [{ label: 'サビ', chords: ["Dm", "Am", "Bb", "C"] }],
+    tags: ["オシャレ"],
+    category: "vocaloP-artist",
+    searchAliases: ["odoriko", "踊り子", "vaundy"]
+  },
+  {
+    id: "idol-v3",
+    title: "アイドル",
+    artist: "YOASOBI",
+    year: 2023,
+    key: "A",
+    bpm: 166,
+    sections: [{ label: 'サビ', chords: ["A", "E", "F#m", "D", "Bm"] }],
+    tags: ["明るい", "エモい"],
+    category: "recent-hit",
+    searchAliases: ["idol", "アイドル", "yoasobi", "推しの子", "oshi no ko"]
+  },
+  {
+    id: "sho",
+    title: "唱",
+    artist: "Ado",
+    year: 2023,
+    key: "Dm",
+    bpm: 130,
+    sections: [{ label: 'サビ', chords: ["Dm", "Gm", "A", "Bb"] }],
+    tags: ["エモい", "ダーク"],
+    category: "recent-hit",
+    searchAliases: ["sho", "唱", "ado"]
+  },
+  {
+    id: "usseewa",
+    title: "うっせぇわ",
+    artist: "Ado",
+    year: 2020,
+    key: "Bm",
+    bpm: 178,
+    sections: [{ label: 'サビ', chords: ["Bm", "G", "A", "F#m"] }],
+    tags: ["エモい", "ダーク"],
+    category: "recent-hit",
+    searchAliases: ["usseewa", "うっせぇわ", "ado"]
+  },
+  {
+    id: "bling-bang-bang-born",
+    title: "Bling-Bang-Bang-Born",
+    artist: "Creepy Nuts",
+    year: 2024,
+    key: "Gm",
+    bpm: 140,
+    sections: [{ label: 'サビ', chords: ["Gm", "Eb", "Bb", "F"] }],
+    tags: ["明るい"],
+    category: "recent-hit",
+    searchAliases: ["bling bang bang born", "creepy nuts", "マッシュル", "mashle"]
+  },
+  {
+    id: "propose-natori",
+    title: "プロポーズ",
+    artist: "なとり",
+    year: 2024,
+    key: "F",
+    bpm: 176,
+    sections: [{ label: 'サビ', chords: ["Dm", "BbM7", "A7", "Dm"] }],
+    tags: ["エモい", "オシャレ"],
+    category: "recent-hit",
+    searchAliases: ["propose", "プロポーズ", "natori", "なとり"]
+  },
+  {
+    id: "bansan-ka",
+    title: "晩餐歌",
+    artist: "tuki.",
+    year: 2023,
+    key: "Am",
+    bpm: 75,
+    sections: [{ label: 'サビ', chords: ["Am", "F", "C", "G"] }],
+    tags: ["切ない", "エモい"],
+    category: "recent-hit",
+    searchAliases: ["bansanka", "晩餐歌", "tuki"]
   }
 ];
