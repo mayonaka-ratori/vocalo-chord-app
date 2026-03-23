@@ -1,0 +1,32 @@
+description: Project-wide coding standards for Vocalo Chord Assistant
+globs: **/*.ts, **/*.tsx, **/*.css
+alwaysApply: true
+---
+
+# Vocalo Chord Assistant — Project Rules
+
+## Tech Stack
+- Next.js 14 App Router, TypeScript strict, Tailwind CSS, Zustand
+- Audio: Tone.js + smplr (lazy-loaded, shared AudioContext)
+- Deploy: Vercel
+
+## Design System (Vocacore Theme)
+- All colors use `voca-*` Tailwind tokens. NEVER use slate, gray, zinc, neutral.
+- bg-voca-bg (#0D0D14), bg-voca-bg-card (#16162A), bg-voca-bg-section (#1E1E3A), bg-voca-bg-elevated (#222244)
+- accent-cyan (#00E5FF), accent-magenta (#E040FB), accent-purple (#7C4DFF)
+- text-voca-text (#F0F0F8), text-voca-text-sub (#8888AA), text-voca-text-muted (#7C7C9C)
+- Primary buttons: bg-voca-accent-cyan text-voca-bg font-bold rounded-lg
+- Cards: bg-voca-bg-card border border-voca-border-subtle rounded-xl
+- Active/selected: border-voca-accent-cyan shadow-glow-cyan
+
+## Code Standards
+- No `any` type. No `@ts-ignore`. Strict TypeScript.
+- All audio/browser API access must be inside useEffect or async functions (SSR safety).
+- Components using browser APIs must be imported with `dynamic(() => import(...), { ssr: false })`.
+- Report in Japanese when summarizing changes.
+
+## Commands
+- `npm run build`: Build
+- `npm run lint`: Lint
+- `npx tsc --noEmit`: Type check
+- All three must pass with 0 errors, 0 warnings before committing.

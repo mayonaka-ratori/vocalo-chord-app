@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from '@/lib/store';
 import { INSTRUMENT_PRESETS, SmplrInstrumentId } from '@/types/music';
 
@@ -15,6 +15,14 @@ export function InstrumentSelector() {
   } = useStore();
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    // Hydration mismatch を避けるため、最初のクライアントレンダーは SSR と同じ出力にする
+    // eslint react-hooks/set-state-in-effect 対策として非同期に更新する
+    const t = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(t);
+  }, []);
 
   const activePreset = INSTRUMENT_PRESETS.find(p => p.id === activeInstrumentId) || INSTRUMENT_PRESETS[INSTRUMENT_PRESETS.length - 1];
 
@@ -112,7 +120,7 @@ export function InstrumentSelector() {
                 )}
                 
                 {/* Cache Badge */}
-                {isActive && preset.requiresNetwork && (
+                {isMounted && isActive && preset.requiresNetwork && (
                   <span className="text-[9px] text-voca-text-muted mt-0.5">
                     {typeof window !== 'undefined' && 'caches' in window && window.location.protocol === 'https:'
                       ? '💾 キャッシュ済'

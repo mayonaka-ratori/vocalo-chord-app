@@ -1,0 +1,22 @@
+description: Web Audio rules for Tone.js and smplr integration
+globs: lib/audio/**/*.ts, hooks/use-playback.ts
+---
+
+# Audio Engine Rules
+
+## AudioContext
+- Single shared AudioContext via getAudioContext() in engine.ts
+- NEVER create AudioContext at module scope or import time
+- Always call ensureAudioReady() before any audio operation
+- Guard with typeof window !== 'undefined'
+
+## smplr Integration
+- All smplr imports must be dynamic: `const { SplendidGrandPiano } = await import('smplr')`
+- Every instrument load must have try-catch with Soundfont fallback
+- MAX_LOADED = 3 (LRU eviction)
+- CacheStorage for repeat loads (HTTPS only)
+
+## Unified Player
+- playUnifiedChord/Bass/Melody routes through activeInstrumentId
+- synth-fallback uses Tone.js, all others use smplr
+- Velocity: smplr 0-127, Tone.js 0-1 (convert accordingly)

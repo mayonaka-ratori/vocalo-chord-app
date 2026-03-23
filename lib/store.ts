@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { SongSearchResult, NoteName, ChordVariation, SmplrInstrumentId } from '@/types/music';
+import { NoteName, ChordVariation, SmplrInstrumentId } from '@/types/music';
 import { generateVariations as computeVariations } from './music/variation';
 import { chordPresets } from '@/data/presets';
 import { transposeProgression } from './music/transpose';
@@ -44,9 +44,6 @@ export interface AppState {
   editingBarIndex: number | null;
   
   // Song search
-  searchQuery: string;
-  searchResults: SongSearchResult[];
-  isSearching: boolean;
   categoryFilter: string | null;
 
   // Variation suggestions
@@ -153,9 +150,6 @@ export const useStore = create<AppState>((set, get) => ({
   editingBarIndex: null,
   
   // Song search
-  searchQuery: '',
-  searchResults: [],
-  isSearching: false,
   categoryFilter: null,
 
   // Variation suggestions
