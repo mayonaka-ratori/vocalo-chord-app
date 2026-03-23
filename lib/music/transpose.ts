@@ -9,6 +9,8 @@ import { parseChord, getNoteIndex, getNoteFromIndex } from './chords';
  * @returns 移調後のコード名
  */
 export function transposeChord(chordName: string, semitones: number): string {
+  if (chordName === 'N.C.' || chordName === '') return chordName;
+  
   // コード名から構成要素をパース
   const { root, quality, bass } = parseChord(chordName);
   

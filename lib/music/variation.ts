@@ -54,12 +54,6 @@ function getSemitoneFromKey(chordRoot: string, keyRoot: string): number {
 }
 
 /**
- * メジャースケールの7つの音の半音インデックス（ルートからの差）
- * [I=0, II=2, IIIm=4, IV=5, V=7, VIm=9, VIIdim=11]
- */
-
-
-/**
  * コードがメジャークオリティ（付加音なし、またはmaj7）かどうか判定する
  */
 function isMajorChord(quality: string): boolean {
@@ -120,7 +114,7 @@ function applyMinorIv(
   if (changedIndices.length === 0) return null;
 
   return {
-    id: `minor-iv-${Date.now()}-${Math.random()}`,
+    id: '',
     name: '切なさUP',
     icon: '🥲',
     description: '4番目のコードをマイナーに変えると、急に切ない空気に',
@@ -173,7 +167,7 @@ function applySecondaryDominant(
   if (changedIndices.length === 0) return null;
 
   return {
-    id: `secondary-dominant-${Date.now()}-${Math.random()}`,
+    id: '',
     name: 'オシャレ度UP',
     icon: '✨',
     description: '次のコードに向かう「引力」を強くして、プロっぽい響きに',
@@ -227,7 +221,7 @@ function applyAddSeventh(
   if (changedIndices.length === 0) return null;
 
   return {
-    id: `add-seventh-${Date.now()}-${Math.random()}`,
+    id: '',
     name: '大人っぽく',
     icon: '🎩',
     description: '7thを足すだけで、一気に大人な雰囲気に',
@@ -263,7 +257,7 @@ function applySus4Resolve(
   if (changedIndices.length === 0) return null;
 
   return {
-    id: `sus4-resolve-${Date.now()}-${Math.random()}`,
+    id: '',
     name: '焦らし効果',
     icon: '😏',
     description: '解決を焦らすことで、サビへの期待感がグッと上がる',
@@ -319,7 +313,7 @@ function applyTwoFive(
   if (newChords[targetIndex] === chords[targetIndex]) return null;
 
   return {
-    id: `two-five-${Date.now()}-${Math.random()}`,
+    id: '',
     name: 'ジャズ風味',
     icon: '🎷',
     description: 'ジャズの定番テクニックで、流れるような展開に',
@@ -361,7 +355,7 @@ function applyModalInterchange(
   if (changedIndices.length === 0) return null;
 
   return {
-    id: `modal-interchange-${Date.now()}-${Math.random()}`,
+    id: '',
     name: '意外な展開',
     icon: '🌀',
     description: '別の調からコードを借りてくることで、ハッとする瞬間を作る',
@@ -407,7 +401,7 @@ function applyDiminishedPass(
   if (changedIndices.length === 0) return null;
 
   return {
-    id: `diminished-pass-${Date.now()}-${Math.random()}`,
+    id: '',
     name: '緊張感プラス',
     icon: '😈',
     description: '不安定なディミニッシュを挟んで、ドキッとする瞬間を',
@@ -447,7 +441,7 @@ function applyRelativeMajorMinor(
   if (changedIndices.length === 0) return null;
 
   return {
-    id: `relative-major-minor-${Date.now()}-${Math.random()}`,
+    id: '',
     name: '明るくチェンジ',
     icon: '☀️',
     description: 'マイナーをメジャーに変えて、パッと明るい印象に',

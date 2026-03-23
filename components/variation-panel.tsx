@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '@/lib/store';
 
 export function VariationPanel() {
@@ -8,6 +8,13 @@ export function VariationPanel() {
     showVariations, variations, dismissVariations,
     previewVariation, applyVariation, previewChords, clearPreview
   } = useStore();
+  const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 1500);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -29,16 +36,7 @@ export function VariationPanel() {
 
   const handleApply = (id: string) => {
     applyVariation(id);
-    
-    // 簡易的なグローバルトースト表示（アンマウント対策）
-    const el = document.createElement('div');
-    el.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-emerald-500/90 text-white px-6 py-3 rounded-full font-bold shadow-2xl border border-emerald-400 transition-opacity duration-300';
-    el.innerHTML = '✅ アレンジを適用しました！';
-    document.body.appendChild(el);
-    setTimeout(() => {
-      el.style.opacity = '0';
-      setTimeout(() => el.remove(), 300);
-    }, 1500);
+    setToast('✅ アレンジを適用しました！');
   };
 
   const handleClose = () => {
@@ -133,6 +131,12 @@ export function VariationPanel() {
           </div>
         )}
       </div>
+
+      {toast && (
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-emerald-500/90 text-white px-6 py-3 rounded-full font-bold shadow-2xl border border-emerald-400 animate-in fade-in zoom-in duration-300">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

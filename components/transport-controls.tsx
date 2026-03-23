@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { useStore } from '@/lib/store';
 import { usePlayback } from '@/hooks/use-playback';
-import { exportToMidi } from '@/lib/midi/exporter';
+import { downloadMidi } from '@/lib/midi/download';
 
 interface ToastState {
   message: string;
@@ -29,30 +29,13 @@ export function TransportControls() {
   }, [toast]);
 
   const handleMidiExport = useCallback(() => {
-    try {
-      const blob = exportToMidi(
-        isStructureMode && playbackMode === 'song'
-          ? { mode: 'song', sections, tempo }
-          : { mode: 'section', chords, tempo, drumPatternId, bassPatternId }
-      );
-      const url = URL.createObjectURL(blob);
-      const safeKey = key.replace('#', 's');
-      
-      const filename = isStructureMode && playbackMode === 'song'
-        ? `vocalo-song-${safeKey}-${tempo}bpm-${sections.length}sections.mid`
-        : `vocalo-chord-${safeKey}-${tempo}bpm.mid`;
-
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = filename;
-      anchor.click();
-
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      setToast({ message: 'MIDIファイルをダウンロードしました！', type: 'success' });
-    } catch (err) {
-      console.error('MIDI export failed:', err);
-      setToast({ message: 'MIDI書き出しに失敗しました', type: 'error' });
-    }
+    downloadMidi(
+      isStructureMode && playbackMode === 'song'
+        ? { mode: 'song', sections, tempo }
+        : { mode: 'section', chords, tempo, drumPatternId, bassPatternId },
+      key,
+      setToast
+    );
   }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections]);
 
   return (

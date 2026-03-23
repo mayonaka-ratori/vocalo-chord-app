@@ -10,7 +10,9 @@ const TAGS = [
   { label: '💧 切ない', value: '切ない' },
   { label: '☀️ 明るい', value: '明るい' },
   { label: '🌀 中毒性', value: '中毒性' },
-  { label: '🌑 ダーク', value: 'ダーク' }
+  { label: '🌑 ダーク', value: 'ダーク' },
+  { label: '🎤 ボカロP', value: 'ボカロP' },
+  { label: '🌟 意外性', value: '意外性' }
 ];
 
 export default function MoodTagFilter() {

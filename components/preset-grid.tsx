@@ -2,20 +2,11 @@
 
 import { useStore } from "@/lib/store";
 import { chordPresets } from "@/data/presets";
-import { getNoteIndex } from "@/lib/music/chords";
+import { getNoteIndex, degreeToChordInC } from "@/lib/music/chords";
 import { transposeProgression } from "@/lib/music/transpose";
 import { NoteName, MoodTag } from "@/types/music";
 
-// degreesToChord ヘルパー（簡易版）
-function degreeToChordInC(degree: string): string {
-  if (degree === 'V7/II') return 'A7';
-  if (degree === 'V7/VI') return 'E7';
-  let c = degree;
-  c = c.replace('IIIm', 'Em').replace('VIm', 'Am').replace('IIm', 'Dm').replace('IVm', 'Fm');
-  c = c.replace('VII', 'B').replace('IV', 'F').replace('III', 'E').replace('VI', 'A').replace('II', 'D');
-  c = c.replace('I', 'C').replace('V', 'G');
-  return c;
-}
+// 共通の helper を lib/music/chords から使用
 
 export default function PresetGrid() {
   const {

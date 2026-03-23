@@ -41,7 +41,7 @@ export function getChordFunction(degree: DegreeName): 'Tonic' | 'Subdominant' | 
   if (degree.startsWith('IIm') || degree.startsWith('IV')) {
     return 'Subdominant';
   }
-  if (degree.startsWith('IIIm') || degree.startsWith('VIm') || degree.startsWith('I')) {
+  if (degree.startsWith('IIIm') || degree.startsWith('VIm') || degree === 'I' || degree === 'Imaj7' || degree === 'I7') {
     return 'Tonic';
   }
   if (degree.startsWith('V') && !degree.startsWith('VIm')) {

@@ -3,7 +3,7 @@ import { SongSearchResult, NoteName, ChordVariation } from '@/types/music';
 import { generateVariations as computeVariations } from './music/variation';
 import { chordPresets } from '@/data/presets';
 import { transposeProgression } from './music/transpose';
-import { getNoteIndex } from './music/chords';
+import { getNoteIndex, degreeToChordInC } from './music/chords';
 import { InstrumentPresetId } from '@/types/audio';
 import { instrumentPresets } from '@/data/instrument-presets';
 import { Section, SectionType } from '@/types/music';
@@ -89,30 +89,6 @@ export interface AppState {
   updateSectionChords: (sectionId: string, chords: string[]) => void;
   updateSectionPattern: (sectionId: string, field: 'drumPatternId' | 'bassPatternId' | 'backingPatternId' | 'instrumentPresetId', value: string) => void;
   updateSectionBars: (sectionId: string, bars: number) => void;
-}
-
-/**
- * 度数表記を Cメジャーキーの実際のコード名に変換する簡易ヘルパー
- * 例: 'IVmaj7' -> 'Fmaj7', 'VIm' -> 'Am'
- */
-function degreeToChordInC(degree: string): string {
-  if (degree === 'V7/II') return 'A7';
-  if (degree === 'V7/VI') return 'E7';
-  
-  let c = degree;
-  // 長いものから置換する
-  c = c.replace('IIIm', 'Em');
-  c = c.replace('VIm', 'Am');
-  c = c.replace('IIm', 'Dm');
-  c = c.replace('IVm', 'Fm');
-  c = c.replace('VII', 'B'); 
-  c = c.replace('IV', 'F');
-  c = c.replace('III', 'E'); 
-  c = c.replace('VI', 'A');
-  c = c.replace('II', 'D');
-  c = c.replace('I', 'C');
-  c = c.replace('V', 'G');
-  return c; // 7 や maj7 はそのまま残る
 }
 
 export const useStore = create<AppState>((set, get) => ({

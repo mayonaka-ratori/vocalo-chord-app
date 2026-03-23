@@ -3,7 +3,6 @@
 import { useStore } from '@/lib/store';
 import { instrumentPresets } from '@/data/instrument-presets';
 import { useCallback, useEffect } from 'react';
-import { InstrumentPresetId } from '@/types/audio';
 
 export function InstrumentSelector() {
   const { instrumentPresetId, setInstrumentPreset, isStructureMode } = useStore();
@@ -20,7 +19,11 @@ export function InstrumentSelector() {
   }, [instrumentPresetId]);
 
   const handleSelect = useCallback((id: string) => {
-    setInstrumentPreset(id as InstrumentPresetId);
+    // Runtime check: only call setter if id is a known valid preset ID
+    const preset = instrumentPresets.find(p => p.id === id);
+    if (preset) {
+      setInstrumentPreset(preset.id);
+    }
   }, [setInstrumentPreset]);
 
   return (

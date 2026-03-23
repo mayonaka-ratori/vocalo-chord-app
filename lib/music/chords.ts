@@ -112,3 +112,22 @@ export function getChordNotes(chordName: string): NoteName[] {
   
   return notes;
 }
+
+/**
+ * 度数表記（簡易版）をCメジャーキーにおけるコード名に変換する
+ * プリセットの読み込みや共通の音楽ロジックで使用
+ * @param degree 'I', 'IV', 'V7/II' などの度数文字列
+ * @returns 'C', 'F', 'A7' などのコード名
+ */
+export function degreeToChordInC(degree: string): string {
+  if (degree === 'V7/II') return 'A7';
+  if (degree === 'V7/VI') return 'E7';
+  
+  let c = degree;
+  // 主要なダイアトニックコードと借用コードの置換
+  c = c.replace('IIIm', 'Em').replace('VIm', 'Am').replace('IIm', 'Dm').replace('IVm', 'Fm');
+  c = c.replace('VII', 'B').replace('IV', 'F').replace('III', 'E').replace('VI', 'A').replace('II', 'D');
+  c = c.replace('I', 'C').replace('V', 'G');
+  
+  return c;
+}

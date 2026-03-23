@@ -144,7 +144,9 @@ confidence は "high" | "medium" | "low" のいずれか。`;
     try {
       aiData = await generateWithRetry();
     } catch (e) {
-      console.error("Gemini parse error, retrying...", e);
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Gemini parse error, retrying...", e);
+      }
       // 一度だけリトライ
       aiData = await generateWithRetry(`前回の回答をJSONのみに修正してください。JSONの前後に説明テキストは不要です。\n\n${prompt}`);
     } finally {
@@ -169,7 +171,9 @@ confidence は "high" | "medium" | "low" のいずれか。`;
     return NextResponse.json({ results, source: 'ai' });
 
   } catch (error: unknown) {
-    console.error("Gemini API error:", error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Gemini API error:", error);
+    }
     if (error instanceof Error && error.name === 'AbortError') {
       return NextResponse.json({ error: "検索がタイムアウトしました。もう一度お試しください。" }, { status: 504 });
     }

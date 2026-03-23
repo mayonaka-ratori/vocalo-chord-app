@@ -32,7 +32,6 @@ export function usePlayback() {
       // onPlaybackComplete
       () => {
         useStore.setState({ isPlaying: false });
-        alert('再生が終わりました'); // Or a toast
       }
     );
 

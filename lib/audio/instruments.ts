@@ -7,17 +7,6 @@ export interface BackingInstrumentNode {
 }
 
 /**
- * コード動作用ポリフォニックシンセ
- */
-export function createChordSynth(Tone: typeof ToneType) {
-  return new Tone.PolySynth(Tone.Synth, {
-    oscillator: { type: 'triangle' },
-    envelope: { attack: 0.05, decay: 0.1, sustain: 0.8, release: 1 },
-    volume: -10,
-  }).toDestination();
-}
-
-/**
  * パッド用シンセ（柔らかく背景を支える）
  */
 export function createPadSynth(Tone: typeof ToneType) {

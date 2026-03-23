@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { Section } from '@/types/music';
 
@@ -39,7 +40,14 @@ export function SectionActionMenu({ section, onClose, anchorRect }: SectionActio
   };
 
   // If we have an anchor, position dropdown there (Desktop), otherwise bottom sheet (Mobile)
-  const isDesktop = window.innerWidth >= 768;
+  const [isDesktop, setIsDesktop] = useState(false);
+  
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const content = (
     <div className="flex flex-col gap-1 w-full bg-slate-900 md:bg-slate-800 rounded-t-2xl md:rounded-xl shadow-xl overflow-hidden animate-slide-up md:animate-dropdown fade-in p-4 md:p-2 border-t border-slate-700 md:border md:border-slate-600">

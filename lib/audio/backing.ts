@@ -1,3 +1,4 @@
+import type * as ToneType from 'tone';
 import { BackingPattern } from '@/types/audio';
 import { getChordSynth } from './engine';
 import { getChordNotes } from '@/lib/music/chords';
@@ -22,12 +23,12 @@ export function playBackingStep(pattern: BackingPattern, stepIndex: number, time
   const rootPitch = `${notes[0]}${baseOctave}`;
 
   const playNotes = (pitches: string | string[], duration: string | number, time: number) => {
-    if (synth.name !== 'PolySynth' && Array.isArray(pitches)) {
-      // MonoSynth or PluckSynth cannot play arrays reliably in this context, fallback to the root note
-      synth.triggerAttackRelease(pitches[0], duration, time);
+    if (synth.name === 'PolySynth') {
+      (synth as ToneType.PolySynth).triggerAttackRelease(pitches, duration, time);
     } else {
-      // @ts-expect-error - triggerAttackRelease exists on all types but types are strict
-      synth.triggerAttackRelease(pitches, duration, time);
+      // MonoSynth or PluckSynth fallback to single note
+      const singlePitch = Array.isArray(pitches) ? pitches[0] : pitches;
+      (synth as ToneType.MonoSynth | ToneType.PluckSynth).triggerAttackRelease(singlePitch, duration, time);
     }
   };
 
