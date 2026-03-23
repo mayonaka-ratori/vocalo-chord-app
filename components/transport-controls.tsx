@@ -16,7 +16,8 @@ interface ToastState {
 export function TransportControls() {
   const { 
     isPlaying, tempo, randomize, currentBar, chords, drumPatternId, bassPatternId, 
-    key, isStructureMode, playbackMode, setPlaybackMode, sections, activeSectionIndex
+    key, isStructureMode, playbackMode, setPlaybackMode, sections, activeSectionIndex,
+    melodyPhrases, activeMelodyPatternId
   } = useStore();
   const { toggle, stop } = usePlayback();
 
@@ -27,16 +28,18 @@ export function TransportControls() {
     const timer = setTimeout(() => setToast(null), 2000);
     return () => clearTimeout(timer);
   }, [toast]);
-
   const handleMidiExport = useCallback(() => {
+    const activeMelody = melodyPhrases.find(p => p.patternId === activeMelodyPatternId);
+    const melodyNotes = activeMelody?.notes;
+
     downloadMidi(
       isStructureMode && playbackMode === 'song'
-        ? { mode: 'song', sections, tempo }
-        : { mode: 'section', chords, tempo, drumPatternId, bassPatternId },
+        ? { mode: 'song', sections, tempo, melodyNotes }
+        : { mode: 'section', chords, tempo, drumPatternId, bassPatternId, melodyNotes },
       key,
       setToast
     );
-  }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections]);
+  }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections, melodyPhrases, activeMelodyPatternId]);
 
   return (
     <div className="hidden md:flex flex-col items-center my-8">

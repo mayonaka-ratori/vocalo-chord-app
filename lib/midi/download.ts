@@ -28,10 +28,12 @@ export async function downloadMidi(
     const tempo = config.tempo;
     
     let filename = '';
+    const melodySuffix = config.melodyNotes && config.melodyNotes.length > 0 ? '-melody' : '';
+    
     if (config.mode === 'song') {
-      filename = `vocalo-song-${safeKey}-${tempo}bpm-${config.sections.length}sections.mid`;
+      filename = `vocalo-song-${safeKey}-${tempo}bpm-${config.sections.length}sections${melodySuffix}.mid`;
     } else {
-      filename = `vocalo-chord-${safeKey}-${tempo}bpm.mid`;
+      filename = `vocalo-chord-${safeKey}-${tempo}bpm${melodySuffix}.mid`;
     }
 
     // 4. ブラウザでのダウンロード実行

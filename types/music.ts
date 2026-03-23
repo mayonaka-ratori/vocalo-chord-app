@@ -181,3 +181,41 @@ export interface SearchChordsResponse {
   source: 'local' | 'ai';
   error?: string;
 }
+
+/**
+ * メロディガイド関連の型定義
+ */
+
+export type MelodyPatternId =
+  | 'chord-tone-ascend'    // コードトーン上昇
+  | 'chord-tone-descend'   // コードトーン下降
+  | 'arpeggio-up'          // アルペジオ上昇
+  | 'arpeggio-down'        // アルペジオ下降
+  | 'stepwise-ascend'      // 順次進行上昇（スケール）
+  | 'stepwise-descend';    // 順次進行下降（スケール）
+
+export interface MelodyNote {
+  midi: number;          // MIDI note number (60 = C4)
+  name: string;          // e.g., "C4", "Eb5"
+  duration: number;      // in beats (0.25 = 16th, 0.5 = 8th, 1 = quarter)
+  isChordTone: boolean;  // true if this note is part of the current chord
+  isBlueNote: boolean;   // true if this is a blue note (b3, b5, b7)
+}
+
+export interface MelodyPhrase {
+  id: string;
+  patternId: MelodyPatternId;
+  name: string;           // Japanese display name
+  icon: string;
+  description: string;    // e.g., "コードの構成音を下から順に"
+  notes: MelodyNote[];    // generated notes for current chord progression
+  totalBeats: number;
+}
+
+export interface ChordToneInfo {
+  chord: string;          // e.g., "Am7"
+  tones: number[];        // MIDI numbers: [57, 60, 64, 67]
+  toneNames: string[];    // ["A3", "C4", "E4", "G4"]
+  scaleTones: number[];   // all scale notes in this octave range
+  blueNotes: number[];    // blue notes: [b3, b5, b7 relative to chord root]
+}

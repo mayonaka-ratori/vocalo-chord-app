@@ -19,7 +19,7 @@ export const FloatingPlayer = () => {
   const {
     isPlaying, tempo, selectedPresetId, randomize, currentBar, chords,
     key, drumPatternId, bassPatternId, isStructureMode, activeSectionIndex, sections,
-    playbackMode, setPlaybackMode
+    playbackMode, setPlaybackMode, melodyPhrases, activeMelodyPatternId
   } = useStore();
   const { toggle, stop, globalBar } = usePlayback();
 
@@ -40,14 +40,17 @@ export const FloatingPlayer = () => {
   }, [toast]);
 
   const handleMidiExport = useCallback(() => {
+    const activeMelody = melodyPhrases.find(p => p.patternId === activeMelodyPatternId);
+    const melodyNotes = activeMelody?.notes;
+
     downloadMidi(
       isStructureMode && playbackMode === 'song'
-        ? { mode: 'song', sections, tempo }
-        : { mode: 'section', chords, tempo, drumPatternId, bassPatternId },
+        ? { mode: 'song', sections, tempo, melodyNotes }
+        : { mode: 'section', chords, tempo, drumPatternId, bassPatternId, melodyNotes },
       key,
       setToast
     );
-  }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections]);
+  }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections, melodyPhrases, activeMelodyPatternId]);
 
   const handleModeToggle = () => {
     if (isStructureMode) {

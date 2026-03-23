@@ -29,10 +29,12 @@ export type ExportConfig = {
   tempo: number;
   drumPatternId: string;
   bassPatternId: string;
+  melodyNotes?: { midi: number; duration: number }[];
 } | {
   mode: 'song';
   sections: Section[];
   tempo: number;
+  melodyNotes?: { midi: number; duration: number }[];
 };
 
 // ---------------------------------------------------------------------------
@@ -218,6 +220,36 @@ function buildDrumTrack(
   return track;
 }
 
+function buildMelodyTrack(
+  notes: { midi: number; duration: number }[],
+  tempo: number,
+  ticksPer16th: number
+): InstanceType<typeof MidiWriter.Track> {
+  const track = new MidiWriter.Track();
+  track.setTempo(tempo);
+  track.addTrackName('Melody');
+  
+  // Instrument: Flute (73)
+  track.addEvent(new MidiWriter.ProgramChangeEvent({ instrument: 73 }));
+
+  let currentTick = 0;
+  notes.forEach(note => {
+    const durationTicks = Math.round(note.duration * 4 * ticksPer16th); 
+    
+    track.addEvent(
+      new MidiWriter.NoteEvent({
+        pitch: [note.midi],
+        duration: 'T' + durationTicks,
+        velocity: 100,
+        startTick: currentTick,
+      })
+    );
+    currentTick += durationTicks;
+  });
+
+  return track;
+}
+
 // ---------------------------------------------------------------------------
 // Main export
 // ---------------------------------------------------------------------------
@@ -253,7 +285,14 @@ export function exportToMidi(config: ExportConfig): Blob {
   const bassTrack = buildBassTrack(allChords, allBassPatternIds, tempo, ticksPerBar, ticksPer16th);
   const drumTrack = buildDrumTrack(allDrumPatternIds, tempo, ticksPerBar, ticksPer16th);
 
-  const writer = new MidiWriter.Writer([chordTrack, bassTrack, drumTrack]);
+  const tracks = [chordTrack, bassTrack, drumTrack];
+  
+  if (config.melodyNotes && config.melodyNotes.length > 0) {
+    const melodyTrack = buildMelodyTrack(config.melodyNotes, tempo, ticksPer16th);
+    tracks.push(melodyTrack);
+  }
+
+  const writer = new MidiWriter.Writer(tracks);
   const uint8 = writer.buildFile();
   
   return new Blob([uint8], { type: 'audio/midi' });

@@ -70,7 +70,8 @@ export default function ChordTimeline() {
   const { 
     chords, currentBar, openChordEditor,
     isStructureMode, activeSectionIndex, sections, key,
-    previewChords, previewChangedIndices, clearPreview, generateVariationSuggestions
+    previewChords, previewChangedIndices, clearPreview, generateVariationSuggestions,
+    showMelodyGuide, toggleMelodyGuide, chordToneInfos, includeBlueNotes
   } = useStore();
 
   const activeSection = isStructureMode ? sections[activeSectionIndex] : null;
@@ -168,14 +169,32 @@ export default function ChordTimeline() {
                   {badgeLabel}
                 </span>
               )}
+
+              {/* メロディガイド用ドット表示 */}
+              {showMelodyGuide && chordToneInfos[i] && (
+                <div className="absolute bottom-1.5 flex gap-1 px-1 overflow-hidden max-w-full justify-center">
+                  {chordToneInfos[i].tones.map((_, idx) => (
+                    <div 
+                      key={`tone-${idx}`} 
+                      className="w-1.5 h-1.5 rounded-full bg-pink-400 shadow-[0_0_4px_rgba(244,114,182,0.6)]" 
+                      title={chordToneInfos[i].toneNames[idx]}
+                    />
+                  ))}
+                  {includeBlueNotes && chordToneInfos[i].blueNotes.map((_, idx) => (
+                    <div 
+                      key={`blue-${idx}`} 
+                      className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_4px_rgba(96,165,250,0.6)] border border-blue-200/50" 
+                    />
+                  ))}
+                </div>
+              )}
             </button>
           );
         })}
       </div>
-
-      {/* アレンジ提案トリガーボタン */}
+      {/* 操作ボタンエリア */}
       {chords.length > 0 && chords.some(c => c !== 'N.C.') && (
-        <div className="flex mb-4">
+        <div className="flex flex-col md:flex-row gap-3 mb-4">
           <button
             onClick={() => isPreviewing ? clearPreview() : generateVariationSuggestions()}
             className="w-full md:w-auto px-5 py-2.5 rounded-full border border-pink-500/50 bg-slate-900/60 shadow-[0_0_10px_rgba(236,72,153,0.15)] hover:bg-slate-800 hover:border-pink-500 transition-all active:scale-95 group flex items-center justify-center gap-2"
@@ -193,6 +212,20 @@ export default function ChordTimeline() {
                 </span>
               </>
             )}
+          </button>
+
+          <button
+            onClick={() => toggleMelodyGuide()}
+            className={`w-full md:w-auto px-5 py-2.5 rounded-full border transition-all active:scale-95 flex items-center justify-center gap-2 ${
+              showMelodyGuide 
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 shadow-[0_0_15px_rgba(37,99,235,0.4)] text-white' 
+                : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:bg-slate-800 hover:border-slate-500'
+            }`}
+          >
+            <span className={showMelodyGuide ? 'animate-bounce' : ''}>🎵</span>
+            <span className="text-sm font-bold">
+              {isStructureMode && activeSection ? `${activeSection.label} のメロディガイド` : 'メロディガイド'}
+            </span>
           </button>
         </div>
       )}

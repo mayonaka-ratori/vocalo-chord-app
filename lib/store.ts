@@ -6,9 +6,10 @@ import { transposeProgression } from './music/transpose';
 import { getNoteIndex, degreeToChordInC } from './music/chords';
 import { InstrumentPresetId } from '@/types/audio';
 import { instrumentPresets } from '@/data/instrument-presets';
-import { Section, SectionType } from '@/types/music';
+import { Section, SectionType, MelodyPhrase, MelodyPatternId, ChordToneInfo } from '@/types/music';
 import { STRUCTURE_TEMPLATES } from '@/data/structure-templates';
 import { createEmptySection, duplicateSectionData } from './music/section-utils';
+import { generateMelodyPhrases, getChordTones } from './music/melody';
 
 export interface AppState {
   // Key & Tempo
@@ -51,6 +52,15 @@ export interface AppState {
   previewChords: string[] | null;
   previewChangedIndices: number[] | null;
 
+  // Melody guide state
+  melodyPhrases: MelodyPhrase[];
+  activeMelodyPatternId: MelodyPatternId | null;
+  showMelodyGuide: boolean;
+  includeBlueNotes: boolean;
+  chordToneInfos: ChordToneInfo[];
+  isPreviewingMelody: boolean;
+  previewingPatternId: MelodyPatternId | null;
+
   // Actions
   setKey: (key: string) => void;
   setTempo: (tempo: number) => void;
@@ -89,6 +99,14 @@ export interface AppState {
   updateSectionChords: (sectionId: string, chords: string[]) => void;
   updateSectionPattern: (sectionId: string, field: 'drumPatternId' | 'bassPatternId' | 'backingPatternId' | 'instrumentPresetId', value: string) => void;
   updateSectionBars: (sectionId: string, bars: number) => void;
+
+  // Melody guide actions
+  toggleMelodyGuide: () => void;
+  toggleBlueNotes: () => void;
+  setActiveMelodyPattern: (id: MelodyPatternId | null) => void;
+  refreshMelodyData: () => void; // regenerates chordToneInfos + melodyPhrases from current chords/key
+  startMelodyPreview: (patternId: MelodyPatternId) => void;
+  stopMelodyPreview: () => void;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -131,7 +149,16 @@ export const useStore = create<AppState>((set, get) => ({
   showVariations: false,
   previewChords: null,
   previewChangedIndices: null,
-  
+
+  // Melody guide state
+  melodyPhrases: [],
+  activeMelodyPatternId: null,
+  showMelodyGuide: false,
+  includeBlueNotes: false,
+  chordToneInfos: [],
+  isPreviewingMelody: false,
+  previewingPatternId: null,
+
   // Actions
   setKey: (newKey: string) => {
     const { key: oldKey, chords } = get();
@@ -143,6 +170,7 @@ export const useStore = create<AppState>((set, get) => ({
     const semitones = getNoteIndex(rootNew) - getNoteIndex(rootOld);
     const transposedChords = transposeProgression(chords, semitones);
     set({ key: newKey, chords: transposedChords });
+    get().refreshMelodyData();
   },
 
   setTempo: (tempo: number) => set({ tempo }),
@@ -162,6 +190,7 @@ export const useStore = create<AppState>((set, get) => ({
       selectedPresetId: presetId, 
       chords: actualChords 
     });
+    get().refreshMelodyData();
   },
 
   setChordAtBar: (barIndex: number, chord: string) => {
@@ -183,6 +212,7 @@ export const useStore = create<AppState>((set, get) => ({
       }
       
       set(updates);
+      get().refreshMelodyData();
     }
   },
 
@@ -293,6 +323,7 @@ export const useStore = create<AppState>((set, get) => ({
         previewChords: null,
         previewChangedIndices: null,
       });
+      get().refreshMelodyData();
     } else {
       set({
         chords: newChords,
@@ -301,6 +332,7 @@ export const useStore = create<AppState>((set, get) => ({
         previewChords: null,
         previewChangedIndices: null,
       });
+      get().refreshMelodyData();
     }
   },
 
@@ -528,6 +560,52 @@ export const useStore = create<AppState>((set, get) => ({
     
     if (idx === state.activeSectionIndex) {
       set({ chords: [...newChords] });
+      get().refreshMelodyData();
     }
+  },
+
+  // --------------------------------
+  // Melody guide actions
+  // --------------------------------
+
+  toggleMelodyGuide: () => set(state => ({ showMelodyGuide: !state.showMelodyGuide })),
+  
+  toggleBlueNotes: () => {
+    set(state => ({ includeBlueNotes: !state.includeBlueNotes }));
+    get().refreshMelodyData();
+  },
+
+  setActiveMelodyPattern: (id: MelodyPatternId | null) => set({ activeMelodyPatternId: id }),
+
+  refreshMelodyData: () => {
+    const { chords, key, includeBlueNotes } = get();
+    if (!chords || chords.length === 0) return;
+
+    // 現在のコードに対する構成音情報を取得
+    const chordToneInfos = chords.map(chord => getChordTones(chord));
+    
+    // メロディフレーズを生成
+    const melodyPhrases = generateMelodyPhrases(chords, key, includeBlueNotes);
+
+    set({ chordToneInfos, melodyPhrases });
+  },
+
+  startMelodyPreview: async (patternId: MelodyPatternId) => {
+    const { melodyPhrases, tempo } = get();
+    const phrase = melodyPhrases.find(p => p.patternId === patternId);
+    if (!phrase) return;
+
+    set({ isPreviewingMelody: true, previewingPatternId: patternId });
+
+    const { previewMelody } = await import('./audio/engine');
+    await previewMelody(phrase.notes, tempo, () => {
+      set({ isPreviewingMelody: false, previewingPatternId: null });
+    });
+  },
+
+  stopMelodyPreview: async () => {
+    const { stopMelodyPreview } = await import('./audio/engine');
+    stopMelodyPreview();
+    set({ isPreviewingMelody: false, previewingPatternId: null });
   }
 }));

@@ -20,8 +20,13 @@ const VariationPanel = dynamic(
   { ssr: false }
 );
 
+const MelodyGuidePanel = dynamic(
+  () => import("@/components/melody-guide-panel").then(mod => mod.MelodyGuidePanel),
+  { ssr: false }
+);
+
 export function MainAppContent() {
-  const { isStructureMode, disableStructureMode } = useStore();
+  const { isStructureMode, disableStructureMode, showMelodyGuide } = useStore();
   const [showPicker, setShowPicker] = useState(false);
 
   const handleDisableStructureMode = () => {
@@ -50,6 +55,7 @@ export function MainAppContent() {
           <div className="lg:w-7/12">
             <ChordTimeline />
             <VariationPanel />
+            {showMelodyGuide && <MelodyGuidePanel />}
           </div>
         </div>
 
@@ -93,6 +99,7 @@ export function MainAppContent() {
       <InstrumentSelector />
       <ChordTimeline />
       <VariationPanel />
+      {showMelodyGuide && <MelodyGuidePanel />}
       <RhythmSelector />
       <TransportControls />
 

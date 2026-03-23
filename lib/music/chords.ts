@@ -114,20 +114,61 @@ export function getChordNotes(chordName: string): NoteName[] {
 }
 
 /**
- * 度数表記（簡易版）をCメジャーキーにおけるコード名に変換する
- * プリセットの読み込みや共通の音楽ロジックで使用
- * @param degree 'I', 'IV', 'V7/II' などの度数文字列
- * @returns 'C', 'F', 'A7' などのコード名
+ * Degree root → note name in key of C major
+ * Order: longest prefix first (for unambiguous parsing)
+ */
+const DEGREE_ROOT_MAP: [string, string][] = [
+  ['bVII', 'Bb'],
+  ['bVI',  'Ab'],
+  ['bIII', 'Eb'],
+  ['bII',  'Db'],
+  ['#IV',  'F#'],
+  ['#V',   'G#'],
+  ['VII',  'B'],
+  ['VI',   'A'],
+  ['IV',   'F'],
+  ['V',    'G'],
+  ['III',  'E'],
+  ['II',   'D'],
+  ['I',    'C'],
+];
+
+/**
+ * 度数表記をCメジャーキーにおけるコード名に変換する
+ * @param degree 'I', 'IV', 'VIm7' などの度数文字列
+ * @returns 'C', 'F', 'Am7' などのコード名
  */
 export function degreeToChordInC(degree: string): string {
-  if (degree === 'V7/II') return 'A7';
-  if (degree === 'V7/VI') return 'E7';
+  // 空白削除
+  const trimmed = degree.trim();
+  if (!trimmed) return trimmed;
+
+  // 特殊なケース (V7/II など) も含め、DEGREE_ROOT_MAP でマッチング
+  // (現在は V7/II などのスラッシュ付きはプリセット側で個別対応しているが、
+  //  この関数を通すことで基本度は置換される)
   
-  let c = degree;
-  // 主要なダイアトニックコードと借用コードの置換
-  c = c.replace('IIIm', 'Em').replace('VIm', 'Am').replace('IIm', 'Dm').replace('IVm', 'Fm');
-  c = c.replace('VII', 'B').replace('IV', 'F').replace('III', 'E').replace('VI', 'A').replace('II', 'D');
-  c = c.replace('I', 'C').replace('V', 'G');
-  
-  return c;
+  // マッピングテーブルを使用して正規表現に頼らずパース (最長一致優先)
+  for (const [degreeRoot, noteName] of DEGREE_ROOT_MAP) {
+    if (trimmed.startsWith(degreeRoot)) {
+      // 度数部分をノート名に置換、残りの文字列（クオリティ）を結合
+      const quality = trimmed.slice(degreeRoot.length);
+      return noteName + quality;
+    }
+  }
+
+  // マッチしない場合はそのまま返す（すでに "Dm7" などのコード名であるか、N.C. など）
+  return trimmed;
 }
+
+// テストケース (検証用)
+// degreeToChordInC('I')      → 'C'
+// degreeToChordInC('IVm')    → 'Fm'
+// degreeToChordInC('VIm7')   → 'Am7'
+// degreeToChordInC('IIIm')   → 'Em'
+// degreeToChordInC('bVII')   → 'Bb'
+// degreeToChordInC('V7')     → 'G7'
+// degreeToChordInC('IVM7(9)') → 'FM7(9)'
+// degreeToChordInC('#IVdim') → 'F#dim'
+// degreeToChordInC('N.C.')   → 'N.C.'
+// degreeToChordInC('Dm7')    → 'Dm7'
+// degreeToChordInC('')       → ''
