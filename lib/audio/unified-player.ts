@@ -1,8 +1,7 @@
-import { getSmplrProvider } from './smplr-provider';
+import type * as ToneType from 'tone';
 import { getChordSynth, getBassSynth, getTone } from './engine';
 import { useStore } from '../store';
 import { getVolumeProfile } from './volume-config';
-import * as Tone from 'tone';
 
 /**
  * 統合されたノートイベント情報
@@ -17,9 +16,10 @@ export interface UnifiedNoteEvent {
 /**
  * 楽器の選択状態に応じて、smplr または Tone.js のシンセで和音を再生する
  */
-export function playUnifiedChord(event: UnifiedNoteEvent): void {
+export async function playUnifiedChord(event: UnifiedNoteEvent): Promise<void> {
   const store = useStore.getState();
   const instrumentId = store.activeInstrumentId;
+  const { getSmplrProvider } = await import('./smplr-provider');
   const provider = getSmplrProvider();
   const profile = getVolumeProfile(instrumentId);
 
@@ -27,12 +27,15 @@ export function playUnifiedChord(event: UnifiedNoteEvent): void {
   if (instrumentId === 'synth-fallback' || !provider.isLoaded(instrumentId)) {
     const chordSynth = getChordSynth();
     if (chordSynth) {
+      const Tone = await getTone();
+      if (!Tone) return;
+
       const velocityFactor = event.velocity ? (event.velocity / 127) : 1;
       const gain = velocityFactor * Tone.dbToGain(profile.chord);
 
       if ('triggerAttackRelease' in chordSynth) {
         if (chordSynth.name === 'PolySynth') {
-          (chordSynth as Tone.PolySynth).triggerAttackRelease(
+          (chordSynth as ToneType.PolySynth).triggerAttackRelease(
             event.notes,
             event.duration,
             event.time,
@@ -40,7 +43,7 @@ export function playUnifiedChord(event: UnifiedNoteEvent): void {
           );
         } else {
           // MonoSynth などの場合は単音（最初の音）のみ
-          (chordSynth as Tone.MonoSynth).triggerAttackRelease(
+          (chordSynth as ToneType.MonoSynth).triggerAttackRelease(
             event.notes[0],
             event.duration,
             event.time,
@@ -63,15 +66,18 @@ export function playUnifiedChord(event: UnifiedNoteEvent): void {
 /**
  * 楽器の選択状態に応じて、smplr または Tone.js のシンセでベース音を再生する
  */
-export function playUnifiedBass(note: string, duration: number, time: number, velocity: number = 80): void {
+export async function playUnifiedBass(note: string, duration: number, time: number, velocity: number = 80): Promise<void> {
   const store = useStore.getState();
   const instrumentId = store.activeInstrumentId;
+  const { getSmplrProvider } = await import('./smplr-provider');
   const provider = getSmplrProvider();
   const profile = getVolumeProfile(instrumentId);
 
   if (instrumentId === 'synth-fallback' || !provider.isLoaded(instrumentId)) {
     const bassSynth = getBassSynth();
     if (bassSynth) {
+      const Tone = await getTone();
+      if (!Tone) return;
       const gain = Tone.dbToGain(profile.bass);
       bassSynth.triggerAttackRelease(note, duration, time, (velocity / 127) * gain);
     }
@@ -95,6 +101,7 @@ export async function playUnifiedMelody(
 ): Promise<void> {
   const store = useStore.getState();
   const instrumentId = store.activeInstrumentId;
+  const { getSmplrProvider } = await import('./smplr-provider');
   const provider = getSmplrProvider();
   const profile = getVolumeProfile(instrumentId);
 
@@ -102,6 +109,8 @@ export async function playUnifiedMelody(
     const { getMelodySynth } = await import('./engine');
     const melodySynth = getMelodySynth();
     if (melodySynth) {
+      const Tone = await getTone();
+      if (!Tone) return;
       const noteName = typeof note === 'number' ? Tone.Frequency(note, 'midi').toNote() : note;
       const gain = Tone.dbToGain(profile.melody);
       melodySynth.triggerAttackRelease(
@@ -125,18 +134,18 @@ export async function playUnifiedMelody(
 /**
  * メロディの再生を停止する
  */
-export function stopUnifiedMelody(): void {
+export async function stopUnifiedMelody(): Promise<void> {
   const store = useStore.getState();
   const instrumentId = store.activeInstrumentId;
   
   // Tone.js のメロディシンセを停止 (engine.ts 側で管理)
-  import('./engine').then(m => {
-    const synth = m.getMelodySynth();
-    safeToneStop(synth);
-  });
+  const engine = await import('./engine');
+  const synth = engine.getMelodySynth();
+  safeToneStop(synth);
 
   // smplr を停止
   if (instrumentId !== 'synth-fallback') {
+    const { getSmplrProvider } = await import('./smplr-provider');
     getSmplrProvider().stopAll(instrumentId);
   }
 }
@@ -161,12 +170,13 @@ function safeToneStop(instr: unknown): void {
  */
 export async function stopAllUnified(): Promise<void> {
   // smplr
+  const { getSmplrProvider } = await import('./smplr-provider');
   getSmplrProvider().stopAll();
   
   // Tone.js (Transportを止めるだけでなく、発音中の音を消す)
   const ToneModule = await getTone();
   if (ToneModule) {
-    safeToneStop(getChordSynth() as Tone.PolySynth);
+    safeToneStop(getChordSynth());
     safeToneStop(getBassSynth());
     
     const { getMelodySynth } = await import('./engine');

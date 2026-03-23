@@ -33,4 +33,5 @@ const config: Config = {
   },
   plugins: [],
 }
-export default config
+// Tailwind v4 config loader 由来の warning を抑えるため CommonJS 形式で export
+module.exports = config

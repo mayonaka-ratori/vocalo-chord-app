@@ -13,9 +13,20 @@ import { TransportControls } from "@/components/transport-controls";
 import { SectionNav } from "@/components/section-nav";
 import { SectionOverview } from "@/components/section-overview";
 import { StructureTemplatePicker } from "@/components/structure-template-picker";
+import { CategoryTabs } from "@/components/category-tabs";
 
 const VariationPanel = dynamic(
   () => import("@/components/variation-panel").then(mod => mod.VariationPanel),
+  { ssr: false }
+);
+
+const InstrumentLoadProgress = dynamic(
+  () => import("@/components/instrument-load-progress").then(mod => mod.InstrumentLoadProgress),
+  { ssr: false }
+);
+
+const InstrumentSelector = dynamic(
+  () => import("@/components/instrument-selector").then(mod => mod.InstrumentSelector),
   { ssr: false }
 );
 
@@ -42,6 +53,11 @@ export function MainAppContent() {
           <div className="md:w-64"><KeyTempoSelector /></div>
         </div>
 
+        <InstrumentSelector />
+        <InstrumentLoadProgress />
+        <TransportControls />
+        <CategoryTabs />
+
         <SectionOverview />
         <SectionNav />
 
@@ -60,8 +76,6 @@ export function MainAppContent() {
 
         <RhythmSelector />
 
-        <TransportControls />
-
         <div className="flex justify-center pt-8 border-t border-voca-border-subtle">
           <button 
             onClick={handleDisableStructureMode}
@@ -79,6 +93,11 @@ export function MainAppContent() {
     <div className="space-y-5">
       <SongSearchBar />
       <KeyTempoSelector />
+
+      <InstrumentSelector />
+      <InstrumentLoadProgress />
+      <TransportControls />
+      <CategoryTabs />
       
       <MoodTagFilter />
       <PresetGrid />
@@ -96,7 +115,6 @@ export function MainAppContent() {
       <VariationPanel />
       {showMelodyGuide && <MelodyGuidePanel />}
       <RhythmSelector />
-      <TransportControls />
 
       {showPicker && (
         <StructureTemplatePicker onClose={() => setShowPicker(false)} />

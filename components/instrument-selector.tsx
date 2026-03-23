@@ -45,7 +45,7 @@ export function InstrumentSelector() {
       </div>
 
       {/* Grid Container */}
-      <div className={`${!isExpanded ? 'hidden md:grid' : 'grid'} grid-cols-2 lg:grid-cols-6 gap-3`}>
+        <div className={`${!isExpanded ? 'hidden md:grid' : 'grid'} grid-cols-2 md:grid-cols-6 gap-3`}>
         {INSTRUMENT_PRESETS.map((preset) => {
           const isActive = preset.id === activeInstrumentId;
           const isLoadingThis = isInstrumentLoading && activeInstrumentId === preset.id;

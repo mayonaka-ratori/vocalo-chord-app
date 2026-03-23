@@ -7,6 +7,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useStore } from '@/lib/store';
 import { usePlayback } from '@/hooks/use-playback';
 import { downloadMidi } from '@/lib/midi/download';
+import { INSTRUMENT_PRESETS } from '@/types/music';
 
 interface ToastState {
   message: string;
@@ -17,7 +18,7 @@ export function TransportControls() {
   const { 
     isPlaying, tempo, randomize, currentBar, chords, drumPatternId, bassPatternId, 
     key, isStructureMode, playbackMode, setPlaybackMode, sections, activeSectionIndex,
-    melodyPhrases, activeMelodyPatternId
+    melodyPhrases, activeMelodyPatternId, activeInstrumentId
   } = useStore();
   const { toggle, stop } = usePlayback();
 
@@ -40,6 +41,8 @@ export function TransportControls() {
       setToast
     );
   }, [chords, tempo, key, drumPatternId, bassPatternId, isStructureMode, playbackMode, sections, melodyPhrases, activeMelodyPatternId]);
+
+  const activeInstrument = INSTRUMENT_PRESETS.find(p => p.id === activeInstrumentId) ?? null;
 
   return (
     <div className="hidden md:flex flex-col items-center my-8">
@@ -72,6 +75,12 @@ export function TransportControls() {
               >
                 ▶️ 通し再生
               </button>
+            </div>
+          )}
+
+          {activeInstrument && (
+            <div className="text-[11px] text-voca-text-muted font-black mb-3">
+              {activeInstrument.labelJa}
             </div>
           )}
 

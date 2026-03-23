@@ -13,6 +13,7 @@ import { InstrumentPresetId } from '@/types/audio';
 // Dynamic import strategy for SSR safety
 let ToneModule: typeof ToneType | null = null;
 let sharedContext: AudioContext | null = null;
+let toneStarted = false;
 
 // Instrument instances
 let backingNode: BackingInstrumentNode | null = null;
@@ -36,17 +37,50 @@ export async function getTone() {
 }
 
 /**
- * Get shared AudioContext (compatible with Tone.js and smplr)
+ * Ensure AudioContext is running and Tone is started.
+ * MUST be called by user interaction.
  */
-export async function getAudioContext(): Promise<AudioContext> {
+export async function ensureAudioReady(): Promise<AudioContext> {
   if (typeof window === 'undefined') {
     throw new Error('AudioContext is not available in SSR');
   }
-  
+
+  const Tone = await getTone();
+
+  if (!toneStarted) {
+    await Tone.start();
+    toneStarted = true;
+  }
+
   if (!sharedContext) {
-    const Tone = await getTone();
     // tone v14+ uses Tone.context.rawContext to expose the underlying AudioContext
     sharedContext = Tone.getContext().rawContext as unknown as AudioContext;
+  }
+
+  if (sharedContext.state === 'suspended') {
+    await sharedContext.resume();
+  }
+
+  return sharedContext;
+}
+
+/**
+ * Get shared AudioContext (compatible with Tone.js and smplr)
+ * Note: If called before ensureAudioReady, it might be suspended.
+ */
+export function getAudioContext(): AudioContext {
+  if (typeof window === 'undefined') {
+     throw new Error('AudioContext is not available in SSR');
+  }
+
+  if (!sharedContext) {
+    // Fallback: if Tone is loaded, we can get the context.
+    // If not, this is likely called too early.
+    if (ToneModule) {
+      sharedContext = ToneModule.getContext().rawContext as unknown as AudioContext;
+    } else {
+      throw new Error('AudioContext not initialized. Call ensureAudioReady() first in a user gesture.');
+    }
   }
   return sharedContext;
 }
@@ -56,8 +90,8 @@ export async function getAudioContext(): Promise<AudioContext> {
  * MUST be called by user interaction
  */
 export async function initAudio(initialPresetId: InstrumentPresetId = 'release-cut-piano') {
+  await ensureAudioReady();
   const Tone = await getTone();
-  await Tone.start();
   
   if (!backingNode) backingNode = createBackingInstrument(Tone, initialPresetId);
   if (!padSynth) padSynth = createPadSynth(Tone);
@@ -66,23 +100,6 @@ export async function initAudio(initialPresetId: InstrumentPresetId = 'release-c
   if (!snareDrum) snareDrum = createSnare(Tone);
   if (!hihatDrum) hihatDrum = createHihat(Tone);
   if (!melodySynth) melodySynth = await createMelodySynth(Tone);
-}
-
-/**
- * Ensure AudioContext is running (needed for mobile/safari)
- */
-export async function ensureAudioReady(): Promise<void> {
-  if (typeof window === 'undefined') return;
-  
-  const ctx = await getAudioContext();
-  if (ctx.state === 'suspended') {
-    await ctx.resume();
-  }
-  
-  const Tone = await getTone();
-  if (Tone.getContext().state !== 'running') {
-    await Tone.start();
-  }
 }
 
 /**
