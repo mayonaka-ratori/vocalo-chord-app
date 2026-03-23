@@ -125,10 +125,10 @@ export function MelodyGuidePanel() {
               const rhythmIcons = phrase.patternId.includes('arpeggio') ? '♪ ♪ ♪ ♪' : '♩ ♩ ♩ ♩';
               
               return (
-                <button
+                <div
                   key={phrase.id}
                   onClick={() => setActiveMelodyPattern(phrase.patternId)}
-                  className={`text-left border-2 transition-all rounded-3xl p-6 group relative overflow-hidden active:scale-[0.98] ${
+                  className={`text-left border-2 transition-all rounded-3xl p-6 group relative overflow-hidden cursor-pointer ${
                     isSelected 
                       ? 'bg-voca-bg-card border-voca-accent-magenta shadow-glow-magenta/20' 
                       : 'bg-voca-bg-elevated/40 border-voca-border-subtle hover:border-voca-text-sub hover:bg-voca-bg-elevated/60'
@@ -187,7 +187,7 @@ export function MelodyGuidePanel() {
                       </button>
                     </div>
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>

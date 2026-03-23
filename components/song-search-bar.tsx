@@ -218,7 +218,7 @@ export const SongSearchBar: React.FC = () => {
                     {res.source === 'local' ? (
                       <span className="text-[9px] px-1.5 py-0.5 bg-voca-accent-cyan/10 text-voca-accent-cyan rounded border border-voca-accent-cyan/20">DB</span>
                     ) : (
-                      <span className="text-[9px] px-1.5 py-0.5 bg-voca-accent-magenta/10 text-voca-accent-magenta rounded border border-voca-accent-magenta/20">AI</span>
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded border ${getConfidenceColor(res.confidence || 'medium')}`}>AI</span>
                     )}
                   </div>
                   <p className="text-xs text-voca-text-sub truncate">

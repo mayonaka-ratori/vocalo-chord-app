@@ -58,9 +58,9 @@ export default function KeyTempoSelector() {
         
         {/* キー選択 */}
         <div>
-          <label className="block text-sm font-bold text-slate-300 mb-3">
+          <label className="block text-sm font-bold text-voca-text mb-3">
             キー設定
-            <span className="ml-2 text-xs font-normal text-slate-500">（曲の調）</span>
+            <span className="ml-2 text-xs font-normal text-voca-text-muted">（曲の調）</span>
           </label>
           <div className="flex flex-wrap gap-2">
             {KEY_OPTIONS.map((opt) => {
@@ -85,9 +85,9 @@ export default function KeyTempoSelector() {
         {/* テンポ選択 */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label className="text-sm font-bold text-slate-300">
+            <label className="text-sm font-bold text-voca-text">
               テンポ（速さ）
-              <span className="ml-2 text-xs font-normal text-slate-500">BPM = 1分間の拍数</span>
+              <span className="ml-2 text-xs font-normal text-voca-text-muted">BPM = 1分間の拍数</span>
             </label>
             {/* BPM 数値表示 / インライン編集 */}
             {isEditingBpm ? (
@@ -100,7 +100,7 @@ export default function KeyTempoSelector() {
                 onBlur={commitBpm}
                 onKeyDown={handleBpmKeyDown}
                 autoFocus
-                className="w-20 text-right text-xl font-black bg-slate-800 border border-purple-500 rounded-lg px-2 py-0.5 text-purple-300 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                className="w-20 text-right text-xl font-black bg-voca-bg-card border border-voca-accent-purple rounded-lg px-2 py-0.5 text-voca-accent-magenta focus:outline-none focus:ring-1 focus:ring-voca-accent-purple"
               />
             ) : (
               <button
@@ -109,14 +109,14 @@ export default function KeyTempoSelector() {
                   setIsEditingBpm(true);
                 }}
                 title="クリックして数値を直接入力"
-                className="text-xl font-black text-purple-400 hover:text-purple-300 hover:underline underline-offset-2 transition-colors cursor-text"
+                className="text-xl font-black text-voca-accent-purple hover:text-voca-accent-magenta hover:underline underline-offset-2 transition-colors cursor-text"
               >
                 {tempo}
               </button>
             )}
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-slate-500 whitespace-nowrap">🐢 ゆっくり</span>
+            <span className="text-xs text-voca-text-muted whitespace-nowrap">🐢 ゆっくり</span>
             <input
               type="range"
               min={BPM_MIN}
@@ -125,7 +125,7 @@ export default function KeyTempoSelector() {
               onChange={handleSliderChange}
               className="w-full accent-voca-accent-cyan h-2 bg-voca-bg-elevated rounded-lg appearance-none cursor-pointer"
             />
-            <span className="text-xs text-slate-500 whitespace-nowrap">🐇 速め</span>
+            <span className="text-xs text-voca-text-muted whitespace-nowrap">🐇 速め</span>
           </div>
         </div>
 

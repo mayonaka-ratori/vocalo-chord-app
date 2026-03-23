@@ -27,12 +27,12 @@ export default function PresetGrid() {
   return (
     <div className="mb-8">
       <div className="flex justify-between items-end mb-4">
-        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-100">
-          <span className="text-pink-400">✧</span>
+        <h2 className="text-xl font-bold flex items-center gap-2 text-voca-text">
+          <span className="text-voca-accent-magenta">✧</span>
           コードプリセット
         </h2>
         {isStructureMode && activeSection && (
-          <div className="text-xs text-slate-400 pb-1">
+          <div className="text-xs text-voca-text-sub pb-1">
             {activeSection.label} に適用
           </div>
         )}
@@ -52,29 +52,29 @@ export default function PresetGrid() {
               onClick={() => applyPreset(preset.id)}
               className={`text-left p-4 rounded-xl border transition-all relative overflow-hidden group
                 ${isActive 
-                  ? 'bg-green-500/10 border-green-500 shadow-[0_0_12px_rgba(34,197,94,0.25)]' 
-                  : 'bg-slate-900 border-slate-800 hover:bg-slate-800 hover:border-slate-600 active:scale-[0.98]'
+                  ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan shadow-glow-cyan' 
+                  : 'bg-voca-bg border-voca-border-subtle hover:bg-voca-bg-card hover:border-voca-text-muted active:scale-[0.98]'
                 }`}
             >
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-slate-100 text-lg">{preset.name}</h3>
-                <span className="text-xs font-mono text-slate-500 bg-slate-950 px-2 py-1 rounded">
+                <h3 className="font-bold text-voca-text text-lg">{preset.name}</h3>
+                <span className="text-xs font-mono text-voca-text-muted bg-voca-bg px-2 py-1 rounded">
                   {preset.category === 'famous-song' ? '有名曲' : '定番'}
                 </span>
               </div>
               
-              <p className="text-xs text-slate-400 mb-3 h-8 line-clamp-2">
+              <p className="text-xs text-voca-text-sub mb-3 h-8 line-clamp-2">
                 {preset.description}
               </p>
 
-              <div className="bg-slate-950 border border-slate-800 rounded px-3 py-2 justify-center flex mb-3">
-                <span className="font-mono font-bold text-purple-400 tracking-wider">
+              <div className="bg-voca-bg border border-voca-border-subtle rounded px-3 py-2 justify-center flex mb-3">
+                <span className="font-mono font-bold text-voca-accent-purple tracking-wider">
                   {previewChords.join(" → ")} {preset.degrees.length > 4 ? '...' : ''}
                 </span>
               </div>
 
               {preset.famousSongs.length > 0 && (
-                <p className="text-[10px] text-slate-500 italic mb-3 line-clamp-1">
+                <p className="text-[10px] text-voca-text-muted italic mb-3 line-clamp-1">
                   ♪ {preset.famousSongs.join(', ')}
                 </p>
               )}

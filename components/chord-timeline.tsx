@@ -54,8 +54,8 @@ function getFuncStyle(func: string): {
       };
     default:
       return {
-        borderClass: 'border-b-slate-600',
-        badgeClass: 'bg-slate-800 text-slate-500 border-slate-700',
+        borderClass: 'border-b-voca-border-subtle',
+        badgeClass: 'bg-voca-bg-card text-voca-text-muted border-voca-border-subtle',
         badgeLabel: '…',
       };
   }
@@ -101,8 +101,8 @@ export default function ChordTimeline() {
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-100">
-          <span className="text-pink-400">✧</span>
+        <h2 className="text-xl font-bold flex items-center gap-2 text-voca-text">
+          <span className="text-voca-accent-magenta">✧</span>
           コード進行
           {isPreviewing && (
             <span className="ml-2 text-[10px] md:text-xs bg-amber-500/20 text-amber-400 border border-amber-500/50 px-2 py-0.5 rounded-full animate-[pulse_2s_ease-in-out_infinite]">
@@ -111,7 +111,7 @@ export default function ChordTimeline() {
           )}
         </h2>
         {isStructureMode && activeSection && (
-          <div className="text-sm font-bold bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700">
+          <div className="text-sm font-bold bg-voca-bg-card px-3 py-1 rounded-full text-voca-text border border-voca-border-subtle">
             {activeSection.label} ({activeSection.bars}小節)
           </div>
         )}

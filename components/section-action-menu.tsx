@@ -50,42 +50,42 @@ export function SectionActionMenu({ section, onClose, anchorRect }: SectionActio
   }, []);
 
   const content = (
-    <div className="flex flex-col gap-1 w-full bg-slate-900 md:bg-slate-800 rounded-t-2xl md:rounded-xl shadow-xl overflow-hidden animate-slide-up md:animate-dropdown fade-in p-4 md:p-2 border-t border-slate-700 md:border md:border-slate-600">
-      <div className="md:hidden w-12 h-1 bg-slate-600 rounded-full mx-auto mb-4" />
+    <div className="flex flex-col gap-1 w-full bg-voca-bg md:bg-voca-bg-card rounded-t-2xl md:rounded-xl shadow-xl overflow-hidden animate-slide-up md:animate-dropdown fade-in p-4 md:p-2 border-t border-voca-border-subtle md:border md:border-voca-border-subtle">
+      <div className="md:hidden w-12 h-1 bg-voca-border-subtle rounded-full mx-auto mb-4" />
       
-      <div className="font-bold text-slate-300 px-4 py-2 border-b border-slate-700 md:hidden mb-2">
+      <div className="font-bold text-voca-text px-4 py-2 border-b border-voca-border-subtle md:hidden mb-2">
         {section.label} の操作
       </div>
 
-      <button onClick={handleDuplicate} className="flex items-center gap-3 px-4 py-3 md:py-2 text-left hover:bg-slate-700 active:bg-slate-600 rounded-lg text-slate-200 transition-colors">
+      <button onClick={handleDuplicate} className="flex items-center gap-3 px-4 py-3 md:py-2 text-left hover:bg-voca-bg-section active:bg-voca-bg-elevated rounded-lg text-voca-text transition-colors">
         <span className="text-xl md:text-base">📋</span> 複製
       </button>
 
-      <div className="flex items-center justify-between px-4 py-3 md:py-2 text-left hover:bg-slate-700 rounded-lg text-slate-200 transition-colors">
+      <div className="flex items-center justify-between px-4 py-3 md:py-2 text-left hover:bg-voca-bg-section rounded-lg text-voca-text transition-colors">
         <div className="flex items-center gap-3">
           <span className="text-xl md:text-base">📏</span> 長さ変更
         </div>
-        <div className="flex bg-slate-900 rounded-full p-1 border border-slate-700">
+        <div className="flex bg-voca-bg rounded-full p-1 border border-voca-border-subtle">
           <button 
             onClick={() => handleChangeBars(4)} 
-            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${section.bars === 4 ? 'bg-indigo-500 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${section.bars === 4 ? 'bg-voca-accent-purple text-white' : 'text-voca-text-sub hover:text-voca-text'}`}
           >
             4
           </button>
           <button 
             onClick={() => handleChangeBars(8)} 
-            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${section.bars === 8 ? 'bg-indigo-500 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${section.bars === 8 ? 'bg-voca-accent-purple text-white' : 'text-voca-text-sub hover:text-voca-text'}`}
           >
             8
           </button>
         </div>
       </div>
 
-      <button onClick={() => handleMove('up')} className="flex items-center gap-3 px-4 py-3 md:py-2 text-left hover:bg-slate-700 active:bg-slate-600 rounded-lg text-slate-200 transition-colors">
+      <button onClick={() => handleMove('up')} className="flex items-center gap-3 px-4 py-3 md:py-2 text-left hover:bg-voca-bg-section active:bg-voca-bg-elevated rounded-lg text-voca-text transition-colors">
         <span className="text-xl md:text-base">⬆️</span> {isDesktop ? '左に移動' : '前に移動'}
       </button>
 
-      <button onClick={() => handleMove('down')} className="flex items-center gap-3 px-4 py-3 md:py-2 text-left hover:bg-slate-700 active:bg-slate-600 rounded-lg text-slate-200 transition-colors border-b border-slate-700/50 md:border-none">
+      <button onClick={() => handleMove('down')} className="flex items-center gap-3 px-4 py-3 md:py-2 text-left hover:bg-voca-bg-section active:bg-voca-bg-elevated rounded-lg text-voca-text transition-colors border-b border-voca-border-subtle/50 md:border-none">
         <span className="text-xl md:text-base">⬇️</span> {isDesktop ? '右に移動' : '後に移動'}
       </button>
 

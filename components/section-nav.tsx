@@ -152,11 +152,11 @@ export function SectionNav() {
                   addSection(type.type);
                   setShowAddMenu(false);
                 }}
-                className="w-full text-left px-3 py-2 text-sm text-slate-200 hover:bg-slate-700 rounded-lg flex items-center gap-2"
+                className="w-full text-left px-3 py-2 text-sm text-voca-text hover:bg-voca-bg-section rounded-lg flex items-center gap-2"
               >
                 <span>{type.icon}</span>
                 <span>{type.name}</span>
-                <span className="text-xs text-slate-500 ml-auto">{type.defaultBars}小節</span>
+                <span className="text-xs text-voca-text-muted ml-auto">{type.defaultBars}小節</span>
               </button>
             ))}
           </div>

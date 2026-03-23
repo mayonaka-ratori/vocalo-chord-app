@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { JetBrains_Mono } from 'next/font/google';
 import "./globals.css";
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-chord',
+});
 
 export const metadata: Metadata = {
   title: "ボカロ作曲アシスタント",
@@ -21,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
-      <body className="bg-voca-bg text-voca-text min-h-screen antialiased selection:bg-voca-accent-purple/30">
+    <html lang="ja" className={jetbrainsMono.variable}>
+      <body className="bg-voca-bg text-voca-text min-h-screen antialiased selection:bg-voca-accent-purple/30 font-sans">
         {children}
       </body>
     </html>

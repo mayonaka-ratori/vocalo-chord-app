@@ -27,7 +27,7 @@ const config: Config = {
         'glow-blue':    '0 0 6px rgba(79,195,247,0.4)',
       },
       fontFamily: {
-        chord: ["'JetBrains Mono'", 'monospace'],
+        chord: ["var(--font-chord)", 'monospace'],
       }
     },
   },
