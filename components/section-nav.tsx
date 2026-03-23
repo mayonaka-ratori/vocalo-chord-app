@@ -14,6 +14,14 @@ export function SectionNav() {
   const [menuAnchorRect, setMenuAnchorRect] = useState<DOMRect | null>(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [addMenuRect, setAddMenuRect] = useState<DOMRect | null>(null);
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Auto-scroll to active tab
   useEffect(() => {
@@ -130,10 +138,10 @@ export function SectionNav() {
           <div 
             className="absolute bg-slate-800 border border-slate-600 rounded-xl shadow-2xl p-2 w-[240px] max-h-[50vh] overflow-y-auto animate-dropdown"
             style={{
-               top: window.innerWidth < 768 ? 'auto' : addMenuRect.bottom + 8,
-               left: window.innerWidth < 768 ? 'auto' : Math.min(addMenuRect.left, window.innerWidth - 250),
-               bottom: window.innerWidth < 768 ? 20 : 'auto',
-               right: window.innerWidth < 768 ? Math.max(20, window.innerWidth - addMenuRect.right) : 'auto'
+               top: windowWidth < 768 ? 'auto' : addMenuRect.bottom + 8,
+               left: windowWidth < 768 ? 'auto' : Math.min(addMenuRect.left, windowWidth - 250),
+               bottom: windowWidth < 768 ? 20 : 'auto',
+               right: windowWidth < 768 ? Math.max(20, windowWidth - addMenuRect.right) : 'auto'
             }}
           >
             <div className="text-xs font-bold text-slate-400 px-3 py-2 mb-1 border-b border-slate-700">セクション追加</div>

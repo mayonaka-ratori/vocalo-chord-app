@@ -51,29 +51,29 @@ export function StructureTemplatePicker({ onClose }: StructureTemplatePickerProp
                 onClick={() => handleApplyTemplate(template.id)}
                 className="bg-slate-800 hover:bg-slate-700 active:scale-95 transition-all text-left p-4 rounded-xl border border-slate-700 flex flex-col gap-3 group"
               >
-                <div className="flex items-center gap-2">
+                <span className="flex items-center gap-2">
                   <span className="text-2xl">{template.icon}</span>
-                  <div>
-                    <div className="font-bold text-slate-100 group-hover:text-pink-300 transition-colors">
+                  <span className="flex flex-col">
+                    <span className="font-bold text-slate-100 group-hover:text-pink-300 transition-colors">
                       {template.name}
-                    </div>
-                    <div className="text-xs text-slate-400">{template.description}</div>
-                  </div>
-                </div>
+                    </span>
+                    <span className="text-xs text-slate-400">{template.description}</span>
+                  </span>
+                </span>
                 
                 {/* 構成マップ */}
-                <div className="flex items-center gap-1 flex-wrap bg-slate-900/50 p-2 rounded-lg">
+                <span className="flex items-center gap-1 flex-wrap bg-slate-900/50 p-2 rounded-lg">
                   {template.sectionSequence.map((seq, i) => (
-                    <div key={i} className="flex items-center">
+                    <span key={i} className="flex items-center">
                       <span className="text-sm" title={`${getSectionIcon(seq.type)} (${seq.bars}小節)`}>
                         {getSectionIcon(seq.type)}
                       </span>
                       {i < template.sectionSequence.length - 1 && (
                         <span className="text-slate-600 text-[10px] mx-0.5">|</span>
                       )}
-                    </div>
+                    </span>
                   ))}
-                </div>
+                </span>
               </button>
             ))}
           </div>
@@ -83,11 +83,11 @@ export function StructureTemplatePicker({ onClose }: StructureTemplatePickerProp
               onClick={handleCustom}
               className="w-full p-4 rounded-xl border-2 border-dashed border-slate-600 hover:border-slate-500 hover:bg-slate-800 active:scale-95 transition-all flex items-center justify-center gap-3"
             >
-              <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-bold">＋</div>
-              <div className="text-left">
-                <div className="font-bold text-slate-200">カスタム構成</div>
-                <div className="text-xs text-slate-400">1つのAメロから空で作る</div>
-              </div>
+              <span className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-bold">＋</span>
+              <span className="text-left flex flex-col">
+                <span className="font-bold text-slate-200">カスタム構成</span>
+                <span className="text-xs text-slate-400">1つのAメロから空で作る</span>
+              </span>
             </button>
           </div>
         </div>
