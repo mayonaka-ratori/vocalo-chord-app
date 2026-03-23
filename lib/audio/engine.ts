@@ -12,6 +12,7 @@ import { InstrumentPresetId } from '@/types/audio';
 
 // Dynamic import strategy for SSR safety
 let ToneModule: typeof ToneType | null = null;
+let sharedContext: AudioContext | null = null;
 
 // Instrument instances
 let backingNode: BackingInstrumentNode | null = null;
@@ -31,6 +32,22 @@ export async function getTone() {
     ToneModule = await import('tone');
   }
   return ToneModule;
+}
+
+/**
+ * Get shared AudioContext (compatible with Tone.js and smplr)
+ */
+export async function getAudioContext(): Promise<AudioContext> {
+  if (typeof window === 'undefined') {
+    throw new Error('AudioContext is not available in SSR');
+  }
+  
+  if (!sharedContext) {
+    const Tone = await getTone();
+    // tone v14+ uses Tone.context.rawContext to expose the underlying AudioContext
+    sharedContext = Tone.getContext().rawContext as unknown as AudioContext;
+  }
+  return sharedContext;
 }
 
 /**

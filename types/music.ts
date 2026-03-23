@@ -220,3 +220,39 @@ export interface ChordToneInfo {
   scaleTones: number[];   // all scale notes in this octave range
   blueNotes: number[];    // blue notes: [b3, b5, b7 relative to chord root]
 }
+
+/**
+ * smplr 用のサンプリング音源 ID
+ */
+export type SmplrInstrumentId =
+  | 'splendid-grand-piano'
+  | 'electric-piano-cp80'
+  | 'electric-piano-wurlitzer'
+  | 'acoustic-guitar'
+  | 'string-ensemble'
+  | 'synth-fallback';
+
+/**
+ * 音源プリセットの設定型
+ */
+export interface InstrumentPresetConfig {
+  id: SmplrInstrumentId;
+  label: string;
+  labelJa: string;
+  icon: string; // 絵文字等
+  category: 'piano' | 'keys' | 'guitar' | 'strings' | 'synth';
+  requiresNetwork: boolean;
+  isDefault?: boolean;
+}
+
+/**
+ * 利用可能な音源プリセットの一覧
+ */
+export const INSTRUMENT_PRESETS: InstrumentPresetConfig[] = [
+  { id: 'splendid-grand-piano', label: 'Grand Piano', labelJa: 'グランドピアノ', icon: '🎹', category: 'piano', requiresNetwork: true, isDefault: true },
+  { id: 'electric-piano-cp80', label: 'Electric Piano (CP80)', labelJa: 'エレピ (CP80)', icon: '🎹', category: 'keys', requiresNetwork: true },
+  { id: 'electric-piano-wurlitzer', label: 'Wurlitzer EP200', labelJa: 'ウーリッツァー', icon: '🎹', category: 'keys', requiresNetwork: true },
+  { id: 'acoustic-guitar', label: 'Acoustic Guitar', labelJa: 'アコギ', icon: '🎸', category: 'guitar', requiresNetwork: true },
+  { id: 'string-ensemble', label: 'Strings', labelJa: 'ストリングス', icon: '🎻', category: 'strings', requiresNetwork: true },
+  { id: 'synth-fallback', label: 'Synth (Offline)', labelJa: 'シンセ（オフライン）', icon: '🔊', category: 'synth', requiresNetwork: false },
+];
