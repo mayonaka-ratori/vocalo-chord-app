@@ -12,7 +12,7 @@
   --voca-accent-purple: #7C4DFF;
   --voca-text: #F0F0F8;
   --voca-text-sub: #8888AA;
-  --voca-text-muted: #555570;
+  --voca-text-muted: #7C7C9C; /* #555570 -> #7C7C9C for WCAG AA compliance */
   --voca-border-subtle: #2A2A4A;
 
   /* Legacy / Compatibility Variables */
