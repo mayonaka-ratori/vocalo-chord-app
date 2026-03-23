@@ -54,7 +54,7 @@ export function usePlayback() {
 
   const stopPlayback = useCallback(async () => {
     const { stopPlayback: stopAudio } = await import('@/lib/audio/playback-manager');
-    stopAudio();
+    await stopAudio();
     stop();
     setGlobalBar(0);
   }, [stop]);

@@ -18,7 +18,7 @@ export async function playBassStep(pattern: BassPattern, stepIndex: number, time
   const fifthNote = notes.length > 2 ? notes[2] : rootNote;
   
   // オクターブ指定 (ベースは低域で鳴らす)
-  const baseOctave = 1;
+  const baseOctave = 2;
   let pitchToPlay = `${rootNote}${baseOctave}`;
   
   switch (currentStep.type) {
@@ -36,8 +36,14 @@ export async function playBassStep(pattern: BassPattern, stepIndex: number, time
       break;
   }
 
-  // Tone.js の音符の長さを秒数に変換 (smplr 用)
+  // ストライドガード: このステップが何tick分かを計算し、最初のtickのみ発音する
   const Tone = await getTone();
+  const stride16n = Math.round(
+    Tone.Time(currentStep.duration).toSeconds() / Tone.Time('16n').toSeconds()
+  );
+  if (stepIndex % stride16n !== 0) return;
+
+  // Tone.js の音符の長さを秒数に変換 (smplr 用)
   const durationSeconds = Tone.Time(currentStep.duration).toSeconds();
 
   // ノート発音

@@ -1,10 +1,9 @@
 import { DrumPattern } from '@/types/audio';
-import { getKick, getSnare, getHihat } from './engine';
+import { getKick, getSnare, getHihat, getTone } from './engine';
 import { useStore } from '../store';
 import { getVolumeProfile } from './volume-config';
-import * as Tone from 'tone';
 
-export function playDrumStep(pattern: DrumPattern, stepIndex: number, time: number) {
+export async function playDrumStep(pattern: DrumPattern, stepIndex: number, time: number) {
   const kick = getKick();
   const snare = getSnare();
   const hihat = getHihat();
@@ -12,6 +11,7 @@ export function playDrumStep(pattern: DrumPattern, stepIndex: number, time: numb
   if (!kick || !snare || !hihat) return;
 
   const currentStep = pattern.steps[stepIndex % pattern.steps.length];
+  const Tone = await getTone();
   const instrumentId = useStore.getState().activeInstrumentId;
   const profile = getVolumeProfile(instrumentId);
   const gain = Tone.dbToGain(profile.drums);

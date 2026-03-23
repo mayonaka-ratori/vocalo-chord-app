@@ -37,6 +37,7 @@ interface SectionBarMap {
 let Tone: typeof ToneType | null = null;
 let playbackLoop: ToneType.Loop | null = null;
 let currentConfig: PlaybackStateConfig | null = null;
+let lastSwitchedPresetId: InstrumentPresetId | null = null;
 
 let onBarChangeCallback: ((globalBar: number, localBar: number, sectionIndex: number) => void) | null = null;
 let onSectionChangeCallback: ((sectionIndex: number) => void) | null = null;
@@ -124,10 +125,11 @@ export async function startPlayback(config: PlaybackStateConfig) {
       ? config.sections[0].instrumentPresetId 
       : config.instrumentPresetId;
       
-  // Ensure starting instrument is correct
+  // Ensure starting instrument is correct (only switch if actually changed)
   const { isAudioReady, switchBackingInstrument } = await import('./engine');
-  if (isAudioReady()) {
+  if (isAudioReady() && currentInstrumentId !== lastSwitchedPresetId) {
     switchBackingInstrument(currentInstrumentId);
+    lastSwitchedPresetId = currentInstrumentId;
   }
 
   const stepsPerBar = 16;
@@ -219,6 +221,7 @@ export async function stopPlayback() {
   const { stopAllUnified } = await import('./unified-player');
   await stopAllUnified();
 
+  Tone.Transport.cancel();
   Tone.Transport.stop();
   
   if (playbackLoop) {
