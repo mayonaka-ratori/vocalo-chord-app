@@ -1,14 +1,12 @@
-import type * as ToneType from 'tone';
 import { BackingPattern } from '@/types/audio';
-import { getChordSynth } from './engine';
 import { getChordNotes } from '@/lib/music/chords';
+import { playUnifiedChord } from './unified-player';
+import { getTone } from './engine';
 
-export function playBackingStep(pattern: BackingPattern, stepIndex: number, time: number, currentChord: string) {
-  const synth = getChordSynth();
-  if (!synth || !currentChord || currentChord === 'N.C.') return;
+export async function playBackingStep(pattern: BackingPattern, stepIndex: number, time: number, currentChord: string) {
+  if (!currentChord || currentChord === 'N.C.') return;
 
   const currentStep = pattern.steps[stepIndex % pattern.steps.length];
-  
   if (currentStep.type === 'REST') return;
 
   // コードからの構成音計算
@@ -19,35 +17,31 @@ export function playBackingStep(pattern: BackingPattern, stepIndex: number, time
   const baseOctave = 3;
   // ['C3', 'E3', 'G3'] のような配列にする
   const chordPitches = notes.map(note => `${note}${baseOctave}`);
-  
   const rootPitch = `${notes[0]}${baseOctave}`;
 
-  const playNotes = (pitches: string | string[], duration: string | number, time: number) => {
-    if (synth.name === 'PolySynth') {
-      (synth as ToneType.PolySynth).triggerAttackRelease(pitches, duration, time);
-    } else {
-      // MonoSynth or PluckSynth fallback to single note
-      const singlePitch = Array.isArray(pitches) ? pitches[0] : pitches;
-      (synth as ToneType.MonoSynth | ToneType.PluckSynth).triggerAttackRelease(singlePitch, duration, time);
-    }
+  // Tone.js の音符の長さを秒数に変換 (smplr 用)
+  const Tone = await getTone();
+  const durationSeconds = Tone.Time(currentStep.duration).toSeconds();
+
+  const triggerChord = (pitches: string[]) => {
+    playUnifiedChord({
+      notes: pitches,
+      duration: durationSeconds,
+      time: time,
+      velocity: 90 // playUnifiedChord will scale this
+    });
   };
 
   switch (currentStep.type) {
     case 'BLOCK':
-      playNotes(chordPitches, currentStep.duration, time);
+      triggerChord(chordPitches);
       break;
     case 'ARP_ROOT':
-      playNotes(rootPitch, currentStep.duration, time);
+      triggerChord([rootPitch]);
       break;
     case 'ARP_CHORD':
-      // ARPのバリエーションとして、ルート以外の和音を鳴らすなど
-      // ここでは簡単に上の音2つを鳴らすとする
       const upperPitches = chordPitches.slice(1);
-      if (upperPitches.length > 0) {
-         playNotes(upperPitches, currentStep.duration, time);
-      } else {
-         playNotes(rootPitch, currentStep.duration, time);
-      }
+      triggerChord(upperPitches.length > 0 ? upperPitches : [rootPitch]);
       break;
   }
 }

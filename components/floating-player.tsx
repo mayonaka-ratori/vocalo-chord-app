@@ -8,6 +8,7 @@ import { useStore } from '@/lib/store';
 import { usePlayback } from '@/hooks/use-playback';
 import { chordPresets } from '@/data/presets';
 import { downloadMidi } from '@/lib/midi/download';
+import { INSTRUMENT_PRESETS } from '@/types/music';
 
 interface ToastState {
   message: string;
@@ -19,7 +20,7 @@ export const FloatingPlayer = () => {
   const {
     isPlaying, tempo, selectedPresetId, randomize, currentBar, chords,
     key, drumPatternId, bassPatternId, isStructureMode, activeSectionIndex, sections,
-    playbackMode, setPlaybackMode, melodyPhrases, activeMelodyPatternId
+    playbackMode, setPlaybackMode, melodyPhrases, activeMelodyPatternId, activeInstrumentId
   } = useStore();
   const { toggle, stop, globalBar } = usePlayback();
 
@@ -28,6 +29,8 @@ export const FloatingPlayer = () => {
   const presetName = selectedPresetId
     ? chordPresets.find(p => p.id === selectedPresetId)?.name ?? 'カスタム進行'
     : 'カスタム進行';
+
+  const activeInstrument = INSTRUMENT_PRESETS.find(p => p.id === activeInstrumentId);
 
   const displayLabel = isStructureMode && sections[activeSectionIndex]
     ? `${sections[activeSectionIndex].label}`
@@ -115,7 +118,9 @@ export const FloatingPlayer = () => {
             )}
             <span className="truncate">{displayLabel}</span>
           </div>
-          <div className="text-[10px] text-voca-text-muted font-black mt-1 pl-[1px] tracking-widest uppercase opacity-70">BPM {tempo} • {key}</div>
+          <div className="text-[10px] text-voca-text-muted font-black mt-1 pl-[1px] tracking-widest uppercase opacity-70 truncate">
+            BPM {tempo} • {key} {activeInstrument && ` • ${activeInstrument.icon} ${activeInstrument.labelJa}`}
+          </div>
         </div>
 
         <div className="flex items-center space-x-2.5 shrink-0">

@@ -199,6 +199,8 @@ export interface MelodyNote {
   midi: number;          // MIDI note number (60 = C4)
   name: string;          // e.g., "C4", "Eb5"
   duration: number;      // in beats (0.25 = 16th, 0.5 = 8th, 1 = quarter)
+  beat: number;          // skip beats from start of pattern
+  velocity?: number;     // 0-127
   isChordTone: boolean;  // true if this note is part of the current chord
   isBlueNote: boolean;   // true if this is a blue note (b3, b5, b7)
 }

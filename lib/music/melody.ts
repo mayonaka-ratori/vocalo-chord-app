@@ -196,13 +196,15 @@ export function generateMelodyPhrases(
         }
       }
 
-      phraseNotes.forEach(midi => {
+      phraseNotes.forEach((midi, noteIdx) => {
         const noteName = getNoteFromIndex(midi % 12);
         const octave = Math.floor(midi / 12) - 1;
         notes.push({
           midi,
           name: `${noteName}${octave}`,
           duration,
+          beat: (chordIdx * beatsPerChord) + (noteIdx * duration),
+          velocity: 80,
           isChordTone: info.tones.includes(midi),
           isBlueNote: info.blueNotes.includes(midi)
         });

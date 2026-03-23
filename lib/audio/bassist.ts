@@ -1,13 +1,12 @@
 import { BassPattern } from '@/types/audio';
-import { getBassSynth } from './engine';
 import { getChordNotes } from '@/lib/music/chords';
+import { playUnifiedBass } from './unified-player';
+import { getTone } from './engine';
 
-export function playBassStep(pattern: BassPattern, stepIndex: number, time: number, currentChord: string) {
-  const bass = getBassSynth();
-  if (!bass || !currentChord || currentChord === 'N.C.') return;
+export async function playBassStep(pattern: BassPattern, stepIndex: number, time: number, currentChord: string) {
+  if (!currentChord || currentChord === 'N.C.') return;
 
   const currentStep = pattern.steps[stepIndex % pattern.steps.length];
-  
   if (currentStep.type === 'REST') return;
 
   // コードからの構成音計算
@@ -20,7 +19,6 @@ export function playBassStep(pattern: BassPattern, stepIndex: number, time: numb
   
   // オクターブ指定 (ベースは低域で鳴らす)
   const baseOctave = 1;
-
   let pitchToPlay = `${rootNote}${baseOctave}`;
   
   switch (currentStep.type) {
@@ -38,6 +36,10 @@ export function playBassStep(pattern: BassPattern, stepIndex: number, time: numb
       break;
   }
 
+  // Tone.js の音符の長さを秒数に変換 (smplr 用)
+  const Tone = await getTone();
+  const durationSeconds = Tone.Time(currentStep.duration).toSeconds();
+
   // ノート発音
-  bass.triggerAttackRelease(pitchToPlay, currentStep.duration, time);
+  playUnifiedBass(pitchToPlay, durationSeconds, time, 80);
 }

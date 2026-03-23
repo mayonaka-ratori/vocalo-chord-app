@@ -23,6 +23,7 @@ let snareDrum: ToneType.NoiseSynth | null = null;
 let hihatDrum: ToneType.NoiseSynth | null = null;
 let melodySynth: ToneType.Synth | null = null;
 let melodyPart: ToneType.Part | null = null;
+let melodyPreviewTimeout: NodeJS.Timeout | null = null;
 
 /**
  * Get Tone.js module safely
@@ -65,6 +66,23 @@ export async function initAudio(initialPresetId: InstrumentPresetId = 'release-c
   if (!snareDrum) snareDrum = createSnare(Tone);
   if (!hihatDrum) hihatDrum = createHihat(Tone);
   if (!melodySynth) melodySynth = await createMelodySynth(Tone);
+}
+
+/**
+ * Ensure AudioContext is running (needed for mobile/safari)
+ */
+export async function ensureAudioReady(): Promise<void> {
+  if (typeof window === 'undefined') return;
+  
+  const ctx = await getAudioContext();
+  if (ctx.state === 'suspended') {
+    await ctx.resume();
+  }
+  
+  const Tone = await getTone();
+  if (Tone.getContext().state !== 'running') {
+    await Tone.start();
+  }
 }
 
 /**
@@ -129,57 +147,58 @@ export const getBassSynth = () => bassSynth;
 export const getKick = () => kickDrum;
 export const getSnare = () => snareDrum;
 export const getHihat = () => hihatDrum;
+export const getMelodySynth = () => melodySynth;
 
 /**
  * Preview a melody phrase
  */
-export async function previewMelody(notes: { midi: number; duration: number }[], bpm: number, onComplete?: () => void) {
+export async function previewMelody(notes: { midi: number; duration: number; velocity?: number; beat: number }[], bpm: number, onComplete?: () => void) {
   const Tone = await getTone();
-  if (!Tone || !melodySynth) return;
+  if (!Tone) return;
 
   // Stop any existing preview
   stopMelodyPreview();
 
+  const { playUnifiedMelody, stopUnifiedMelody } = await import('./unified-player');
   const secPerBeat = 60 / bpm;
-  let currentTime = 0;
+  const startTime = Tone.now() + 0.1; // small buffer
 
-  const partEvents = notes.map(note => {
-    const event = {
-      time: currentTime,
-      note: Tone.Frequency(note.midi, "midi").toNote(),
-      duration: note.duration * secPerBeat
-    };
-    currentTime += note.duration * secPerBeat;
-    return event;
+  notes.forEach(note => {
+    const noteTime = startTime + (note.beat * secPerBeat);
+    const noteDuration = note.duration * secPerBeat;
+
+    playUnifiedMelody(note.midi, {
+      duration: noteDuration,
+      time: noteTime,
+      velocity: note.velocity ?? 80,
+    });
   });
 
-  melodyPart = new Tone.Part((time, value) => {
-    melodySynth?.triggerAttackRelease(value.note, value.duration, time);
-  }, partEvents).start(0);
+  // Calculate total duration
+  const totalDuration = notes.reduce((max, n) => 
+    Math.max(max, (n.beat + n.duration) * secPerBeat), 0);
 
-  // If transport is not running, we need to handle it
-  const transportWasRunning = Tone.Transport.state === 'started';
-  
-  // We use a separate end trigger because Part.loop is false by default
-  const totalDuration = currentTime;
-  Tone.Transport.scheduleOnce(() => {
-    if (!transportWasRunning) {
-      Tone.Transport.stop();
-    }
-    stopMelodyPreview();
+  // Auto-complete trigger
+  const timeoutId = setTimeout(() => {
+    stopUnifiedMelody();
     if (onComplete) onComplete();
-  }, Tone.Transport.seconds + totalDuration + 0.1);
+  }, (totalDuration + 0.2) * 1000);
 
-  if (!transportWasRunning) {
-    Tone.Transport.bpm.value = bpm;
-    Tone.Transport.start();
-  }
+  // Store timeoutId to clear if stopped manually
+  melodyPreviewTimeout = timeoutId;
 }
 
 /**
  * Stop melody preview
  */
 export function stopMelodyPreview() {
+  if (melodyPreviewTimeout) {
+    clearTimeout(melodyPreviewTimeout);
+    melodyPreviewTimeout = null;
+  }
+  
+  import('./unified-player').then(m => m.stopUnifiedMelody());
+
   if (melodyPart) {
     melodyPart.stop();
     melodyPart.dispose();

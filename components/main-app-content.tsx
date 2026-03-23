@@ -10,7 +10,6 @@ import ChordTimeline from "@/components/chord-timeline";
 import { SongSearchBar } from "@/components/song-search-bar";
 import { RhythmSelector } from "@/components/rhythm-selector";
 import { TransportControls } from "@/components/transport-controls";
-import { InstrumentSelector } from "@/components/instrument-selector";
 import { SectionNav } from "@/components/section-nav";
 import { SectionOverview } from "@/components/section-overview";
 import { StructureTemplatePicker } from "@/components/structure-template-picker";
@@ -59,10 +58,7 @@ export function MainAppContent() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <InstrumentSelector />
-          <RhythmSelector />
-        </div>
+        <RhythmSelector />
 
         <TransportControls />
 
@@ -96,7 +92,6 @@ export function MainAppContent() {
         </button>
       </div>
 
-      <InstrumentSelector />
       <ChordTimeline />
       <VariationPanel />
       {showMelodyGuide && <MelodyGuidePanel />}

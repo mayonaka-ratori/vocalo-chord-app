@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { SongSearchResult, NoteName, ChordVariation } from '@/types/music';
+import { SongSearchResult, NoteName, ChordVariation, SmplrInstrumentId } from '@/types/music';
 import { generateVariations as computeVariations } from './music/variation';
 import { chordPresets } from '@/data/presets';
 import { transposeProgression } from './music/transpose';
@@ -10,6 +10,8 @@ import { Section, SectionType, MelodyPhrase, MelodyPatternId, ChordToneInfo } fr
 import { STRUCTURE_TEMPLATES } from '@/data/structure-templates';
 import { createEmptySection, duplicateSectionData } from './music/section-utils';
 import { generateMelodyPhrases, getChordTones } from './music/melody';
+import { getSmplrProvider } from './audio/smplr-provider';
+
 
 export interface AppState {
   // Key & Tempo
@@ -62,6 +64,13 @@ export interface AppState {
   isPreviewingMelody: boolean;
   previewingPatternId: MelodyPatternId | null;
 
+  // Instrument state (smplr)
+  activeInstrumentId: SmplrInstrumentId;
+  instrumentLoadProgress: { loaded: number; total: number } | null;
+  isInstrumentLoading: boolean;
+  instrumentLoadError: string | null;
+
+
   // Actions
   setKey: (key: string) => void;
   setTempo: (tempo: number) => void;
@@ -81,6 +90,8 @@ export interface AppState {
   randomize: () => void;
   setAudioInitialized: (init: boolean) => void;
   setCategoryFilter: (category: string | null) => void;
+  setActiveInstrument: (id: SmplrInstrumentId) => Promise<void>;
+
 
   // Variation actions
   generateVariationSuggestions: () => void;
@@ -161,6 +172,13 @@ export const useStore = create<AppState>((set, get) => ({
   chordToneInfos: [],
   isPreviewingMelody: false,
   previewingPatternId: null,
+
+  // Instrument state (smplr)
+  activeInstrumentId: 'synth-fallback',
+  instrumentLoadProgress: null,
+  isInstrumentLoading: false,
+  instrumentLoadError: null,
+
 
   // Actions
   setKey: (newKey: string) => {
@@ -287,6 +305,57 @@ export const useStore = create<AppState>((set, get) => ({
   setAudioInitialized: (init: boolean) => set({ isAudioInitialized: init }),
 
   setCategoryFilter: (category: string | null) => set({ categoryFilter: category }),
+
+  setActiveInstrument: async (id: SmplrInstrumentId) => {
+    const state = get();
+    if (id === state.activeInstrumentId) return;
+
+    if (id === 'synth-fallback') {
+      set({ 
+        activeInstrumentId: id, 
+        instrumentLoadProgress: null, 
+        isInstrumentLoading: false,
+        instrumentLoadError: null
+      });
+      return;
+    }
+
+    set({ 
+      isInstrumentLoading: true, 
+      instrumentLoadProgress: { loaded: 0, total: 1 },
+      instrumentLoadError: null
+    });
+
+    try {
+      const { ensureAudioReady } = await import('./audio/engine');
+      await ensureAudioReady();
+      
+      const provider = getSmplrProvider();
+      await provider.loadInstrument(id, (progress) => {
+        set({ 
+          instrumentLoadProgress: { loaded: progress.loaded, total: progress.total } 
+        });
+      });
+      set({ 
+        activeInstrumentId: id, 
+        isInstrumentLoading: false, 
+        instrumentLoadProgress: null 
+      });
+    } catch (error) {
+      console.error('Failed to load instrument:', error);
+      // Fall back to synth on failure
+      set({ 
+        activeInstrumentId: 'synth-fallback', 
+        isInstrumentLoading: false, 
+        instrumentLoadProgress: null,
+        instrumentLoadError: '音源の読み込みに失敗しました'
+      });
+      
+      // 3秒後にエラーを消す
+      setTimeout(() => set({ instrumentLoadError: null }), 3000);
+    }
+  },
+
 
   // --------------------------------
   // Variation suggestion actions

@@ -1,7 +1,9 @@
 import React from 'react';
 import { useStore } from '@/lib/store';
-import { usePlayback } from '@/hooks/use-playback';
-import { MelodyPatternId } from '@/types/music';
+import { playUnifiedMelody, stopUnifiedMelody, playUnifiedChord } from '@/lib/audio/unified-player';
+import { MelodyPhrase } from '@/types/music';
+
+let melodyPreviewUiTimeout: NodeJS.Timeout | null = null;
 
 export function MelodyGuidePanel() {
   const {
@@ -14,37 +16,111 @@ export function MelodyGuidePanel() {
     includeBlueNotes,
     toggleBlueNotes,
     currentBar,
-    startMelodyPreview,
-    stopMelodyPreview,
     isPreviewingMelody,
     previewingPatternId,
     isPlaying: isFullPlaying
   } = useStore();
 
-  const { toggle: toggleFullPlayback } = usePlayback();
-
   if (!showMelodyGuide) return null;
 
-  const handlePreview = (e: React.MouseEvent, patternId: MelodyPatternId) => {
+  const handlePreviewPattern = async (pattern: MelodyPhrase) => {
+    const { tempo } = useStore.getState();
+    const beatDuration = 60 / tempo;
+    const { getAudioContext, ensureAudioReady } = await import('@/lib/audio/engine');
+    await ensureAudioReady();
+    const context = await getAudioContext();
+    const startTime = context.currentTime + 0.05; // small buffer
+
+    // Stop any current preview
+    stopUnifiedMelody();
+
+    // Set preview state in store (for UI animation)
+    useStore.setState({ 
+      isPreviewingMelody: true, 
+      previewingPatternId: pattern.patternId 
+    });
+
+    pattern.notes.forEach((note) => {
+      const noteTime = startTime + (note.beat * beatDuration);
+      const noteDuration = note.duration * beatDuration;
+
+      playUnifiedMelody(note.midi, {
+        duration: noteDuration,
+        time: noteTime,
+        velocity: note.velocity ?? 80,
+      });
+    });
+
+    // Auto-clear preview state after pattern duration
+    const totalDuration = pattern.notes.reduce((max, n) =>
+      Math.max(max, (n.beat + n.duration) * beatDuration), 0);
+
+    const timeoutId = setTimeout(() => {
+      useStore.setState({ 
+        isPreviewingMelody: false, 
+        previewingPatternId: null 
+      });
+      melodyPreviewUiTimeout = null;
+    }, (totalDuration + 0.1) * 1000);
+
+    // Save timeout to global for cleanup
+    melodyPreviewUiTimeout = timeoutId;
+  };
+
+  const stopPreview = () => {
+    stopUnifiedMelody();
+    if (melodyPreviewUiTimeout) {
+      clearTimeout(melodyPreviewUiTimeout);
+      melodyPreviewUiTimeout = null;
+    }
+    useStore.setState({ 
+      isPreviewingMelody: false, 
+      previewingPatternId: null 
+    });
+  };
+
+  const handlePreview = (e: React.MouseEvent, pattern: MelodyPhrase) => {
     e.stopPropagation();
-    if (isPreviewingMelody && previewingPatternId === patternId) {
-      stopMelodyPreview();
+    if (isPreviewingMelody && previewingPatternId === pattern.patternId) {
+      stopPreview();
     } else {
-      startMelodyPreview(patternId);
+      handlePreviewPattern(pattern);
     }
   };
 
-  const handleCombinedPreview = (e: React.MouseEvent, patternId: MelodyPatternId) => {
+  const handleCombinedPreview = async (e: React.MouseEvent, pattern: MelodyPhrase) => {
     e.stopPropagation();
-    setActiveMelodyPattern(patternId);
+    setActiveMelodyPattern(pattern.patternId);
     
-    // Start backing if not playing
-    if (!isFullPlaying) {
-      toggleFullPlayback();
+    const { tempo, chords } = useStore.getState();
+    const beatDuration = 60 / tempo;
+    const { getAudioContext, ensureAudioReady } = await import('@/lib/audio/engine');
+    await ensureAudioReady();
+    const context = await getAudioContext();
+    const startTime = context.currentTime + 0.05;
+
+    // Stop current
+    stopPreview();
+
+    // Start melody
+    handlePreviewPattern(pattern);
+
+    // Also schedule chords for the first 4 bars (one pattern length usually)
+    // Simple implementation: play chords on the same timeline
+    for (let i = 0; i < 4; i++) {
+      const chord = chords[i % chords.length];
+      if (chord && chord !== 'N.C.') {
+        import('@/lib/music/chords').then(m => {
+          const notes = m.getChordNotes(chord).map(n => `${n}3`);
+          playUnifiedChord({
+            notes,
+            duration: beatDuration * 4,
+            time: startTime + (i * 4 * beatDuration),
+            velocity: 70
+          });
+        });
+      }
     }
-    
-    // Start melody preview
-    startMelodyPreview(patternId);
   };
 
   return (
@@ -157,8 +233,8 @@ export function MelodyGuidePanel() {
                     </span>
                     
                     <div className="flex gap-2.5">
-                      <button 
-                        onClick={(e) => handleCombinedPreview(e, phrase.patternId)}
+                       <button 
+                        onClick={(e) => handleCombinedPreview(e, phrase)}
                         className={`px-3 py-1.5 rounded-xl text-[10px] font-black border-2 transition-all active:scale-90 flex items-center gap-2 uppercase tracking-tight ${
                           isSelected && isFullPlaying && isPreviewingMelody
                             ? 'bg-voca-accent-purple border-voca-accent-purple text-white shadow-glow-purple'
@@ -170,7 +246,7 @@ export function MelodyGuidePanel() {
                       </button>
 
                       <button 
-                        onClick={(e) => handlePreview(e, phrase.patternId)}
+                        onClick={(e) => handlePreview(e, phrase)}
                         className={`px-4 py-1.5 rounded-xl text-[10px] font-black border-2 transition-all active:scale-90 flex items-center gap-2 uppercase tracking-widest ${
                           isPreviewingMelody && previewingPatternId === phrase.patternId
                             ? 'bg-voca-accent-magenta border-voca-accent-magenta text-white shadow-glow-magenta animate-pulse border-none' 

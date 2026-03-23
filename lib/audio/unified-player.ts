@@ -1,0 +1,177 @@
+import { getSmplrProvider } from './smplr-provider';
+import { getChordSynth, getBassSynth, getTone } from './engine';
+import { useStore } from '../store';
+import { getVolumeProfile } from './volume-config';
+import * as Tone from 'tone';
+
+/**
+ * 統合されたノートイベント情報
+ */
+export interface UnifiedNoteEvent {
+  notes: string[];        // 例: ['C4', 'E4', 'G4']
+  duration: number;       // 秒単位
+  time: number;           // AudioContext の時間
+  velocity?: number;      // 0-127 (smplr用)
+}
+
+/**
+ * 楽器の選択状態に応じて、smplr または Tone.js のシンセで和音を再生する
+ */
+export function playUnifiedChord(event: UnifiedNoteEvent): void {
+  const store = useStore.getState();
+  const instrumentId = store.activeInstrumentId;
+  const provider = getSmplrProvider();
+  const profile = getVolumeProfile(instrumentId);
+
+  // フォールバック条件: 楽器がシンセ、または smplr のロードが完了していない
+  if (instrumentId === 'synth-fallback' || !provider.isLoaded(instrumentId)) {
+    const chordSynth = getChordSynth();
+    if (chordSynth) {
+      if (chordSynth.name === 'PolySynth') {
+        (chordSynth as Tone.PolySynth).triggerAttackRelease(
+          event.notes,
+          event.duration,
+          event.time,
+          event.velocity ? (event.velocity / 127) * Tone.dbToGain(profile.chord) : Tone.dbToGain(profile.chord)
+        );
+      } else if ('triggerAttackRelease' in chordSynth) {
+        // MonoSynth などの場合は単音（最初の音）のみ
+        (chordSynth as Tone.MonoSynth).triggerAttackRelease(
+          event.notes[0],
+          event.duration,
+          event.time,
+          event.velocity ? (event.velocity / 127) * Tone.dbToGain(profile.chord) : Tone.dbToGain(profile.chord)
+        );
+      }
+    }
+  } else {
+    // smplr を使用
+    const effectiveVelocity = Math.round(((event.velocity ?? 90) / 127) * profile.chord);
+    provider.playChord(instrumentId, event.notes, {
+      velocity: effectiveVelocity,
+      duration: event.duration,
+      time: event.time,
+    });
+  }
+}
+
+/**
+ * 楽器の選択状態に応じて、smplr または Tone.js のシンセでベース音を再生する
+ */
+export function playUnifiedBass(note: string, duration: number, time: number, velocity: number = 80): void {
+  const store = useStore.getState();
+  const instrumentId = store.activeInstrumentId;
+  const provider = getSmplrProvider();
+  const profile = getVolumeProfile(instrumentId);
+
+  if (instrumentId === 'synth-fallback' || !provider.isLoaded(instrumentId)) {
+    const bassSynth = getBassSynth();
+    if (bassSynth) {
+      const gain = Tone.dbToGain(profile.bass);
+      bassSynth.triggerAttackRelease(note, duration, time, (velocity / 127) * gain);
+    }
+  } else {
+    // smplr を使用 (和音と同じ楽器を低域で使用)
+    const effectiveVelocity = Math.round((velocity / 127) * profile.bass);
+    provider.playNote(instrumentId, note, {
+      velocity: effectiveVelocity,
+      duration,
+      time,
+    });
+  }
+}
+
+/**
+ * 楽器の選択状態に応じて、smplr または Tone.js のシンセでメロディを再生する
+ */
+export async function playUnifiedMelody(
+  note: string | number,
+  options: { duration: number; time: number; velocity?: number }
+): Promise<void> {
+  const store = useStore.getState();
+  const instrumentId = store.activeInstrumentId;
+  const provider = getSmplrProvider();
+  const profile = getVolumeProfile(instrumentId);
+
+  if (instrumentId === 'synth-fallback' || !provider.isLoaded(instrumentId)) {
+    const { getMelodySynth } = await import('./engine');
+    const melodySynth = getMelodySynth();
+    if (melodySynth) {
+      const noteName = typeof note === 'number' ? Tone.Frequency(note, 'midi').toNote() : note;
+      const gain = Tone.dbToGain(profile.melody);
+      melodySynth.triggerAttackRelease(
+        noteName,
+        options.duration,
+        options.time,
+        ((options.velocity ?? 80) / 127) * gain
+      );
+    }
+  } else {
+    // smplr を使用 — メロディ音をアクティブな楽器で再生
+    const effectiveVelocity = Math.round(((options.velocity ?? 80) / 127) * profile.melody);
+    provider.playNote(instrumentId, note, {
+      velocity: effectiveVelocity,
+      duration: options.duration,
+      time: options.time,
+    });
+  }
+}
+
+/**
+ * メロディの再生を停止する
+ */
+export function stopUnifiedMelody(): void {
+  const store = useStore.getState();
+  const instrumentId = store.activeInstrumentId;
+  
+  // Tone.js のメロディシンセを停止 (engine.ts 側で管理)
+  import('./engine').then(m => {
+    const synth = m.getMelodySynth();
+    if (synth) {
+      if ('releaseAll' in synth) {
+        (synth as unknown as Tone.PolySynth).releaseAll();
+      } else {
+        (synth as unknown as Tone.Synth).triggerRelease();
+      }
+    }
+  });
+
+  // smplr を停止
+  if (instrumentId !== 'synth-fallback') {
+    getSmplrProvider().stopAll(instrumentId);
+  }
+}
+
+/**
+ * 音を即座に停止する（全てのエンジンに対して）
+ */
+export async function stopAllUnified(): Promise<void> {
+  // smplr
+  getSmplrProvider().stopAll();
+  
+  // Tone.js (Transportを止めるだけでなく、発音中の音を消す)
+  const Tone = await getTone();
+  if (Tone) {
+    const chordSynth = getChordSynth();
+    const bassSynth = getBassSynth();
+    const { getMelodySynth } = await import('./engine');
+    const melodySynth = getMelodySynth();
+    
+    if (chordSynth) {
+      if (chordSynth.name === 'PolySynth' && 'releaseAll' in chordSynth) {
+        (chordSynth as unknown as Tone.PolySynth).releaseAll();
+      } else if ('triggerRelease' in chordSynth) {
+        (chordSynth as unknown as Tone.MonoSynth).triggerRelease();
+      }
+    }
+    
+    bassSynth?.triggerRelease();
+    if (melodySynth) {
+      if ('releaseAll' in melodySynth) {
+        (melodySynth as unknown as Tone.PolySynth).releaseAll();
+      } else {
+        (melodySynth as unknown as Tone.Synth).triggerRelease();
+      }
+    }
+  }
+}

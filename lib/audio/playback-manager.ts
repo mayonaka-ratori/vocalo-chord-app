@@ -216,6 +216,9 @@ export async function startPlayback(config: PlaybackStateConfig) {
 export async function stopPlayback() {
   if (!Tone) return;
 
+  const { stopAllUnified } = await import('./unified-player');
+  await stopAllUnified();
+
   Tone.Transport.stop();
   
   if (playbackLoop) {

@@ -10,7 +10,7 @@ const CATEGORIES = [
   { id: 'recent-hit', label: '最近のヒット' },
 ];
 
-export const CategoryTabs: React.FC = () => {
+export function CategoryTabs() {
   const { categoryFilter, setCategoryFilter } = useStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 

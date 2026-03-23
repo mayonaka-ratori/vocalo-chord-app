@@ -11,7 +11,8 @@ export function usePlayback() {
   const [globalBar, setGlobalBar] = useState(0);
 
   const play = useCallback(async () => {
-    const { initAudio } = await import('@/lib/audio/engine');
+    const { initAudio, ensureAudioReady } = await import('@/lib/audio/engine');
+    await ensureAudioReady();
     await initAudio();
     setAudioInitialized(true);
 
