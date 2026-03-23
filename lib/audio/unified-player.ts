@@ -27,21 +27,26 @@ export function playUnifiedChord(event: UnifiedNoteEvent): void {
   if (instrumentId === 'synth-fallback' || !provider.isLoaded(instrumentId)) {
     const chordSynth = getChordSynth();
     if (chordSynth) {
-      if (chordSynth.name === 'PolySynth') {
-        (chordSynth as Tone.PolySynth).triggerAttackRelease(
-          event.notes,
-          event.duration,
-          event.time,
-          event.velocity ? (event.velocity / 127) * Tone.dbToGain(profile.chord) : Tone.dbToGain(profile.chord)
-        );
-      } else if ('triggerAttackRelease' in chordSynth) {
-        // MonoSynth などの場合は単音（最初の音）のみ
-        (chordSynth as Tone.MonoSynth).triggerAttackRelease(
-          event.notes[0],
-          event.duration,
-          event.time,
-          event.velocity ? (event.velocity / 127) * Tone.dbToGain(profile.chord) : Tone.dbToGain(profile.chord)
-        );
+      const velocityFactor = event.velocity ? (event.velocity / 127) : 1;
+      const gain = velocityFactor * Tone.dbToGain(profile.chord);
+
+      if ('triggerAttackRelease' in chordSynth) {
+        if (chordSynth.name === 'PolySynth') {
+          (chordSynth as Tone.PolySynth).triggerAttackRelease(
+            event.notes,
+            event.duration,
+            event.time,
+            gain
+          );
+        } else {
+          // MonoSynth などの場合は単音（最初の音）のみ
+          (chordSynth as Tone.MonoSynth).triggerAttackRelease(
+            event.notes[0],
+            event.duration,
+            event.time,
+            gain
+          );
+        }
       }
     }
   } else {
@@ -127,18 +132,27 @@ export function stopUnifiedMelody(): void {
   // Tone.js のメロディシンセを停止 (engine.ts 側で管理)
   import('./engine').then(m => {
     const synth = m.getMelodySynth();
-    if (synth) {
-      if ('releaseAll' in synth) {
-        (synth as unknown as Tone.PolySynth).releaseAll();
-      } else {
-        (synth as unknown as Tone.Synth).triggerRelease();
-      }
-    }
+    safeToneStop(synth);
   });
 
   // smplr を停止
   if (instrumentId !== 'synth-fallback') {
     getSmplrProvider().stopAll(instrumentId);
+  }
+}
+
+/**
+ * 型安全な Tone.js 停止処理
+ */
+function safeToneStop(instr: unknown): void {
+  if (!instr) return;
+  // Tone.js のシンセやノードは triggerRelease や releaseAll を持つ
+  if (typeof instr === 'object' && instr !== null) {
+     if ('releaseAll' in instr && typeof (instr as { releaseAll: unknown }).releaseAll === 'function') {
+       (instr as { releaseAll: () => void }).releaseAll();
+     } else if ('triggerRelease' in instr && typeof (instr as { triggerRelease: unknown }).triggerRelease === 'function') {
+       (instr as { triggerRelease: () => void }).triggerRelease();
+     }
   }
 }
 
@@ -150,28 +164,12 @@ export async function stopAllUnified(): Promise<void> {
   getSmplrProvider().stopAll();
   
   // Tone.js (Transportを止めるだけでなく、発音中の音を消す)
-  const Tone = await getTone();
-  if (Tone) {
-    const chordSynth = getChordSynth();
-    const bassSynth = getBassSynth();
+  const ToneModule = await getTone();
+  if (ToneModule) {
+    safeToneStop(getChordSynth() as Tone.PolySynth);
+    safeToneStop(getBassSynth());
+    
     const { getMelodySynth } = await import('./engine');
-    const melodySynth = getMelodySynth();
-    
-    if (chordSynth) {
-      if (chordSynth.name === 'PolySynth' && 'releaseAll' in chordSynth) {
-        (chordSynth as unknown as Tone.PolySynth).releaseAll();
-      } else if ('triggerRelease' in chordSynth) {
-        (chordSynth as unknown as Tone.MonoSynth).triggerRelease();
-      }
-    }
-    
-    bassSynth?.triggerRelease();
-    if (melodySynth) {
-      if ('releaseAll' in melodySynth) {
-        (melodySynth as unknown as Tone.PolySynth).releaseAll();
-      } else {
-        (melodySynth as unknown as Tone.Synth).triggerRelease();
-      }
-    }
+    safeToneStop(getMelodySynth());
   }
 }

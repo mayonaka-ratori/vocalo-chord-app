@@ -209,6 +209,8 @@ class SmplrProvider {
           ...(cache ? { storage: cache as never } : {}),
         });
         await piano.load;
+        // smplr's classes don't share a common base but have these methods.
+        // We cast to our interface for unified handling.
         return piano as unknown as ISmplrInstrument;
       }
       case 'electric-piano-cp80': {
