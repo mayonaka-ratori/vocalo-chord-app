@@ -1,20 +1,24 @@
 export default function Header() {
   return (
-    <header className="py-4 md:py-8 text-center flex flex-col items-center">
-      <h1 className="text-2xl md:text-4xl font-black tracking-tight mb-2">
-        <span className="mr-2">🎵</span>
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500">
-          ボカロ作曲アシスタント
-        </span>
-      </h1>
-      {/* PC向けサブタイトル */}
-      <p className="text-sm md:text-base text-slate-400 max-w-lg mx-auto leading-relaxed hidden sm:block">
-        有名コード進行を選んで、リズムパターンを組み合わせて、ボカロ曲のアイディアを形にしよう
-      </p>
-      {/* モバイル向けコンパクトサブタイトル */}
-      <p className="text-xs text-slate-500 sm:hidden">
-        アイディアを形にする作曲アシスタント
-      </p>
+    <header className="sticky top-0 z-50 h-12 w-full bg-voca-bg/95 backdrop-blur-lg border-b-2 border-transparent relative overflow-hidden">
+      {/* ボカコレ風グラデーションボーダーを擬似要素的に再現 */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-card" />
+      
+      <div className="max-w-5xl mx-auto h-full px-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🎵</span>
+          <h1 className="text-lg font-bold tracking-tight text-gradient-hero">
+            ボカロ作曲アシスタント
+          </h1>
+        </div>
+
+        {/* 右側に情報を置くスペース（将来用） */}
+        <div className="hidden md:block">
+          <p className="text-[10px] text-voca-text-muted font-mono tracking-widest uppercase">
+            Vocacore Chord App v1.4
+          </p>
+        </div>
+      </div>
     </header>
   );
 }

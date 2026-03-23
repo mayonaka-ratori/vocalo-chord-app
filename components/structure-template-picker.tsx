@@ -31,15 +31,17 @@ export function StructureTemplatePicker({ onClose }: StructureTemplatePickerProp
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       
       {/* モーダル本体 */}
-      <div className="absolute bottom-0 left-0 right-0 md:relative md:max-w-2xl md:w-full md:mx-auto bg-slate-900 md:border md:border-slate-700 md:rounded-2xl rounded-t-2xl max-h-[85vh] overflow-y-auto animate-slide-up shadow-2xl safe-area-inset-bottom">
-        <div className="md:hidden flex justify-center pt-3 pb-2" onClick={onClose}>
-          <div className="w-12 h-1.5 bg-slate-600 rounded-full" />
+      <div className="absolute bottom-0 left-0 right-0 md:relative md:max-w-2xl md:w-full md:mx-auto bg-voca-bg-card md:border md:border-voca-border-subtle md:rounded-3xl rounded-t-3xl max-h-[85vh] overflow-y-auto animate-slide-up shadow-2xl safe-area-inset-bottom ring-1 ring-white/10 uppercase tracking-tight">
+        <div className="md:hidden flex justify-center pt-4 pb-2" onClick={onClose}>
+          <div className="w-12 h-1.5 bg-voca-bg-elevated rounded-full" />
         </div>
 
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-slate-100 mb-0">曲の構成テンプレート</h2>
-            <button onClick={onClose} className="text-slate-400 hover:text-slate-200 w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
+        <div className="p-8">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-xl font-black text-voca-text tracking-[0.1em] flex items-center gap-3">
+              <span className="text-voca-accent-cyan text-2xl">⚡</span> 曲の構成テンプレート
+            </h2>
+            <button onClick={onClose} className="text-voca-text-sub hover:text-voca-text w-10 h-10 rounded-full bg-voca-bg-elevated flex items-center justify-center transition-all border border-voca-border-subtle/50 active:scale-90">
               ✕
             </button>
           </div>
@@ -49,27 +51,27 @@ export function StructureTemplatePicker({ onClose }: StructureTemplatePickerProp
               <button
                 key={template.id}
                 onClick={() => handleApplyTemplate(template.id)}
-                className="bg-slate-800 hover:bg-slate-700 active:scale-95 transition-all text-left p-4 rounded-xl border border-slate-700 flex flex-col gap-3 group"
+                className="bg-voca-bg-elevated hover:bg-voca-bg-section active:scale-95 transition-all text-left p-5 rounded-2xl border-2 border-voca-border-subtle flex flex-col gap-4 group hover:border-voca-accent-cyan shadow-lg"
               >
-                <span className="flex items-center gap-2">
-                  <span className="text-2xl">{template.icon}</span>
+                <span className="flex items-center gap-3">
+                  <span className="text-3xl p-3 rounded-2xl bg-voca-bg-card shadow-inner group-hover:scale-110 transition-transform">{template.icon}</span>
                   <span className="flex flex-col">
-                    <span className="font-bold text-slate-100 group-hover:text-pink-300 transition-colors">
+                    <span className="font-black text-voca-text group-hover:text-voca-accent-cyan transition-colors uppercase tracking-wider">
                       {template.name}
                     </span>
-                    <span className="text-xs text-slate-400">{template.description}</span>
+                    <span className="text-[11px] text-voca-text-muted font-bold leading-tight">{template.description}</span>
                   </span>
                 </span>
                 
                 {/* 構成マップ */}
-                <span className="flex items-center gap-1 flex-wrap bg-slate-900/50 p-2 rounded-lg">
+                <span className="flex items-center gap-1 flex-wrap bg-voca-bg-card/50 p-3 rounded-xl border border-voca-border-subtle/30">
                   {template.sectionSequence.map((seq, i) => (
                     <span key={i} className="flex items-center">
                       <span className="text-sm" title={`${getSectionIcon(seq.type)} (${seq.bars}小節)`}>
                         {getSectionIcon(seq.type)}
                       </span>
                       {i < template.sectionSequence.length - 1 && (
-                        <span className="text-slate-600 text-[10px] mx-0.5">|</span>
+                        <span className="text-voca-text-muted/30 text-[10px] mx-1">|</span>
                       )}
                     </span>
                   ))}
@@ -78,15 +80,15 @@ export function StructureTemplatePicker({ onClose }: StructureTemplatePickerProp
             ))}
           </div>
 
-          <div className="mt-6 border-t border-slate-700 pt-6">
+          <div className="mt-8 border-t border-voca-border-subtle pt-8">
             <button
               onClick={handleCustom}
-              className="w-full p-4 rounded-xl border-2 border-dashed border-slate-600 hover:border-slate-500 hover:bg-slate-800 active:scale-95 transition-all flex items-center justify-center gap-3"
+              className="w-full p-6 rounded-2xl border-2 border-dashed border-voca-border-subtle hover:border-voca-text-sub hover:bg-voca-bg-section active:scale-95 transition-all flex items-center justify-center gap-4 group"
             >
-              <span className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-bold">＋</span>
+              <span className="w-10 h-10 rounded-full bg-voca-bg-elevated group-hover:bg-voca-text-sub group-hover:text-voca-bg-card flex items-center justify-center text-voca-text-muted font-black transition-colors">＋</span>
               <span className="text-left flex flex-col">
-                <span className="font-bold text-slate-200">カスタム構成</span>
-                <span className="text-xs text-slate-400">1つのAメロから空で作る</span>
+                <span className="font-black text-voca-text uppercase tracking-widest">CUSTOM STRUCTURE</span>
+                <span className="text-[11px] text-voca-text-muted font-bold mt-0.5">1つのAメロから空で作る</span>
               </span>
             </button>
           </div>

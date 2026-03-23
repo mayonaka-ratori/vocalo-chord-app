@@ -88,12 +88,12 @@ export function SectionNav() {
               key={section.id}
               onClick={() => setActiveSection(idx)}
               onContextMenu={(e) => handleMenuClick(e, section.id)}
-              className={`flex-none group relative rounded-lg snap-start cursor-pointer transition-all flex items-center h-10 md:h-12 min-w-[80px] md:min-w-[120px] px-3 md:px-4 select-none
+              className={`flex-none group relative rounded-xl snap-start cursor-pointer transition-all flex items-center h-10 md:h-12 min-w-[80px] md:min-w-[120px] px-3 md:px-4 select-none border-2
                 ${isActive 
-                  ? 'bg-gradient-to-r from-pink-500 to-purple-500 shadow-md transform scale-100 z-10' 
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 transform scale-95 opacity-80 z-0 border border-slate-700/50'
+                  ? 'bg-gradient-hero border-white/20 shadow-glow-purple scale-100 z-10' 
+                  : 'bg-voca-bg-card text-voca-text-muted border-voca-border-subtle hover:bg-voca-bg-section hover:border-voca-text-sub scale-95 opacity-80 z-0'
                 }
-                ${isActive && isPlaying && playbackMode === 'song' ? 'animate-pulse ring-2 ring-pink-400/50' : ''}
+                ${isActive && isPlaying && playbackMode === 'song' ? 'animate-pulse' : ''}
               `}
             >
               <span className="text-lg mr-2 drop-shadow-sm">{icon}</span>
@@ -117,10 +117,10 @@ export function SectionNav() {
         {/* Add Section Button */}
         <button 
           onClick={handleAddClick}
-          className="flex-none snap-start ml-2 h-10 md:h-12 px-4 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-dashed border-slate-600 flex items-center justify-center transition-all"
+          className="flex-none snap-start ml-2 h-10 md:h-12 px-5 rounded-xl bg-voca-bg-elevated border-2 border-dashed border-voca-border-subtle text-voca-text-muted hover:text-voca-text hover:bg-voca-bg-section hover:border-voca-text-sub transition-all flex items-center justify-center font-black"
         >
-          <span className="font-bold mr-1">＋</span>
-          <span className="text-sm font-medium hidden md:inline">追加</span>
+          <span className="text-lg mr-1.5">＋</span>
+          <span className="text-[11px] uppercase tracking-widest hidden md:inline">ADD</span>
         </button>
       </div>
 
@@ -134,17 +134,17 @@ export function SectionNav() {
 
       {showAddMenu && addMenuRect && (
         <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/40 md:bg-transparent" onClick={() => setShowAddMenu(false)} />
+          <div className="absolute inset-0 bg-voca-bg/60 backdrop-blur-sm md:bg-transparent" onClick={() => setShowAddMenu(false)} />
           <div 
-            className="absolute bg-slate-800 border border-slate-600 rounded-xl shadow-2xl p-2 w-[240px] max-h-[50vh] overflow-y-auto animate-dropdown"
+            className="absolute bg-voca-bg-card border border-voca-border-subtle rounded-2xl shadow-2xl p-2 w-[240px] max-h-[60vh] overflow-y-auto animate-dropdown z-50 ring-1 ring-white/10"
             style={{
-               top: windowWidth < 768 ? 'auto' : addMenuRect.bottom + 8,
-               left: windowWidth < 768 ? 'auto' : Math.min(addMenuRect.left, windowWidth - 250),
-               bottom: windowWidth < 768 ? 20 : 'auto',
+               top: windowWidth < 768 ? 'auto' : addMenuRect.bottom + 12,
+               left: windowWidth < 768 ? 'auto' : Math.min(addMenuRect.left, windowWidth - 260),
+               bottom: windowWidth < 768 ? 24 : 'auto',
                right: windowWidth < 768 ? Math.max(20, windowWidth - addMenuRect.right) : 'auto'
             }}
           >
-            <div className="text-xs font-bold text-slate-400 px-3 py-2 mb-1 border-b border-slate-700">セクション追加</div>
+            <div className="text-[10px] font-black text-voca-text-muted px-4 py-3 mb-1 border-b border-voca-border-subtle uppercase tracking-widest">Select Section</div>
             {SECTION_TYPES.filter(type => type.type !== 'verse1-v2' && type.type !== 'verse2-v2' && type.type !== 'chorus-v2').map(type => (
               <button
                 key={type.type}

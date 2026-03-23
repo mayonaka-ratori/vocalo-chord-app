@@ -44,13 +44,13 @@ export function TransportControls() {
   return (
     <div className="hidden md:flex flex-col items-center my-8">
       {/* Control bar */}
-      <div className="flex justify-between items-center bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-inner shadow-black/20 w-full min-w-[700px]">
+      <div className="flex justify-between items-center bg-voca-bg-card/95 backdrop-blur-md p-6 rounded-2xl border border-voca-border-subtle shadow-2xl w-full min-w-[700px]">
         
         {/* Left: Randomize */}
         <div className="flex-1 flex justify-start">
           <button
             onClick={randomize}
-            className="px-6 py-3 rounded-xl font-bold transition-all border border-cyan-500/50 hover:bg-cyan-500/10 text-cyan-400 flex items-center space-x-2"
+            className="px-6 py-3 rounded-xl font-bold transition-all border border-voca-accent-cyan/50 hover:bg-voca-accent-cyan/10 text-voca-accent-cyan flex items-center space-x-2 active:scale-95"
           >
             <span>🎲 ランダム生成</span>
           </button>
@@ -59,16 +59,16 @@ export function TransportControls() {
         {/* Center: Play/Stop & Timeline & Mode */}
         <div className="flex-[2] flex flex-col items-center">
           {isStructureMode && (
-            <div className="flex bg-slate-900 rounded-full p-1 border border-slate-700 mb-4 scale-90">
+            <div className="flex bg-voca-bg-elevated rounded-full p-1 border border-voca-border-subtle mb-4 scale-90">
               <button 
                 onClick={() => setPlaybackMode('section')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${playbackMode === 'section' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${playbackMode === 'section' ? 'bg-voca-bg-card text-voca-accent-cyan border border-voca-accent-cyan/30 shadow-sm' : 'text-voca-text-muted hover:text-voca-text-sub'}`}
               >
                 🔁 セクション
               </button>
               <button 
                 onClick={() => setPlaybackMode('song')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${playbackMode === 'song' ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${playbackMode === 'song' ? 'bg-gradient-hero text-white shadow-glow-purple border border-white/20' : 'text-voca-text-muted hover:text-voca-text-sub'}`}
               >
                 ▶️ 通し再生
               </button>
@@ -78,7 +78,7 @@ export function TransportControls() {
           <div className="flex items-center gap-4 mb-4">
             <button
               onClick={stop}
-              className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700 active:scale-95 transition-all outline-none"
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-voca-bg-elevated text-voca-text-sub hover:text-voca-text hover:bg-voca-bg-section active:scale-95 transition-all outline-none border border-voca-border-subtle"
               aria-label="停止"
               title="停止 (先頭に戻る)"
             >
@@ -87,10 +87,10 @@ export function TransportControls() {
             
             <button
               onClick={toggle}
-              className={`w-16 h-16 flex items-center justify-center rounded-full text-white shadow-lg active:scale-95 transition-all outline-none ${
+              className={`w-16 h-16 flex items-center justify-center rounded-full text-white shadow-lg active:scale-95 transition-all outline-none border border-white/20 ${
                 isPlaying 
-                  ? 'bg-gradient-to-tr from-pink-600 to-purple-600' 
-                  : 'bg-gradient-to-tr from-pink-500 to-purple-500 hover:scale-105'
+                  ? 'bg-gradient-hero shadow-glow-cyan' 
+                  : 'bg-gradient-hero hover:scale-105 shadow-glow-purple'
               }`}
               aria-label={isPlaying ? '一時停止' : '再生'}
             >
@@ -101,17 +101,17 @@ export function TransportControls() {
           </div>
           
           {isStructureMode && playbackMode === 'song' && isPlaying ? (
-            <div className="text-xs text-pink-300 font-bold bg-pink-500/10 px-3 py-1 rounded-full animate-pulse border border-pink-500/20">
-              再生中: セクション {activeSectionIndex + 1}/{sections.length} — {sections[activeSectionIndex]?.label}
+            <div className="text-[10px] text-voca-accent-magenta font-black bg-voca-accent-magenta/10 px-4 py-1.5 rounded-full animate-pulse border border-voca-accent-magenta/30 uppercase tracking-widest">
+              Live: Section {activeSectionIndex + 1}/{sections.length} — {sections[activeSectionIndex]?.label}
             </div>
           ) : (
-            <div className="flex w-full max-w-[200px] h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="flex w-full max-w-[240px] h-1.5 bg-voca-bg-elevated rounded-full overflow-hidden border border-voca-border-subtle/50">
               {chords.map((_, idx) => (
                 <div 
                   key={idx} 
                   className={`flex-1 transition-all duration-100 ${
                     currentBar === idx 
-                      ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]' 
+                      ? 'bg-voca-accent-cyan shadow-glow-cyan' 
                       : 'bg-transparent'
                   }`} 
                 />
@@ -124,7 +124,7 @@ export function TransportControls() {
         <div className="flex-1 flex justify-end">
           <button
             onClick={handleMidiExport}
-            className="px-6 py-3 rounded-xl font-bold transition-all border border-green-500/50 hover:bg-green-500/10 text-green-400 flex items-center space-x-2 active:scale-95"
+            className="px-6 py-3 rounded-xl font-bold transition-all border border-voca-semantic-success/50 hover:bg-voca-semantic-success/10 text-voca-semantic-success flex items-center space-x-2 active:scale-95 shadow-sm"
           >
             <span>📥 MIDI書き出し</span>
           </button>
@@ -137,15 +137,15 @@ export function TransportControls() {
           role="status"
           aria-live="polite"
           className={`
-            mt-3 px-5 py-2.5 rounded-xl text-sm font-semibold shadow-lg
-            animate-fade-in-down transition-opacity
+            mt-4 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider shadow-2xl
+            animate-fade-in-down transition-opacity border-2
             ${toast.type === 'success'
-              ? 'bg-green-500/20 text-green-300 border border-green-500/40'
-              : 'bg-red-500/20 text-red-300 border border-red-500/40'
+              ? 'bg-voca-bg-card text-voca-semantic-success border-voca-semantic-success shadow-voca-semantic-success/20'
+              : 'bg-voca-bg-card text-voca-semantic-error border-voca-semantic-error shadow-voca-semantic-error/20'
             }
           `}
         >
-          {toast.type === 'success' ? '✅ ' : '❌ '}{toast.message}
+          {toast.type === 'success' ? '✓ ' : '✕ '}{toast.message}
         </div>
       )}
     </div>

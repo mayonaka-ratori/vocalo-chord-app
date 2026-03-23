@@ -18,31 +18,31 @@ function determineStyle(func: string): {
 } {
   if (func === 'Tonic') {
     return {
-      cardClass: 'border-l-emerald-500 bg-emerald-900/10 text-emerald-100',
-      badgeClass: 'bg-emerald-900/60 text-emerald-300 border border-emerald-700',
+      cardClass: 'border-l-voca-accent-cyan bg-voca-accent-cyan/10 text-voca-accent-cyan',
+      badgeClass: 'bg-voca-accent-cyan/20 text-voca-accent-cyan border border-voca-accent-cyan/50 shadow-glow-cyan/20',
       badgeLabel: 'T',
       badgeDesc: '安定',
     };
   }
   if (func === 'Subdominant') {
     return {
-      cardClass: 'border-l-amber-500 bg-amber-900/10 text-amber-100',
-      badgeClass: 'bg-amber-900/60 text-amber-300 border border-amber-700',
+      cardClass: 'border-l-voca-accent-magenta bg-voca-accent-magenta/10 text-voca-accent-magenta',
+      badgeClass: 'bg-voca-accent-magenta/20 text-voca-accent-magenta border border-voca-accent-magenta/50 shadow-glow-magenta/20',
       badgeLabel: 'SD',
       badgeDesc: '展開',
     };
   }
   if (func === 'Dominant') {
     return {
-      cardClass: 'border-l-blue-500 bg-blue-900/10 text-blue-100',
-      badgeClass: 'bg-blue-900/60 text-blue-300 border border-blue-700',
+      cardClass: 'border-l-voca-accent-purple bg-voca-accent-purple/10 text-voca-accent-purple',
+      badgeClass: 'bg-voca-accent-purple/20 text-voca-accent-purple border border-voca-accent-purple/50 shadow-glow-purple/20',
       badgeLabel: 'D',
       badgeDesc: '緊張',
     };
   }
   return {
-    cardClass: 'border-l-slate-600 bg-slate-800 text-slate-100',
-    badgeClass: 'bg-slate-700 text-slate-400 border border-slate-600',
+    cardClass: 'border-l-voca-text-muted bg-voca-bg-section text-voca-text-sub',
+    badgeClass: 'bg-voca-bg-elevated text-voca-text-muted border border-voca-border-subtle',
     badgeLabel: '…',
     badgeDesc: 'その他',
   };
@@ -68,18 +68,18 @@ function ChordButton({ name, func, advancedLabel, onClick }: ChordButtonProps) {
   return (
     <button
       onClick={() => onClick(name)}
-      className={`flex flex-col items-start p-3 rounded-lg border-l-4 border-t border-r border-b border-slate-700 hover:brightness-125 transition-all text-left ${cardClass}`}
+      className={`flex flex-col items-start p-4 rounded-xl border-l-[6px] border border-voca-border-subtle active:scale-95 transition-all text-left shadow-lg group ${cardClass}`}
     >
-      <div className="flex items-center gap-2 mb-1">
-        <span className="font-mono font-bold text-lg leading-none">{name}</span>
-        <span className={`px-1.5 py-0.5 rounded text-[9px] font-black ${badgeClass}`}>
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="font-mono font-black text-lg md:text-xl leading-none uppercase tracking-tighter group-hover:scale-110 transition-transform origin-left">{name}</span>
+        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest ${badgeClass}`}>
           {badgeLabel}
         </span>
       </div>
       {advancedLabel ? (
-        <span className="text-[10px] font-bold opacity-60">{advancedLabel}</span>
+        <span className="text-[10px] font-black opacity-60 uppercase tracking-widest">{advancedLabel}</span>
       ) : (
-        <span className="text-[10px] font-bold opacity-70">{badgeDesc}</span>
+        <span className="text-[10px] font-black opacity-70 uppercase tracking-widest">{badgeDesc}</span>
       )}
     </button>
   );
@@ -163,84 +163,84 @@ export default function ChordEditModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-md"
       onClick={closeChordEditor}
     >
       <div
-        className="bg-slate-900 w-full max-w-2xl md:rounded-2xl rounded-t-3xl border border-slate-700 max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up md:animate-fade-in"
+        className="bg-voca-bg-card w-full max-w-2xl md:rounded-3xl rounded-t-3xl border border-voca-border-subtle max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up md:animate-fade-in ring-1 ring-white/10"
         onClick={e => e.stopPropagation()}
       >
         {/* Drag Handle Cosmetic */}
-        <div className="w-full flex justify-center pt-3 pb-1 md:hidden">
-          <div className="w-12 h-1.5 bg-slate-700 rounded-full" />
+        <div className="w-full flex justify-center pt-4 pb-1 md:hidden">
+          <div className="w-12 h-1.5 bg-voca-bg-elevated rounded-full" />
         </div>
 
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/90 top-0 z-10 sticky">
-          <h2 className="text-xl font-bold text-slate-100">
-            {editingBarIndex + 1}小節目のコードを変更
+        <div className="px-8 py-5 border-b border-voca-border-subtle flex justify-between items-center bg-voca-bg-card/90 top-0 z-10 sticky backdrop-blur-sm">
+          <h2 className="text-xl font-black text-voca-text uppercase tracking-widest flex items-center gap-2">
+            <span className="text-voca-accent-cyan">✏️</span> BAR {editingBarIndex + 1}
           </h2>
           <button
             onClick={closeChordEditor}
-            className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold"
+            className="w-10 h-10 rounded-full bg-voca-bg-elevated text-voca-text-sub hover:text-voca-text flex items-center justify-center font-bold border border-white/5 active:scale-90 transition-all"
           >
             ✕
           </button>
         </div>
 
         {/* Mode Toggle */}
-        <div className="px-6 pt-4 flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-500 mr-1">表示モード:</span>
-          <div className="flex rounded-lg overflow-hidden border border-slate-700">
+        <div className="px-8 pt-6 flex flex-wrap items-center gap-4">
+          <span className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em]">DISPLAY MODE:</span>
+          <div className="flex rounded-xl overflow-hidden border-2 border-voca-border-subtle bg-voca-bg-elevated p-1">
             <button
               onClick={() => handleModeToggle(true)}
-              className={`px-4 py-1.5 text-sm font-bold transition-all ${
+              className={`px-5 py-1.5 text-xs font-black uppercase tracking-widest transition-all rounded-lg ${
                 isSimple
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-gradient-hero text-white shadow-glow-cyan/20'
+                  : 'text-voca-text-muted hover:text-voca-text-sub'
               }`}
             >
-              かんたん
+              SIMPLE
             </button>
             <button
               onClick={() => handleModeToggle(false)}
-              className={`px-4 py-1.5 text-sm font-bold transition-all ${
+              className={`px-5 py-1.5 text-xs font-black uppercase tracking-widest transition-all rounded-lg ${
                 !isSimple
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                  ? 'bg-gradient-hero text-white shadow-glow-cyan/20'
+                  : 'text-voca-text-muted hover:text-voca-text-sub'
               }`}
             >
-              くわしい
+              EXPERT
             </button>
           </div>
           {isSimple && (
-            <span className="text-xs text-slate-500 ml-2">色でコードの役割が分かります</span>
+            <span className="text-[10px] text-voca-text-muted font-bold ml-2">Roles are color-coded for intuitive editing</span>
           )}
         </div>
 
         {/* Scrollable Content */}
-        <div className="p-6 overflow-y-auto space-y-8">
+        <div className="p-8 overflow-y-auto space-y-10">
 
           {isSimple ? (
             /* ===== かんたんモード ===== */
             <>
               <section>
-                <h3 className="text-sm font-bold text-slate-400 mb-3 ml-1">
-                  コードを選んでください
+                <h3 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-4 px-1">
+                  Choose a chord
                 </h3>
                 {/* 凡例 */}
-                <div className="flex flex-wrap gap-3 mb-4 text-xs font-bold">
-                  <span className="flex items-center gap-1.5 text-emerald-300">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    安定（T）— 曲の軸
+                <div className="flex flex-wrap gap-4 mb-6 text-[10px] font-black uppercase tracking-wider">
+                  <span className="flex items-center gap-2 text-voca-accent-cyan">
+                    <span className="w-2.5 h-2.5 rounded-full bg-voca-accent-cyan shadow-glow-cyan" />
+                    TONIC (T) — Stable
                   </span>
-                  <span className="flex items-center gap-1.5 text-amber-300">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                    展開（SD）— 動きを出す
+                  <span className="flex items-center gap-2 text-voca-accent-magenta">
+                    <span className="w-2.5 h-2.5 rounded-full bg-voca-accent-magenta shadow-glow-magenta" />
+                    SUBDOM (SD) — Moving
                   </span>
-                  <span className="flex items-center gap-1.5 text-blue-300">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                    緊張（D）— 解決への力
+                  <span className="flex items-center gap-2 text-voca-accent-purple">
+                    <span className="w-2.5 h-2.5 rounded-full bg-voca-accent-purple shadow-glow-purple" />
+                    DOMINANT (D) — Tension
                   </span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
@@ -257,12 +257,12 @@ export default function ChordEditModal() {
 
               {/* 休符 */}
               <section>
-                <h3 className="text-sm font-bold text-slate-400 mb-3 ml-1">その他</h3>
+                <h3 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-4 px-1">Others</h3>
                 <button
                   onClick={() => handleSelect('N.C.')}
-                  className="px-6 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 hover:text-white transition-all w-full md:w-auto"
+                  className="px-8 py-4 rounded-xl border-2 border-voca-border-subtle bg-voca-bg-elevated text-voca-text-sub font-black uppercase tracking-widest hover:bg-voca-bg-section hover:text-voca-text hover:border-voca-accent-cyan active:scale-95 transition-all w-full md:w-auto shadow-md"
                 >
-                  休符にする (N.C.)
+                  <span className="mr-2">🔇</span> No Chord (N.C.)
                 </button>
               </section>
             </>
@@ -270,8 +270,8 @@ export default function ChordEditModal() {
             /* ===== くわしいモード ===== */
             <>
               <section>
-                <h3 className="text-sm font-bold text-slate-400 mb-3 ml-1">基本コード (3和音)</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <h3 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-4 px-1">Basic Triads</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {triads.map(t => (
                     <ChordButton
                       key={`triad-${t.name}`}
@@ -285,8 +285,8 @@ export default function ChordEditModal() {
               </section>
 
               <section>
-                <h3 className="text-sm font-bold text-slate-400 mb-3 ml-1">セブンスコード (4和音)</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <h3 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-4 px-1">7th Chords</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {sevenths.map(t => (
                     <ChordButton
                       key={`7th-${t.name}`}
@@ -300,8 +300,8 @@ export default function ChordEditModal() {
               </section>
 
               <section>
-                <h3 className="text-sm font-bold text-slate-400 mb-3 ml-1">借用コード（エモいスパイス）</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <h3 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-4 px-1">Borrowed Chords</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {borrowed.map(t => (
                     <ChordButton
                       key={`borrow-${t.name}`}
@@ -315,12 +315,12 @@ export default function ChordEditModal() {
               </section>
 
               <section>
-                <h3 className="text-sm font-bold text-slate-400 mb-3 ml-1">その他</h3>
+                <h3 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-4 px-1">Others</h3>
                 <button
                   onClick={() => handleSelect('N.C.')}
-                  className="px-6 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 hover:text-white transition-all w-full md:w-auto"
+                  className="px-8 py-4 rounded-xl border-2 border-voca-border-subtle bg-voca-bg-elevated text-voca-text-sub font-black uppercase tracking-widest hover:bg-voca-bg-section hover:text-voca-text hover:border-voca-accent-cyan active:scale-95 transition-all w-full md:w-auto shadow-md"
                 >
-                  休符にする (N.C.)
+                  <span className="mr-2">🔇</span> No Chord (N.C.)
                 </button>
               </section>
             </>
@@ -329,12 +329,12 @@ export default function ChordEditModal() {
         </div>
 
         {/* Mobile Close Button */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900 md:hidden pb-safe">
+        <div className="p-6 border-t border-voca-border-subtle bg-voca-bg-card md:hidden pb-safe-offset-4">
           <button
             onClick={closeChordEditor}
-            className="w-full py-3 bg-slate-800 rounded-lg text-slate-300 font-bold"
+            className="w-full py-4 bg-voca-bg-elevated rounded-2xl text-voca-text font-black uppercase tracking-[0.2em] border-2 border-voca-border-subtle active:scale-95 transition-all"
           >
-            閉じる
+            CLOSE
           </button>
         </div>
       </div>

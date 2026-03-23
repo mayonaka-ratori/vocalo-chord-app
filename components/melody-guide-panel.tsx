@@ -48,65 +48,65 @@ export function MelodyGuidePanel() {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 md:static md:z-auto bg-slate-900/95 backdrop-blur-xl md:bg-slate-900/40 border-t border-slate-700/80 md:border md:border-slate-800 shadow-[0_-8px_24px_rgba(0,0,0,0.6)] md:shadow-none rounded-t-3xl md:rounded-2xl animate-in slide-in-from-bottom-full duration-300 pb-[max(env(safe-area-inset-bottom),20px)] md:pb-6 md:mt-6 overflow-hidden">
-      <div className="p-5 md:p-6">
+    <div className="fixed inset-x-0 bottom-0 z-40 md:static md:z-auto bg-voca-bg-card/95 backdrop-blur-xl md:bg-voca-bg-card/40 border-t border-voca-border-subtle md:border md:border-voca-border-subtle shadow-[0_-12px_32px_rgba(0,0,0,0.6)] md:shadow-none rounded-t-3xl md:rounded-2xl animate-in slide-in-from-bottom-full duration-300 pb-[max(env(safe-area-inset-bottom),20px)] md:pb-8 md:mt-8 overflow-hidden">
+      <div className="p-6 md:p-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-3">
-            <h3 className="text-xl font-bold flex items-center gap-2 text-slate-100">
-              <span className="text-blue-400">🎵</span>
+        <div className="flex justify-between items-start mb-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <h3 className="text-xl font-black flex items-center gap-3 text-voca-text uppercase tracking-widest">
+              <span className="text-voca-accent-cyan text-2xl">🎵</span>
               メロディガイド
             </h3>
             <button
               onClick={() => toggleBlueNotes()}
-              className={`px-3 py-1 rounded-full text-[10px] md:text-xs font-bold border transition-all flex items-center gap-1.5 ${
+              className={`px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black border-2 transition-all flex items-center gap-2 uppercase tracking-wider ${
                 includeBlueNotes 
-                  ? 'bg-blue-600/20 border-blue-500 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.3)]' 
-                  : 'bg-slate-800 border-slate-700 text-slate-500'
+                  ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan text-voca-accent-cyan shadow-glow-cyan/20' 
+                  : 'bg-voca-bg-elevated border-voca-border-subtle text-voca-text-muted hover:border-voca-text-sub'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${includeBlueNotes ? 'bg-blue-400 animate-pulse' : 'bg-slate-600'}`} />
-              🎸 ブルーノート {includeBlueNotes ? 'ON' : 'OFF'}
+              <div className={`w-2 h-2 rounded-full ${includeBlueNotes ? 'bg-voca-accent-cyan shadow-glow-cyan animate-pulse' : 'bg-voca-bg-section'}`} />
+              BLUE NOTE {includeBlueNotes ? 'ON' : 'OFF'}
             </button>
           </div>
           <button 
             onClick={() => toggleMelodyGuide()} 
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors shadow-inner"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-voca-bg-elevated text-voca-text-sub hover:text-voca-text hover:bg-voca-bg-section transition-all border border-voca-border-subtle/50 active:scale-90 shadow-sm"
           >
             ✕
           </button>
         </div>
 
         {/* Chord Tone Visualizer (Mini Piano Roll) */}
-        <div className="mb-8">
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 px-1">コード構成音の確認</h4>
-          <div className="flex md:grid md:grid-cols-4 lg:grid-cols-8 gap-3 overflow-x-auto pb-2 scrollbar-hide md:overflow-visible snap-x">
+        <div className="mb-10">
+          <h4 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-4 px-1">Check Chord Tones</h4>
+          <div className="flex md:grid md:grid-cols-4 lg:grid-cols-8 gap-4 overflow-x-auto pb-4 scrollbar-hide md:overflow-visible snap-x">
             {chordToneInfos.map((info, i) => {
               const isActive = currentBar === i;
               return (
                 <div 
                   key={`guide-chord-${i}`}
-                  className={`snap-center shrink-0 w-[110px] md:w-auto bg-slate-800/80 border rounded-xl p-3 transition-all duration-300 ${
+                  className={`snap-center shrink-0 w-[120px] md:w-auto bg-voca-bg-elevated/50 border-2 rounded-2xl p-4 transition-all duration-300 ${
                     isActive 
-                      ? 'border-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.3)] bg-slate-800 animate-[pulse_3s_ease-in-out_infinite]' 
-                      : 'border-slate-700 hover:border-slate-500'
+                      ? 'border-voca-tone-pink shadow-glow-pink bg-voca-bg-card active-scale-105 z-10' 
+                      : 'border-voca-border-subtle hover:border-voca-text-sub'
                   }`}
                 >
-                  <div className="text-sm font-bold text-slate-200 mb-3 flex justify-between items-center">
-                    <span>{info.chord}</span>
-                    <span className="text-[10px] text-slate-500">{i + 1}</span>
+                  <div className="text-sm font-black text-voca-text mb-4 flex justify-between items-center font-mono">
+                    <span className="tracking-tighter">{info.chord}</span>
+                    <span className="text-[10px] text-voca-text-muted opacity-50">{i + 1}</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex flex-col gap-2.5">
                     {info.tones.map((_, idx) => (
-                      <div key={`tone-dot-${idx}`} className="flex items-center gap-1.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-[0_0_6px_rgba(236,72,153,0.6)]" />
-                        <span className="text-[10px] font-mono text-slate-400">{info.toneNames[idx].replace(/\d/, '')}</span>
+                      <div key={`tone-dot-${idx}`} className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-voca-tone-pink shadow-glow-pink" />
+                        <span className="text-[10px] font-black font-mono text-voca-text-sub lowercase">{info.toneNames[idx].replace(/\d/, '')}</span>
                       </div>
                     ))}
                     {includeBlueNotes && info.blueNotes.map((_, idx) => (
-                      <div key={`blue-dot-${idx}`} className="flex items-center gap-1.5 opacity-80">
-                        <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.6)] border border-blue-300/30 border-dashed" />
-                        <span className="text-[10px] font-mono text-blue-300">{['b3','b5','b7'][idx]}</span>
+                      <div key={`blue-dot-${idx}`} className="flex items-center gap-2 opacity-90">
+                        <div className="w-2.5 h-2.5 rounded-full bg-voca-accent-cyan shadow-glow-cyan border border-white/20" />
+                        <span className="text-[10px] font-black font-mono text-voca-accent-cyan lowercase">{['b3','b5','b7'][idx]}</span>
                       </div>
                     ))}
                   </div>
@@ -118,8 +118,8 @@ export function MelodyGuidePanel() {
 
         {/* Melody Pattern Selector */}
         <div>
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 px-1">メロディパターンの選択</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 overflow-y-auto max-h-[40vh] md:max-h-none pr-1">
+          <h4 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-5 px-1">Select Melody Pattern</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 overflow-y-auto max-h-[40vh] md:max-h-none pr-1">
             {melodyPhrases.map((phrase) => {
               const isSelected = activeMelodyPatternId === phrase.patternId;
               const rhythmIcons = phrase.patternId.includes('arpeggio') ? '♪ ♪ ♪ ♪' : '♩ ♩ ♩ ♩';
@@ -128,41 +128,41 @@ export function MelodyGuidePanel() {
                 <button
                   key={phrase.id}
                   onClick={() => setActiveMelodyPattern(phrase.patternId)}
-                  className={`text-left border transition-all rounded-2xl p-4 group relative overflow-hidden ${
+                  className={`text-left border-2 transition-all rounded-3xl p-6 group relative overflow-hidden active:scale-[0.98] ${
                     isSelected 
-                      ? 'bg-slate-800 border-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.2)]' 
-                      : 'bg-slate-800/40 border-slate-800 hover:border-slate-600 hover:bg-slate-800/60'
+                      ? 'bg-voca-bg-card border-voca-accent-magenta shadow-glow-magenta/20' 
+                      : 'bg-voca-bg-elevated/40 border-voca-border-subtle hover:border-voca-text-sub hover:bg-voca-bg-elevated/60'
                   }`}
                 >
                   {/* Background Highlight */}
                   {isSelected && (
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/10 rounded-full -mr-8 -mt-8 blur-2xl" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-voca-accent-magenta/5 rounded-full -mr-12 -mt-12 blur-3xl" />
                   )}
 
-                  <div className="flex items-start gap-3 mb-2 relative z-10">
-                    <span className={`text-2xl p-2 rounded-xl bg-slate-900/80 shadow-inner group-hover:scale-110 transition-transform ${isSelected ? 'text-pink-400' : 'text-slate-400'}`}>
+                  <div className="flex items-start gap-4 mb-3 relative z-10">
+                    <span className={`text-3xl p-3 rounded-2xl bg-voca-bg-card shadow-inner group-hover:scale-110 transition-transform ${isSelected ? 'text-voca-accent-magenta' : 'text-voca-text-sub'}`}>
                       {phrase.icon}
                     </span>
-                    <div>
-                      <h5 className={`font-bold text-sm md:text-base ${isSelected ? 'text-white' : 'text-slate-200'}`}>
+                    <div className="pt-1">
+                      <h5 className={`font-black text-sm md:text-base uppercase tracking-wider ${isSelected ? 'text-voca-text' : 'text-voca-text-sub'}`}>
                         {phrase.name}
                       </h5>
-                      <p className="text-[10px] md:text-xs text-slate-400 line-clamp-1">{phrase.description}</p>
+                      <p className="text-[10px] md:text-xs text-voca-text-muted font-bold mt-0.5 line-clamp-1">{phrase.description}</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap justify-between items-center mt-3 relative z-10 gap-2">
-                    <span className="text-xs font-mono text-slate-500 tracking-widest bg-slate-900/50 px-2 py-0.5 rounded tracking-[0.2em]">
+                  <div className="flex flex-wrap justify-between items-center mt-4 relative z-10 gap-3">
+                    <span className="text-[10px] font-black font-mono text-voca-text-muted bg-voca-bg-card px-2.5 py-1 rounded-lg tracking-[0.3em] shadow-inner opacity-70 border border-voca-border-subtle/50">
                       {rhythmIcons}
                     </span>
                     
-                    <div className="flex gap-2">
+                    <div className="flex gap-2.5">
                       <button 
                         onClick={(e) => handleCombinedPreview(e, phrase.patternId)}
-                        className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition-all active:scale-90 flex items-center gap-1 ${
+                        className={`px-3 py-1.5 rounded-xl text-[10px] font-black border-2 transition-all active:scale-90 flex items-center gap-2 uppercase tracking-tight ${
                           isSelected && isFullPlaying && isPreviewingMelody
-                            ? 'bg-indigo-600/80 border-indigo-400 text-white'
-                            : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
+                            ? 'bg-voca-accent-purple border-voca-accent-purple text-white shadow-glow-purple'
+                            : 'bg-voca-bg-card border-voca-border-subtle text-voca-text-sub hover:border-voca-text-sub hover:text-voca-text'
                         }`}
                         title="コードと一緒に試聴"
                       >
@@ -171,18 +171,18 @@ export function MelodyGuidePanel() {
 
                       <button 
                         onClick={(e) => handlePreview(e, phrase.patternId)}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all active:scale-90 flex items-center gap-1.5 ${
+                        className={`px-4 py-1.5 rounded-xl text-[10px] font-black border-2 transition-all active:scale-90 flex items-center gap-2 uppercase tracking-widest ${
                           isPreviewingMelody && previewingPatternId === phrase.patternId
-                            ? 'bg-amber-600 border-amber-400 text-white animate-pulse' 
+                            ? 'bg-voca-accent-magenta border-voca-accent-magenta text-white shadow-glow-magenta animate-pulse border-none' 
                             : isSelected 
-                              ? 'bg-gradient-to-r from-pink-500 to-rose-500 border-none text-white shadow-lg' 
-                              : 'bg-slate-900 border-slate-700 text-slate-400'
+                              ? 'bg-gradient-hero border-none text-white shadow-glow-cyan' 
+                              : 'bg-voca-bg-card border-voca-border-subtle text-voca-text-sub'
                         }`}
                       >
                         {isPreviewingMelody && previewingPatternId === phrase.patternId ? (
-                          <><span>⏹</span><span>停止</span></>
+                          <><span>⏹</span><span>STOP</span></>
                         ) : (
-                          <><span>▶</span><span>試聴</span></>
+                          <><span>▶</span><span>PLAY</span></>
                         )}
                       </button>
                     </div>

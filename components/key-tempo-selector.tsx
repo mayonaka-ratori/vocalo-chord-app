@@ -53,7 +53,7 @@ export default function KeyTempoSelector() {
   };
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-sm rounded-xl p-4 md:p-6 mb-6 shadow-xl border border-slate-800">
+    <div className="bg-voca-bg-card backdrop-blur-sm rounded-2xl p-4 md:p-6 mb-6 border border-voca-border-subtle shadow-xl">
       <div className="flex flex-col gap-6">
         
         {/* キー選択 */}
@@ -71,8 +71,8 @@ export default function KeyTempoSelector() {
                   onClick={() => setKey(opt.value)}
                   className={`px-3 py-2 text-sm font-bold rounded-lg transition-all min-w-[3rem] ${
                     isActive
-                      ? "bg-purple-500/20 text-purple-300 border border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.3)]"
-                      : "bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:text-slate-200"
+                      ? "bg-voca-accent-cyan/10 text-voca-accent-cyan border border-voca-accent-cyan shadow-glow-cyan"
+                      : "bg-voca-bg-elevated text-voca-text-sub border border-voca-border-subtle hover:bg-voca-bg-section hover:text-voca-text hover:border-voca-accent-cyan"
                   }`}
                 >
                   {opt.label}
@@ -123,7 +123,7 @@ export default function KeyTempoSelector() {
               max={BPM_MAX}
               value={tempo}
               onChange={handleSliderChange}
-              className="w-full accent-purple-500 h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+              className="w-full accent-voca-accent-cyan h-2 bg-voca-bg-elevated rounded-lg appearance-none cursor-pointer"
             />
             <span className="text-xs text-slate-500 whitespace-nowrap">🐇 速め</span>
           </div>

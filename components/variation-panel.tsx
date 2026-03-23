@@ -45,62 +45,62 @@ export function VariationPanel() {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 md:static md:z-auto bg-slate-900/95 backdrop-blur-xl md:bg-transparent border-t border-slate-700/80 md:border-none shadow-[0_-8px_16px_rgba(0,0,0,0.5)] md:shadow-none rounded-t-2xl md:rounded-none animate-in slide-in-from-bottom-full md:slide-in-from-bottom-4 duration-300 pb-[max(env(safe-area-inset-bottom),80px)] md:pb-0 md:mt-4">
-      <div className="p-4 md:p-0">
-        <div className="flex justify-between items-center mb-4">
+    <div className="fixed inset-x-0 bottom-0 z-40 md:static md:z-auto bg-voca-bg-card/95 backdrop-blur-xl md:bg-voca-bg-card/40 border-t border-voca-border-subtle md:border md:border-voca-border-subtle shadow-[0_-12px_32px_rgba(0,0,0,0.6)] md:shadow-none rounded-t-3xl md:rounded-2xl animate-in slide-in-from-bottom-full md:slide-in-from-bottom-4 duration-300 pb-[max(env(safe-area-inset-bottom),80px)] md:pb-6 md:mt-6 overflow-hidden">
+      <div className="p-5 md:p-6">
+        <div className="flex justify-between items-start mb-6">
           <div>
-            <h3 className="text-xl font-bold flex items-center gap-2 text-slate-100">
-              <span className="text-pink-400">✨</span>
+            <h3 className="text-xl font-black flex items-center gap-2 text-voca-text uppercase tracking-wider">
+              <span className="text-voca-accent-cyan text-2xl">✨</span>
               アレンジ提案
             </h3>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-xs text-voca-text-muted mt-1 font-bold">
               コードを少し変えるだけで雰囲気がガラッと変わります
             </p>
           </div>
           <button 
             onClick={handleClose} 
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-voca-bg-elevated text-voca-text-sub hover:text-voca-text hover:bg-voca-bg-section transition-all border border-voca-border-subtle/50 active:scale-90"
           >
             ✕
           </button>
         </div>
 
         {variations.length === 0 ? (
-          <div className="text-slate-400 text-sm text-center py-8">
-            この進行に対する提案はありません。
+          <div className="text-voca-text-muted text-xs font-bold text-center py-12 uppercase tracking-widest bg-voca-bg-elevated/30 rounded-2xl border border-dashed border-voca-border-subtle">
+            No suggestions for this progression.
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row gap-4 overflow-x-auto snap-x snap-mandatory md:pb-4 max-h-[50vh] min-h-[50vh] md:min-h-0 md:max-h-none overflow-y-auto md:overflow-y-visible">
+          <div className="flex flex-col md:flex-row gap-5 overflow-x-auto snap-x snap-mandatory md:pb-4 max-h-[50vh] min-h-[40vh] md:min-h-0 md:max-h-none overflow-y-auto md:overflow-y-visible pr-1">
             {variations.map(variation => (
               <div 
                 key={variation.id} 
-                className="snap-start shrink-0 w-full md:w-[280px] md:max-w-[320px] bg-slate-800 border border-slate-700 rounded-xl p-4 md:hover:border-slate-500 md:hover:shadow-lg transition-all flex flex-col"
+                className="snap-start shrink-0 w-full md:w-[280px] md:max-w-[320px] bg-voca-bg-elevated/80 border-2 border-voca-border-subtle rounded-2xl p-5 md:hover:border-voca-accent-cyan md:hover:shadow-glow-cyan/20 transition-all flex flex-col group relative overflow-hidden"
               >
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl leading-none">{variation.icon}</span>
-                    <span className="font-bold text-slate-200">{variation.name}</span>
+                <div className="flex justify-between items-start mb-4 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl p-2 rounded-xl bg-voca-bg-card shadow-inner opacity-90 group-hover:scale-110 transition-transform">{variation.icon}</span>
+                    <span className="font-black text-voca-text uppercase tracking-wider">{variation.name}</span>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 shrink-0">
+                  <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-voca-accent-magenta/10 text-voca-accent-magenta border border-voca-accent-magenta/30 shrink-0 uppercase tracking-widest shadow-sm">
                     {variation.moodShift}
                   </span>
                 </div>
 
                 {/* コードDiff可視化 */}
-                <div className="flex gap-1 mb-3 bg-slate-900/50 p-2 rounded-lg overflow-x-auto">
+                <div className="flex gap-1.5 mb-4 bg-voca-bg-card/50 p-2.5 rounded-xl overflow-x-auto border border-voca-border-subtle/30 shadow-inner relative z-10">
                   {variation.modifiedChords.map((chord, i) => {
                     const isChanged = variation.changedIndices.includes(i);
                     return (
                       <div 
                         key={i} 
-                        className={`flex-1 shrink-0 min-w-[3rem] text-center rounded flex flex-col items-center justify-center py-1.5 border transition-colors ${
-                          isChanged ? 'bg-amber-500/20 border-amber-500/50 text-amber-400' : 'bg-slate-700/50 border-slate-600/50 text-slate-300'
+                        className={`flex-1 shrink-0 min-w-[3.5rem] text-center rounded-lg flex flex-col items-center justify-center py-2 border transition-all ${
+                          isChanged ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan text-voca-accent-cyan shadow-glow-cyan/20' : 'bg-voca-bg-elevated/50 border-voca-border-subtle/50 text-voca-text-muted opacity-70'
                         }`}
                       >
-                        <span className="text-sm font-bold font-mono">{chord}</span>
+                        <span className="text-sm font-black font-mono">{chord}</span>
                         {isChanged && (
-                          <span className="text-[9px] text-amber-500/80 font-mono mt-0.5 truncate max-w-full">
-                            ← {variation.originalChords[i]}
+                          <span className="text-[8px] text-voca-accent-cyan/80 font-black font-mono mt-1 px-1 border-t border-voca-accent-cyan/20 w-full truncate text-center">
+                            WAS {variation.originalChords[i]}
                           </span>
                         )}
                       </div>
@@ -108,24 +108,27 @@ export function VariationPanel() {
                   })}
                 </div>
 
-                <p className="text-xs text-slate-400 mb-4 h-auto md:h-8 overflow-hidden text-ellipsis md:line-clamp-2 grow">
+                <p className="text-[11px] text-voca-text-muted mb-5 h-auto md:h-10 overflow-hidden leading-relaxed font-bold grow relative z-10">
                   {variation.description}
                 </p>
 
-                <div className="flex gap-2 mt-auto">
+                <div className="flex gap-2.5 mt-auto relative z-10">
                   <button 
                     onClick={() => previewVariation(variation.id)}
-                    className="flex-1 py-2 text-sm font-bold rounded-lg border border-slate-600 bg-slate-700 text-slate-200 hover:bg-slate-600 active:scale-95 transition-all flex items-center justify-center gap-1"
+                    className="flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl border-2 border-voca-border-subtle bg-voca-bg-card text-voca-text-sub hover:bg-voca-bg-section hover:text-voca-text hover:border-voca-text-sub active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                     <span>🎵</span> 試聴
                   </button>
                   <button 
                     onClick={() => handleApply(variation.id)}
-                    className="flex-1 py-2 text-sm font-bold rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:from-pink-400 hover:to-purple-400 shadow-[0_0_10px_rgba(236,72,153,0.3)] hover:shadow-[0_0_15px_rgba(236,72,153,0.5)] active:scale-95 transition-all flex items-center justify-center gap-1"
+                    className="flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl bg-gradient-hero text-white border-none shadow-glow-purple hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                     <span>✅</span> これにする
                   </button>
                 </div>
+
+                {/* Background highlihgt */}
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-voca-accent-cyan/5 rounded-full blur-3xl group-hover:bg-voca-accent-cyan/10 transition-colors" />
               </div>
             ))}
           </div>
@@ -133,8 +136,8 @@ export function VariationPanel() {
       </div>
 
       {toast && (
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-emerald-500/90 text-white px-6 py-3 rounded-full font-bold shadow-2xl border border-emerald-400 animate-in fade-in zoom-in duration-300">
-          {toast}
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-voca-bg-card border-2 border-voca-semantic-success text-voca-semantic-success px-8 py-4 rounded-3xl font-black uppercase tracking-widest shadow-2xl animate-in fade-in zoom-in duration-300 shadow-voca-semantic-success/20">
+          ✓ {toast}
         </div>
       )}
     </div>

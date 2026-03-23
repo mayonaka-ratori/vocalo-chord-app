@@ -66,10 +66,10 @@ export function MainAppContent() {
 
         <TransportControls />
 
-        <div className="flex justify-center pt-8 border-t border-slate-800">
+        <div className="flex justify-center pt-8 border-t border-voca-border-subtle">
           <button 
             onClick={handleDisableStructureMode}
-            className="text-sm font-bold text-slate-500 hover:text-red-400 transition-colors"
+            className="text-sm font-bold text-voca-text-muted hover:text-voca-semantic-error transition-colors"
           >
             📝 シンプルモードに戻る (構成を破棄)
           </button>
@@ -90,7 +90,7 @@ export function MainAppContent() {
       <div className="flex justify-center my-8">
         <button 
           onClick={() => setShowPicker(true)}
-          className="flex items-center gap-2 px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white rounded-xl font-bold shadow-lg shadow-purple-500/20 active:scale-95 transition-all text-lg"
+          className="flex items-center gap-2 px-8 py-4 bg-voca-accent-cyan hover:bg-voca-accent-cyan/90 text-voca-bg rounded-2xl font-black shadow-lg shadow-voca-accent-cyan/20 active:scale-95 transition-all text-lg"
         >
           <span>🏗️</span> 曲の構成を作る
         </button>

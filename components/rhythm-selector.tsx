@@ -23,14 +23,14 @@ export const RhythmSelector: React.FC = () => {
       <button
         key={p.id}
         onClick={() => onSelect(p.id)}
-        className={`w-full text-left p-3 rounded-xl border text-sm transition-colors ${
+        className={`w-full text-left p-4 rounded-xl border text-sm transition-all duration-200 active:scale-[0.98] ${
           selectedId === p.id 
-            ? 'border-orange-400 bg-orange-400/10' 
-            : 'border-slate-700 bg-slate-800/50 hover:bg-slate-800'
+            ? 'border-voca-accent-cyan bg-voca-accent-cyan/10 shadow-glow-cyan' 
+            : 'border-voca-border-subtle bg-voca-bg-elevated hover:bg-voca-bg-section hover:border-voca-accent-cyan/30'
         }`}
       >
-        <div className="font-bold text-slate-100">{p.name}</div>
-        <div className="text-xs text-slate-400 mt-1">{p.description}</div>
+        <div className={`font-bold ${selectedId === p.id ? 'text-voca-accent-cyan' : 'text-voca-text'}`}>{p.name}</div>
+        <div className="text-[11px] text-voca-text-muted mt-1 leading-tight">{p.description}</div>
       </button>
     ));
   };
@@ -38,32 +38,32 @@ export const RhythmSelector: React.FC = () => {
   return (
     <div className="mb-8">
       <div className="flex items-end justify-between mb-4">
-        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-100">
-          <span className="text-pink-400">✧</span>
+        <h2 className="text-sm font-black text-voca-text-sub uppercase tracking-widest flex items-center gap-2">
+          <span className="text-voca-accent-cyan text-lg">✧</span>
           リズム・伴奏の設定
         </h2>
         {isStructureMode && (
-          <div className="text-xs text-slate-400 pb-1 hidden md:block">
-            このセクションのリズム設定
+          <div className="text-[10px] text-voca-text-muted font-bold px-2 py-0.5 bg-voca-bg-elevated rounded border border-voca-border-subtle hidden md:block">
+            IN SECTION
           </div>
         )}
       </div>
 
-      <section className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+      <section className="bg-voca-bg-card border border-voca-border-subtle rounded-2xl overflow-hidden shadow-xl">
         {/* Mobile Tabs */}
-        <div className="flex md:hidden border-b border-slate-800">
+        <div className="flex md:hidden border-b border-voca-border-subtle bg-voca-bg-elevated/50">
           {[
             { id: 'drum', label: '🥁 ドラム' },
             { id: 'bass', label: '🎸 ベース' },
-            { id: 'backing', label: '🎹 バッキング' }
+            { id: 'backing', label: '🎹 伴奏' }
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as 'drum'|'bass'|'backing')}
-              className={`flex-1 py-3 text-sm font-bold transition-colors ${
+              className={`flex-1 py-3.5 text-xs font-black transition-all border-b-2 uppercase tracking-tight ${
                 activeTab === tab.id
-                  ? 'text-orange-400 border-b-2 border-orange-400'
-                  : 'text-slate-400'
+                  ? 'text-voca-accent-cyan border-voca-accent-cyan bg-voca-accent-cyan/5 shadow-[inset_0_-4px_8px_rgba(0,229,255,0.05)]'
+                  : 'text-voca-text-muted border-transparent'
               }`}
             >
               {tab.label}
@@ -72,9 +72,9 @@ export const RhythmSelector: React.FC = () => {
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-5">
           {/* Mobile View: Single Category */}
-          <div className="md:hidden space-y-2">
+          <div className="md:hidden space-y-3">
             {activeTab === 'drum' && renderCards(drumPatterns, drumPatternId, setDrumPattern)}
             {activeTab === 'bass' && renderCards(bassPatterns, bassPatternId, setBassPattern)}
             {activeTab === 'backing' && renderCards(backingPatterns, backingPatternId, setBackingPattern)}
@@ -83,20 +83,20 @@ export const RhythmSelector: React.FC = () => {
           {/* Desktop View: 3 Columns Grid */}
           <div className="hidden md:grid grid-cols-3 gap-6">
             <div>
-              <h3 className="text-sm font-bold text-slate-300 mb-3">🥁 ドラムパターン</h3>
-              <div className="grid grid-cols-1 gap-2">
+              <h3 className="text-[10px] font-black text-voca-text-muted mb-4 uppercase tracking-widest px-1">🥁 DRUM PATTERN</h3>
+              <div className="grid grid-cols-1 gap-2.5">
                 {renderCards(drumPatterns, drumPatternId, setDrumPattern)}
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-300 mb-3">🎸 ベースパターン</h3>
-              <div className="grid grid-cols-1 gap-2">
+              <h3 className="text-[10px] font-black text-voca-text-muted mb-4 uppercase tracking-widest px-1">🎸 BASS PATTERN</h3>
+              <div className="grid grid-cols-1 gap-2.5">
                 {renderCards(bassPatterns, bassPatternId, setBassPattern)}
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-300 mb-3">🎹 バッキングパターン</h3>
-              <div className="grid grid-cols-1 gap-2">
+              <h3 className="text-[10px] font-black text-voca-text-muted mb-4 uppercase tracking-widest px-1">🎹 BACKING PATTERN</h3>
+              <div className="grid grid-cols-1 gap-2.5">
                 {renderCards(backingPatterns, backingPatternId, setBackingPattern)}
               </div>
             </div>

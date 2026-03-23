@@ -121,7 +121,7 @@ export default function ChordTimeline() {
       <div
         ref={containerRef}
         className={`grid ${colsClass} gap-3 md:gap-4 mb-4 overflow-x-auto p-4 rounded-2xl border transition-colors duration-300 ${
-          isPreviewing ? 'bg-amber-950/20 border-amber-500/30' : 'bg-slate-900/40 border-slate-800'
+          isPreviewing ? 'bg-voca-semantic-warning/5 border-voca-semantic-warning/30' : 'bg-voca-bg-card/40 border-voca-border-subtle'
         }`}
       >
         {displayChords.map((chord, i) => {
@@ -134,14 +134,14 @@ export default function ChordTimeline() {
           const { borderClass, badgeClass, badgeLabel } = getFuncStyle(func);
 
           // カスタムスタイル
-          let buttonClass = `relative aspect-square md:aspect-auto md:w-[88px] md:h-[88px] flex flex-col items-center justify-center rounded-xl border-2 transition-all bg-slate-900 group ${borderClass} `;
+          let buttonClass = `relative aspect-square md:aspect-auto md:w-[88px] md:h-[88px] flex flex-col items-center justify-center rounded-xl border-2 transition-all bg-voca-bg-elevated group ${borderClass} `;
           
           if (isPreviewChanged) {
-             buttonClass += 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.4)] animate-[pulse_2s_ease-in-out_infinite] md:scale-105';
+             buttonClass += 'border-voca-semantic-warning bg-voca-semantic-warning/10 shadow-glow-magenta animate-[pulse_2s_ease-in-out_infinite] md:scale-105';
           } else if (isActivePlay) {
-             buttonClass += 'border-pink-500 bg-pink-500/10 shadow-[0_0_15px_rgba(236,72,153,0.4)] md:scale-105';
+             buttonClass += 'border-voca-accent-cyan bg-voca-accent-cyan/10 shadow-glow-cyan md:scale-105';
           } else {
-             buttonClass += 'hover:bg-slate-800 hover:border-slate-500 active:scale-95';
+             buttonClass += 'hover:bg-voca-bg-section hover:border-voca-text-sub active:scale-95';
           }
 
           return (
@@ -152,13 +152,13 @@ export default function ChordTimeline() {
               className={buttonClass}
             >
               {/* 小節番号 */}
-              <span className="absolute top-1 left-2 text-[10px] text-slate-500 font-bold">
+              <span className="absolute top-1 left-2 text-[10px] text-voca-text-muted font-bold">
                 {i + 1}
               </span>
               
               {/* コード名 */}
               <span className={`font-mono font-bold text-lg md:text-xl
-                ${isActivePlay ? 'text-pink-100' : 'text-slate-100'}
+                ${isActivePlay ? 'text-voca-accent-cyan' : 'text-voca-text'}
               `}>
                 {chord}
               </span>
@@ -176,14 +176,14 @@ export default function ChordTimeline() {
                   {chordToneInfos[i].tones.map((_, idx) => (
                     <div 
                       key={`tone-${idx}`} 
-                      className="w-1.5 h-1.5 rounded-full bg-pink-400 shadow-[0_0_4px_rgba(244,114,182,0.6)]" 
+                      className="w-1.5 h-1.5 rounded-full bg-voca-tone-pink shadow-glow-magenta" 
                       title={chordToneInfos[i].toneNames[idx]}
                     />
                   ))}
                   {includeBlueNotes && chordToneInfos[i].blueNotes.map((_, idx) => (
                     <div 
                       key={`blue-${idx}`} 
-                      className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_4px_rgba(96,165,250,0.6)] border border-blue-200/50" 
+                      className="w-1.5 h-1.5 rounded-full bg-voca-tone-blue shadow-glow-blue border border-white/20" 
                     />
                   ))}
                 </div>
@@ -197,17 +197,21 @@ export default function ChordTimeline() {
         <div className="flex flex-col md:flex-row gap-3 mb-4">
           <button
             onClick={() => isPreviewing ? clearPreview() : generateVariationSuggestions()}
-            className="w-full md:w-auto px-5 py-2.5 rounded-full border border-pink-500/50 bg-slate-900/60 shadow-[0_0_10px_rgba(236,72,153,0.15)] hover:bg-slate-800 hover:border-pink-500 transition-all active:scale-95 group flex items-center justify-center gap-2"
+            className={`w-full md:w-auto px-5 py-2.5 rounded-full border transition-all active:scale-95 group flex items-center justify-center gap-2 ${
+              isPreviewing
+                ? 'bg-voca-bg-card border-voca-text-sub text-voca-text-sub'
+                : 'bg-voca-bg-card border-voca-accent-magenta/30 text-voca-text-sub hover:border-voca-accent-magenta hover:text-voca-accent-magenta shadow-glow-magenta/5'
+            }`}
           >
             {isPreviewing ? (
               <>
-                <span className="text-slate-400 group-hover:text-slate-200">↩️</span>
-                <span className="text-sm font-bold text-slate-300">元に戻す</span>
+                <span className="text-voca-text-sub group-hover:text-voca-text">↩️</span>
+                <span className="text-sm font-bold">元に戻す</span>
               </>
             ) : (
               <>
-                <span className="text-pink-400 group-hover:scale-110 transition-transform">✨</span>
-                <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                <span className="text-voca-accent-magenta group-hover:scale-110 transition-transform">✨</span>
+                <span className="text-sm font-bold">
                   {isStructureMode && activeSection ? `${activeSection.label} のアレンジ提案` : 'アレンジ提案'}
                 </span>
               </>
@@ -218,8 +222,8 @@ export default function ChordTimeline() {
             onClick={() => toggleMelodyGuide()}
             className={`w-full md:w-auto px-5 py-2.5 rounded-full border transition-all active:scale-95 flex items-center justify-center gap-2 ${
               showMelodyGuide 
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-400 shadow-[0_0_15px_rgba(37,99,235,0.4)] text-white' 
-                : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:bg-slate-800 hover:border-slate-500'
+                ? 'bg-gradient-hero border-transparent shadow-glow-cyan text-white' 
+                : 'bg-voca-bg-card border-voca-border-subtle text-voca-text-sub hover:bg-voca-bg-section hover:text-voca-text hover:border-voca-accent-cyan'
             }`}
           >
             <span className={showMelodyGuide ? 'animate-bounce' : ''}>🎵</span>
@@ -231,22 +235,18 @@ export default function ChordTimeline() {
       )}
 
       {/* 凡例 — モバイルは text-xs、デスクトップは text-sm */}
-      <div className="flex flex-wrap gap-3 text-xs sm:text-sm font-bold text-slate-400 bg-slate-900/50 px-3 py-2 rounded-lg border border-slate-800 w-max">
+      <div className="flex flex-wrap gap-3 text-xs sm:text-sm font-bold text-voca-text-muted bg-voca-bg-card/50 px-4 py-2 rounded-xl border border-voca-border-subtle w-max">
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-emerald-500 shrink-0" />
-          <span>T <span className="font-medium text-slate-500">安定</span></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+          <span>T <span className="font-medium opacity-50">安定</span></span>
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-amber-500 shrink-0" />
-          <span>SD <span className="font-medium text-slate-500">展開</span></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+          <span>SD <span className="font-medium opacity-50">展開</span></span>
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-blue-500 shrink-0" />
-          <span>D <span className="font-medium text-slate-500">緊張</span></span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-slate-600 shrink-0" />
-          <span className="font-medium text-slate-500">その他</span>
+          <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+          <span>D <span className="font-medium opacity-50">緊張</span></span>
         </span>
       </div>
     </div>

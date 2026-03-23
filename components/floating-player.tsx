@@ -63,65 +63,65 @@ export const FloatingPlayer = () => {
   const songProgressPct = totalBarsInSong > 0 ? (globalBar / totalBarsInSong) * 100 : 0;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/80 pb-[max(env(safe-area-inset-bottom),16px)] shadow-[0_-8px_16px_rgba(0,0,0,0.5)]">
+    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-voca-bg-card/95 backdrop-blur-xl border-t border-voca-border-subtle pb-[max(env(safe-area-inset-bottom),16px)] shadow-[0_-12px_24px_rgba(0,0,0,0.6)]">
       {/* Toast notification */}
       {toast && (
         <div
           role="status"
           aria-live="polite"
           className={`
-            mx-4 mt-2 px-4 py-1.5 rounded-lg text-xs font-semibold text-center
+            mx-4 mt-3 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider text-center border-2
             ${toast.type === 'success'
-              ? 'bg-green-500/20 text-green-300 border border-green-500/40'
-              : 'bg-red-500/20 text-red-300 border border-red-500/40'
+              ? 'bg-voca-bg-card text-voca-semantic-success border-voca-semantic-success shadow-glow-cyan/10'
+              : 'bg-voca-bg-card text-voca-semantic-error border-voca-semantic-error shadow-glow-magenta/10'
             }
           `}
         >
-          {toast.type === 'success' ? '✅ ' : '❌ '}{toast.message}
+          {toast.type === 'success' ? '✓ ' : '✕ '}{toast.message}
         </div>
       )}
 
       {/* Progress representation */}
       {isStructureMode && playbackMode === 'song' ? (
-        <div className="h-1.5 w-full bg-slate-950/50">
+        <div className="h-1.5 w-full bg-voca-bg-elevated/50">
           <div 
-            className="h-full bg-gradient-to-r from-pink-500 to-orange-500 transition-all duration-300 ease-linear"
+            className="h-full bg-gradient-hero transition-all duration-300 ease-linear shadow-glow-cyan"
             style={{ width: `${Math.min(100, songProgressPct)}%` }}
           />
         </div>
       ) : (
-        <div className="h-1 w-full flex space-x-0.5 bg-slate-950/50 px-0.5 pt-0.5">
+        <div className="h-1 w-full flex space-x-0.5 bg-voca-bg-elevated/50 px-0.5 pt-0.5">
           {chords.map((_, idx) => (
             <div
               key={idx}
-              className={`flex-1 h-full rounded-full transition-colors duration-100 ${
-                currentBar === idx ? 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]' : 'bg-slate-800'
+              className={`flex-1 h-full rounded-full transition-all duration-200 ${
+                currentBar === idx ? 'bg-voca-accent-cyan shadow-glow-cyan' : 'bg-voca-bg-section/50'
               }`}
             />
           ))}
         </div>
       )}
 
-      <div className="flex items-center justify-between px-4 pt-3">
+      <div className="flex items-center justify-between px-4 pt-4">
         <div 
           className={`flex flex-col truncate pr-2 max-w-[45%] ${isStructureMode ? 'cursor-pointer active:scale-95 transition-transform' : ''}`}
           onClick={handleModeToggle}
         >
-          <div className="flex items-center gap-1.5 text-sm font-bold text-slate-100 truncate">
+          <div className="flex items-center gap-1.5 text-sm font-black text-voca-text truncate uppercase tracking-tight">
             {isStructureMode && (
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-sm ${playbackMode === 'song' ? 'bg-pink-500/20 text-pink-300' : 'bg-slate-800 text-slate-400'}`}>
-                {playbackMode === 'song' ? '通し' : 'セクション'}
+              <span className={`text-[9px] px-1.5 py-0.5 rounded-sm font-black tracking-widest ${playbackMode === 'song' ? 'bg-voca-accent-magenta/20 text-voca-accent-magenta' : 'bg-voca-bg-elevated text-voca-text-muted border border-voca-border-subtle'}`}>
+                {playbackMode === 'song' ? 'SONG' : 'SEC'}
               </span>
             )}
             <span className="truncate">{displayLabel}</span>
           </div>
-          <div className="text-xs text-slate-400 font-mono mt-0.5 pl-[2px]">BPM {tempo}</div>
+          <div className="text-[10px] text-voca-text-muted font-black mt-1 pl-[1px] tracking-widest uppercase opacity-70">BPM {tempo} • {key}</div>
         </div>
 
-        <div className="flex items-center space-x-2 shrink-0">
+        <div className="flex items-center space-x-2.5 shrink-0">
           <button
             onClick={handleMidiExport}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-800 text-green-400 border border-slate-700/80 hover:bg-slate-700 active:scale-95 transition-all outline-none"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-voca-bg-elevated text-voca-semantic-success border border-voca-border-subtle hover:bg-voca-bg-section active:scale-90 transition-all outline-none shadow-sm"
             aria-label="MIDI書き出し"
           >
             <span className="text-base leading-none">📥</span>
@@ -129,7 +129,7 @@ export const FloatingPlayer = () => {
 
           <button
             onClick={randomize}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-800 text-cyan-400 border border-slate-700/80 hover:bg-slate-700 active:scale-95 transition-all outline-none"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-voca-bg-elevated text-voca-accent-cyan border border-voca-border-subtle hover:bg-voca-bg-section active:scale-90 transition-all outline-none shadow-sm"
             aria-label="ランダム生成"
           >
             <span className="text-xl leading-none">🎲</span>
@@ -137,17 +137,17 @@ export const FloatingPlayer = () => {
 
           <button
             onClick={toggle}
-            className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-tr from-pink-500 to-purple-500 text-white shadow-lg active:scale-95 transition-all outline-none"
+            className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-hero text-white shadow-glow-cyan active:scale-90 transition-all outline-none border border-white/20"
             aria-label={isPlaying ? '一時停止' : '再生'}
           >
-            <span className={`text-xl leading-none ${isPlaying ? 'translate-x-0' : 'translate-x-0.5'}`}>
+            <span className={`text-2xl leading-none ${isPlaying ? 'translate-x-0' : 'translate-x-0.5'}`}>
               {isPlaying ? '⏸' : '▶'}
             </span>
           </button>
 
           <button
             onClick={stop}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-800 text-slate-300 border border-slate-700/80 hover:bg-slate-700 active:scale-95 transition-all outline-none"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-voca-bg-elevated text-voca-text-sub border border-voca-border-subtle hover:bg-voca-bg-section active:scale-90 transition-all outline-none shadow-sm"
             aria-label="停止"
           >
             <span className="text-xl leading-none">⏹</span>

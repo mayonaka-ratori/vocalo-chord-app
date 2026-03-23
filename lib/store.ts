@@ -45,6 +45,7 @@ export interface AppState {
   searchQuery: string;
   searchResults: SongSearchResult[];
   isSearching: boolean;
+  categoryFilter: string | null;
 
   // Variation suggestions
   variations: ChordVariation[];
@@ -79,6 +80,7 @@ export interface AppState {
   closeChordEditor: () => void;
   randomize: () => void;
   setAudioInitialized: (init: boolean) => void;
+  setCategoryFilter: (category: string | null) => void;
 
   // Variation actions
   generateVariationSuggestions: () => void;
@@ -143,6 +145,7 @@ export const useStore = create<AppState>((set, get) => ({
   searchQuery: '',
   searchResults: [],
   isSearching: false,
+  categoryFilter: null,
 
   // Variation suggestions
   variations: [],
@@ -282,6 +285,8 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   setAudioInitialized: (init: boolean) => set({ isAudioInitialized: init }),
+
+  setCategoryFilter: (category: string | null) => set({ categoryFilter: category }),
 
   // --------------------------------
   // Variation suggestion actions

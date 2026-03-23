@@ -1,16 +1,43 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
 
 :root {
-  /* Default to Dark Theme as per guidelines */
-  --background: #0f172a; /* slate-900 */
-  --foreground: #f1f5f9; /* slate-100 */
+  /* Vocacore Color System Variables */
+  --voca-bg: #0D0D14;
+  --voca-bg-card: #16162A;
+  --voca-bg-section: #1E1E3A;
+  --voca-bg-elevated: #222244;
+  --voca-accent-cyan: #00E5FF;
+  --voca-accent-magenta: #E040FB;
+  --voca-accent-purple: #7C4DFF;
+  --voca-text: #F0F0F8;
+  --voca-text-sub: #8888AA;
+  --voca-text-muted: #555570;
+  --voca-border-subtle: #2A2A4A;
+
+  /* Legacy / Compatibility Variables */
+  --background: var(--voca-bg);
+  --foreground: var(--voca-text);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--voca-bg);
+  --color-foreground: var(--voca-text);
   
-  /* Custom Accent Colors */
+  /* Inherit from voca palette for ease of use in v4 utilities */
+  --color-voca-bg: var(--voca-bg);
+  --color-voca-bg-card: var(--voca-bg-card);
+  --color-voca-bg-section: var(--voca-bg-section);
+  --color-voca-bg-elevated: var(--voca-bg-elevated);
+  --color-voca-accent-cyan: var(--voca-accent-cyan);
+  --color-voca-accent-magenta: var(--voca-accent-magenta);
+  --color-voca-accent-purple: var(--voca-accent-purple);
+  --color-voca-text: var(--voca-text);
+  --color-voca-text-sub: var(--voca-text-sub);
+  --color-voca-text-muted: var(--voca-text-muted);
+  --color-voca-border-subtle: var(--voca-border-subtle);
+
+  /* Keep legacy accents for transition */
   --color-vocalo-pink: #ff4da6;
   --color-vocalo-purple: #a855f7;
   --color-vocalo-green: #22c55e;
@@ -18,7 +45,7 @@
   --color-vocalo-blue: #3b82f6;
   --color-vocalo-cyan: #06b6d4;
 
-  /* Safe Area Spacing for Mobile */
+  /* Safe Area Spacing */
   --spacing-safe-b: env(safe-area-inset-bottom, 0px);
   --spacing-safe-t: env(safe-area-inset-top, 0px);
   --spacing-safe-l: env(safe-area-inset-left, 0px);
@@ -26,13 +53,33 @@
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--voca-bg);
+  color: var(--voca-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Safe area utilities if not fully supported by v4 default */
+/* グラデーションテキスト用ユーティリティ */
+.text-gradient-hero {
+  background: linear-gradient(135deg, #00E5FF 0%, #7C4DFF 50%, #E040FB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* グローバルスクロールバー（ボカコレ風ダーク） */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--voca-bg); }
+::-webkit-scrollbar-thumb { background: var(--voca-bg-section); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--voca-accent-cyan); }
+
+/* フォーカスリング */
+*:focus-visible {
+  outline: 2px solid var(--voca-accent-cyan);
+  outline-offset: 2px;
+}
+
+/* Safe area utilities */
 .safe-area-inset-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -41,9 +88,6 @@ body {
 @media (hover: none) {
   * {
     -webkit-tap-highlight-color: transparent;
-  }
-  .tap-highlight {
-    -webkit-tap-highlight-color: rgba(168, 85, 247, 0.2);
   }
 }
 

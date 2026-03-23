@@ -174,6 +174,7 @@ export interface SongSearchResult {
   }[];
   confidence: 'high' | 'medium' | 'low';
   source: 'local' | 'ai';
+  category?: string;
 }
 
 export interface SearchChordsResponse {

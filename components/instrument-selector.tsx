@@ -28,31 +28,33 @@ export function InstrumentSelector() {
 
   return (
     <div className="mb-8">
-      <div className="flex items-end justify-between mb-3">
-        <h3 className="text-sm font-bold text-slate-300">🎹 バッキング音色</h3>
+      <div className="flex items-end justify-between mb-4">
+        <h3 className="text-sm font-black text-voca-text-sub uppercase tracking-widest flex items-center gap-2">
+          <span className="text-voca-accent-cyan text-lg">🎹</span> バッキング音色
+        </h3>
         {isStructureMode && (
-          <div className="text-xs text-slate-400 pb-0.5 hidden md:block">
-            このセクションの音色
+          <div className="text-[10px] text-voca-text-muted font-bold px-2 py-0.5 bg-voca-bg-elevated rounded border border-voca-border-subtle hidden md:block">
+            IN SECTION
           </div>
         )}
       </div>
 
       {/* モバイル: 横スクロール */}
-      <div className="flex md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-3 pb-2 -mx-4 px-4">
+      <div className="flex md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-3 pb-3 -mx-4 px-4">
         {instrumentPresets.map(preset => {
           const isSelected = preset.id === instrumentPresetId;
           return (
             <button
               key={preset.id}
               onClick={() => handleSelect(preset.id)}
-              className={`flex-none w-24 p-3 rounded-xl flex flex-col items-center justify-center gap-2 snap-center transition-all ${
+              className={`flex-none w-28 p-4 rounded-2xl flex flex-col items-center justify-center gap-3 snap-center transition-all border-2 ${
                 isSelected 
-                  ? 'bg-gradient-to-br from-pink-500/20 to-purple-500/20 border-2 border-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.3)]' 
-                  : 'bg-slate-800 border-2 border-transparent text-slate-400'
+                  ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan shadow-glow-cyan' 
+                  : 'bg-voca-bg-card border-voca-border-subtle text-voca-text-muted opacity-80'
               }`}
             >
-              <div className="text-2xl">{preset.icon}</div>
-              <div className={`text-xs font-bold whitespace-nowrap ${isSelected ? 'text-pink-100' : ''}`}>
+              <div className="text-3xl">{preset.icon}</div>
+              <div className={`text-[11px] font-black uppercase tracking-tight ${isSelected ? 'text-voca-text' : ''}`}>
                 {preset.name}
               </div>
             </button>
@@ -68,26 +70,26 @@ export function InstrumentSelector() {
             <button
               key={preset.id}
               onClick={() => handleSelect(preset.id)}
-              className={`p-4 rounded-xl flex flex-col gap-2 text-left transition-all ${
+              className={`p-5 rounded-2xl flex flex-col gap-3 text-left transition-all border-2 active:scale-[0.98] ${
                 isSelected 
-                  ? 'bg-gradient-to-br from-pink-500/20 to-purple-500/20 border-2 border-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.3)]' 
-                  : 'bg-slate-800 border-2 border-transparent text-slate-400 hover:bg-slate-700 hover:border-slate-600'
+                  ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan shadow-glow-cyan' 
+                  : 'bg-voca-bg-card border-voca-border-subtle text-voca-text-muted hover:bg-voca-bg-section hover:border-voca-text-sub'
               }`}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <span className="text-2xl">{preset.icon}</span>
-                <span className={`font-bold ${isSelected ? 'text-pink-100' : 'text-slate-200'}`}>
+                <span className={`font-black text-sm uppercase tracking-wider ${isSelected ? 'text-voca-text' : 'text-voca-text-sub'}`}>
                   {preset.name}
                 </span>
               </div>
-              <div className="flex gap-1 flex-wrap">
+              <div className="flex gap-1.5 flex-wrap">
                 {preset.tags.map(tag => (
-                  <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-900/50 text-slate-300">
+                  <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full bg-voca-bg-elevated text-voca-text-muted font-bold uppercase border border-voca-border-subtle/50">
                     {tag}
                   </span>
                 ))}
               </div>
-              <div className={'text-xs truncate ' + (isSelected ? 'text-slate-300' : 'text-slate-500')}>
+              <div className={'text-[10px] truncate leading-tight ' + (isSelected ? 'text-voca-text-sub' : 'text-voca-text-muted')}>
                 代表曲: {preset.exampleSongs.join(', ')}
               </div>
             </button>
@@ -97,18 +99,18 @@ export function InstrumentSelector() {
 
       {/* Selected details below (Mostly useful for mobile) */}
       {selectedPreset && (
-        <div className="bg-slate-800/50 rounded-lg p-3 text-sm md:hidden mt-2">
-          <div className="text-slate-300 mb-1">{selectedPreset.description}</div>
-          <div className="flex items-center justify-between">
-            <div className="flex gap-1">
+        <div className="bg-voca-bg-card/50 backdrop-blur-sm rounded-2xl p-4 text-xs md:hidden mt-3 border border-voca-border-subtle">
+          <div className="text-voca-text-sub mb-3 leading-relaxed">{selectedPreset.description}</div>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap gap-2">
               {selectedPreset.tags.map(tag => (
-                <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-900 text-slate-400">
+                <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full bg-voca-bg-elevated text-voca-text-muted font-bold uppercase border border-voca-border-subtle/50">
                   {tag}
                 </span>
               ))}
             </div>
-            <div className="text-xs text-slate-500 truncate ml-2">
-              🎵 {selectedPreset.exampleSongs.join(', ')}
+            <div className="text-[10px] text-voca-text-muted truncate font-medium">
+              Representative Songs: {selectedPreset.exampleSongs.join(', ')}
             </div>
           </div>
         </div>

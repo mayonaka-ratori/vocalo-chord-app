@@ -17,7 +17,7 @@ export const SongSearchBar: React.FC = () => {
   const [aiError, setAiError] = useState<string | null>(null);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
-  const { setKey, setTempo } = useStore();
+  const { setKey, setTempo, categoryFilter } = useStore();
 
   // 履歴の初期読み込み
   useEffect(() => {
@@ -48,6 +48,9 @@ export const SongSearchBar: React.FC = () => {
       
       // Step 1: ローカル検索
       const localMatches: SongSearchResult[] = famousSongs.filter(s => {
+        // カテゴリフィルタ適用
+        if (categoryFilter && s.category !== categoryFilter) return false;
+
         if (s.title.toLowerCase().includes(q)) return true;
         if (s.artist.toLowerCase().includes(q)) return true;
         if (s.searchAliases?.some(alias => alias.toLowerCase().includes(q))) return true;
@@ -59,7 +62,8 @@ export const SongSearchBar: React.FC = () => {
         bpm: s.bpm,
         sections: s.sections,
         confidence: 'high' as const,
-        source: 'local' as const
+        source: 'local' as const,
+        category: s.category // 追加
       }));
 
       if (localMatches.length > 0) {
@@ -103,7 +107,7 @@ export const SongSearchBar: React.FC = () => {
     }, 500); // 少し長めにデバウンス
 
     return () => clearTimeout(handler);
-  }, [query, searchHistory]);
+  }, [query, searchHistory, categoryFilter]); // categoryFilter を追加
 
   const handleApplySection = (chords: string[], key: string, bpm: number) => {
     setKey(key);
@@ -116,17 +120,27 @@ export const SongSearchBar: React.FC = () => {
 
   const getConfidenceColor = (conf: string) => {
     switch (conf) {
-      case 'high': return 'text-green-400 bg-green-400/10 border-green-400/20';
-      case 'medium': return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20';
-      case 'low': return 'text-red-400 bg-red-400/10 border-red-400/20';
-      default: return 'text-slate-400 bg-slate-400/10 border-slate-400/20';
+      case 'high': return 'text-voca-semantic-success bg-voca-semantic-success/10 border-voca-semantic-success/20';
+      case 'medium': return 'text-voca-semantic-warning bg-voca-semantic-warning/10 border-voca-semantic-warning/20';
+      case 'low': return 'text-voca-semantic-error bg-voca-semantic-error/10 border-voca-semantic-error/20';
+      default: return 'text-voca-text-muted bg-voca-bg-card border-voca-border-subtle';
+    }
+  };
+
+  const getCategoryBadgeStyle = (category?: string) => {
+    switch (category) {
+      case 'citypop': return 'bg-voca-accent-cyan/20 text-voca-accent-cyan';
+      case 'vocaloid': return 'bg-voca-accent-purple/20 text-voca-accent-purple';
+      case 'recent-hit': return 'bg-voca-accent-magenta/20 text-voca-accent-magenta';
+      case 'vocaloP-artist': return 'bg-gradient-card text-white shadow-sm';
+      default: return 'bg-voca-bg-elevated text-voca-text-muted';
     }
   };
 
   return (
-    <div className="relative w-full md:max-w-lg md:mx-auto">
-      <div className="relative">
-        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+    <div className="relative w-full md:max-w-xl md:mx-auto">
+      <div className="relative group">
+        <span className={`absolute inset-y-0 left-0 flex items-center pl-4 transition-colors duration-200 ${query ? 'text-voca-accent-cyan' : 'text-voca-text-sub group-focus-within:text-voca-accent-cyan'}`}>
           🔍
         </span>
         <input
@@ -134,18 +148,18 @@ export const SongSearchBar: React.FC = () => {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="曲名で検索（例: 夜に駆ける）"
-          className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+          className="w-full pl-11 pr-4 py-3 bg-voca-bg-card border border-voca-border-subtle rounded-2xl text-voca-text placeholder-voca-text-muted focus:outline-none focus:border-voca-accent-cyan focus:ring-1 focus:ring-voca-accent-cyan/30 transition-all shadow-glow-cyan/0 focus:shadow-glow-cyan"
         />
       </div>
 
       {/* 検索履歴チップ */}
       {!isOpen && query === '' && searchHistory.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           {searchHistory.map((h, i) => (
             <button
               key={i}
               onClick={() => setQuery(h)}
-              className="px-2 py-1 text-xs bg-slate-800 text-slate-400 rounded-full hover:bg-slate-700 transition-colors cursor-pointer"
+              className="px-3 py-1 text-[11px] bg-voca-bg-card text-voca-text-sub rounded-full hover:bg-voca-bg-section border border-voca-border-subtle transition-colors cursor-pointer"
             >
               {h}
             </button>
@@ -155,26 +169,26 @@ export const SongSearchBar: React.FC = () => {
 
       {/* 検索結果ドロップダウン */}
       {isOpen && !selectedResult && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-40 max-h-96 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-voca-bg-elevated border border-voca-border-subtle rounded-2xl shadow-2xl z-40 max-h-96 overflow-y-auto">
           {isAiLoading && (
-            <div className="p-8 space-y-4">
-              <div className="flex items-center space-x-3 text-orange-400 animate-pulse">
-                <span className="text-xl">🤖</span>
-                <span className="font-bold">AIで検索中...</span>
+            <div className="p-10 space-y-4">
+              <div className="flex items-center space-x-3 text-voca-accent-cyan animate-pulse">
+                <span className="text-2xl">🤖</span>
+                <span className="font-bold tracking-tight">AIで高度な解析中...</span>
               </div>
               <div className="space-y-2">
-                <div className="h-4 bg-slate-800 rounded w-3/4 animate-pulse"></div>
-                <div className="h-4 bg-slate-800 rounded w-1/2 animate-pulse"></div>
+                <div className="h-3 bg-voca-bg-section rounded-full w-3/4 animate-pulse"></div>
+                <div className="h-3 bg-voca-bg-section rounded-full w-1/2 animate-pulse"></div>
               </div>
             </div>
           )}
 
           {aiError && (
-            <div className="p-6 text-center">
-              <p className="text-red-400 text-sm mb-3">❌ {aiError}</p>
+            <div className="p-8 text-center">
+              <p className="text-voca-semantic-error text-sm mb-4">❌ {aiError}</p>
               <button 
                 onClick={() => setQuery(query)} // 再試行
-                className="px-4 py-2 bg-slate-800 rounded-lg text-xs font-bold text-slate-300 hover:bg-slate-700"
+                className="px-5 py-2 bg-voca-bg-card border border-voca-border-subtle rounded-xl text-xs font-bold text-voca-text hover:bg-voca-bg-section transition-colors"
               >
                 再試行
               </button>
@@ -182,33 +196,38 @@ export const SongSearchBar: React.FC = () => {
           )}
 
           {!isAiLoading && !aiError && results.length === 0 && query.length > 0 && (
-            <div className="p-8 text-center text-slate-500 text-sm">
-              曲が見つかりませんでした
+            <div className="p-10 text-center text-voca-text-muted text-sm italic">
+              該当する楽曲が見つかりませんでした
             </div>
           )}
 
           {!isAiLoading && results.map((res, i) => (
-            <div key={i} className="p-4 border-b border-slate-800 last:border-b-0 hover:bg-slate-800/30 transition-colors">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h4 className="font-bold text-slate-100 flex items-center space-x-2 flex-wrap gap-y-1">
-                    <span>{res.title}</span>
-                    {res.source === 'local' ? (
-                      <span className="text-green-400 text-[10px] px-1.5 py-0.5 bg-green-400/10 rounded-full border border-green-400/20 whitespace-nowrap">✅ DB</span>
-                    ) : (
-                      <span className="text-orange-400 text-[10px] px-1.5 py-0.5 bg-orange-400/10 rounded-full border border-orange-400/20 whitespace-nowrap">🤖 AI推定</span>
-                    )}
-                    {res.source === 'ai' && (
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded-full border font-black whitespace-nowrap ${getConfidenceColor(res.confidence)}`}>
-                        {res.confidence === 'high' ? '精度:高' : res.confidence === 'medium' ? '精度:中' : '精度:低'}
+            <div key={i} className="relative group/item p-4 border-b border-voca-border-subtle/30 last:border-b-0 hover:bg-voca-bg-section transition-colors">
+              {/* ボカコレ風の左側グラデーションバー */}
+              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-card opacity-0 group-hover/item:opacity-100 transition-opacity" />
+              
+              <div className="flex justify-between items-start">
+                <div className="flex-1 min-w-0 pr-4">
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <h4 className="font-bold text-voca-text truncate">{res.title}</h4>
+                    {res.category && (
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${getCategoryBadgeStyle(res.category)}`}>
+                        {res.category === 'vocaloP-artist' ? 'VOCALO P' : res.category}
                       </span>
                     )}
-                  </h4>
-                  <p className="text-xs text-slate-400 mt-1">{res.artist} • Key: {res.key} • BPM: {res.bpm}</p>
+                    {res.source === 'local' ? (
+                      <span className="text-[9px] px-1.5 py-0.5 bg-voca-accent-cyan/10 text-voca-accent-cyan rounded border border-voca-accent-cyan/20">DB</span>
+                    ) : (
+                      <span className="text-[9px] px-1.5 py-0.5 bg-voca-accent-magenta/10 text-voca-accent-magenta rounded border border-voca-accent-magenta/20">AI</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-voca-text-sub truncate">
+                    {res.artist} <span className="mx-1 opacity-30">•</span> Key: {res.key} <span className="mx-1 opacity-30">•</span> BPM: {res.bpm}
+                  </p>
                 </div>
                 <button
                   onClick={() => setSelectedResult(res)}
-                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sm font-bold text-orange-400 border border-orange-500/30 rounded-lg transition-colors shrink-0 ml-4"
+                  className="px-4 py-2 bg-voca-bg-card hover:bg-voca-accent-cyan hover:text-voca-bg text-xs font-black text-voca-accent-cyan border border-voca-accent-cyan/30 rounded-xl transition-all shadow-sm shrink-0"
                 >
                   取り込む
                 </button>
@@ -219,43 +238,50 @@ export const SongSearchBar: React.FC = () => {
       )}
 
       {selectedResult && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-40 p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h4 className="font-bold text-slate-100 flex items-center space-x-2">
-              <span>{selectedResult.title}</span>
-              <span className="text-xs font-normal text-slate-400">のセクション</span>
+        <div className="absolute top-full left-0 right-0 mt-2 bg-voca-bg-elevated border border-voca-border-subtle rounded-2xl shadow-2xl z-40 p-5">
+          <div className="flex justify-between items-center mb-5">
+            <h4 className="font-bold text-voca-text flex items-center space-x-2">
+              <span className="text-gradient-hero">{selectedResult.title}</span>
+              <span className="text-[10px] font-normal text-voca-text-sub uppercase tracking-widest">SECTIONS</span>
             </h4>
             <button 
               onClick={() => setSelectedResult(null)}
-              className="text-slate-400 text-sm hover:text-slate-200 bg-slate-800 px-3 py-1 rounded-lg"
+              className="text-voca-text-sub text-xs hover:text-voca-text bg-voca-bg-card px-3 py-1.5 rounded-lg border border-voca-border-subtle"
             >
               戻る
             </button>
           </div>
           
           {selectedResult.source === 'ai' && (
-            <div className="mb-4 p-2 bg-orange-950/20 border border-orange-900/40 rounded text-[10px] text-orange-300">
-              ⚠️ AIによる推定値です。正確でない場合があります。
-              {selectedResult.confidence === 'low' && (
-                <div className="font-black mt-1 text-red-400">※この曲のコード進行はAIの自信が低いため、間違っている可能性が高いです。</div>
-              )}
+            <div className="mb-5 p-3 bg-voca-semantic-warning/5 border border-voca-semantic-warning/20 rounded-xl text-[10px] text-voca-semantic-warning leading-relaxed flex gap-3">
+              <span className="text-lg">⚠️</span>
+              <div>
+                <p>AIによる推定値です。実際の楽曲構成と異なる場合があります。</p>
+                {selectedResult.confidence === 'low' && (
+                  <p className="font-black mt-1 text-voca-semantic-error">精度が低いため、手動調整を強く推奨します。</p>
+                )}
+              </div>
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             {selectedResult.sections.map((sec, i) => (
               <button
                 key={i}
                 onClick={() => handleApplySection(sec.chords, selectedResult.key, selectedResult.bpm)}
-                className="w-full text-left p-3 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-orange-500 transition-all text-sm group"
+                className="w-full text-left p-4 rounded-xl border border-voca-border-subtle bg-voca-bg-card hover:bg-voca-bg-section hover:border-voca-accent-cyan transition-all group"
               >
-                <div className="font-bold text-slate-200 mb-2 group-hover:text-orange-400 transition-colors">
-                  {sec.label}
-                  <span className="ml-2 text-[10px] font-normal text-slate-500">({sec.chords.length}小節)</span>
+                <div className="flex justify-between items-center mb-3">
+                  <div className="font-bold text-voca-text group-hover:text-voca-accent-cyan transition-colors">
+                    {sec.label}
+                  </div>
+                  <div className="text-[10px] font-mono text-voca-text-muted">
+                    {sec.chords.length} Bars
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {sec.chords.map((c, idx) => (
-                    <span key={idx} className="bg-slate-900 px-2 py-1 rounded-md text-slate-300 font-medium font-mono text-xs border border-slate-700/50">
+                    <span key={idx} className="bg-voca-bg-section px-2 py-1 rounded text-voca-text-sub font-mono text-[11px] border border-voca-border-subtle/50 group-hover:bg-voca-bg group-hover:text-voca-text group-hover:border-voca-accent-cyan/30">
                       {c}
                     </span>
                   ))}

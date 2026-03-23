@@ -45,8 +45,8 @@ export default function MoodTagFilter() {
               onClick={() => handleTagClick(tag.value)}
               className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all border ${
                 isActive
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.4)]'
-                  : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-slate-200'
+                  ? 'bg-voca-accent-cyan/10 text-voca-accent-cyan border-voca-accent-cyan shadow-glow-cyan'
+                  : 'bg-voca-bg-card text-voca-text-sub border-voca-border-subtle hover:bg-voca-bg-section hover:text-voca-text hover:border-voca-accent-cyan'
               }`}
             >
               {tag.label}
