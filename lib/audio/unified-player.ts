@@ -54,12 +54,27 @@ export async function playUnifiedChord(event: UnifiedNoteEvent): Promise<void> {
     }
   } else {
     // smplr を使用
-    const effectiveVelocity = Math.round(((event.velocity ?? 90) / 127) * profile.chord);
-    provider.playChord(instrumentId, event.notes, {
-      velocity: effectiveVelocity,
-      duration: event.duration,
-      time: event.time,
-    });
+    try {
+      const effectiveVelocity = Math.round(((event.velocity ?? 90) / 127) * profile.chord);
+      provider.playChord(instrumentId, event.notes, {
+        velocity: effectiveVelocity,
+        duration: event.duration,
+        time: event.time,
+      });
+    } catch (smplrError) {
+      console.warn('[UnifiedPlayer] smplr playChord failed, using Tone.js fallback:', smplrError);
+      const chordSynth = getChordSynth();
+      if (chordSynth) {
+        const Tone = await getTone();
+        if (Tone && 'triggerAttackRelease' in chordSynth) {
+          if (chordSynth.name === 'PolySynth') {
+            (chordSynth as ToneType.PolySynth).triggerAttackRelease(event.notes, event.duration, event.time);
+          } else {
+            (chordSynth as ToneType.MonoSynth).triggerAttackRelease(event.notes[0], event.duration, event.time);
+          }
+        }
+      }
+    }
   }
 }
 
@@ -83,12 +98,21 @@ export async function playUnifiedBass(note: string, duration: number, time: numb
     }
   } else {
     // smplr を使用 (和音と同じ楽器を低域で使用)
-    const effectiveVelocity = Math.round((velocity / 127) * profile.bass);
-    provider.playNote(instrumentId, note, {
-      velocity: effectiveVelocity,
-      duration,
-      time,
-    });
+    try {
+      const effectiveVelocity = Math.round((velocity / 127) * profile.bass);
+      provider.playNote(instrumentId, note, {
+        velocity: effectiveVelocity,
+        duration,
+        time,
+      });
+    } catch (smplrError) {
+      console.warn('[UnifiedPlayer] smplr playNote (bass) failed, using Tone.js fallback:', smplrError);
+      const bassSynth = getBassSynth();
+      if (bassSynth) {
+        const Tone = await getTone();
+        if (Tone) bassSynth.triggerAttackRelease(note, duration, time, velocity / 127);
+      }
+    }
   }
 }
 
@@ -122,12 +146,25 @@ export async function playUnifiedMelody(
     }
   } else {
     // smplr を使用 — メロディ音をアクティブな楽器で再生
-    const effectiveVelocity = Math.round(((options.velocity ?? 80) / 127) * profile.melody);
-    provider.playNote(instrumentId, note, {
-      velocity: effectiveVelocity,
-      duration: options.duration,
-      time: options.time,
-    });
+    try {
+      const effectiveVelocity = Math.round(((options.velocity ?? 80) / 127) * profile.melody);
+      provider.playNote(instrumentId, note, {
+        velocity: effectiveVelocity,
+        duration: options.duration,
+        time: options.time,
+      });
+    } catch (smplrError) {
+      console.warn('[UnifiedPlayer] smplr playNote (melody) failed, using Tone.js fallback:', smplrError);
+      const { getMelodySynth } = await import('./engine');
+      const melodySynth = getMelodySynth();
+      if (melodySynth) {
+        const Tone = await getTone();
+        if (Tone) {
+          const noteName = typeof note === 'number' ? Tone.Frequency(note, 'midi').toNote() : note;
+          melodySynth.triggerAttackRelease(noteName, options.duration, options.time);
+        }
+      }
+    }
   }
 }
 

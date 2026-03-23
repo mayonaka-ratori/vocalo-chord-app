@@ -91,10 +91,11 @@ class SmplrProvider {
     const loadPromise = (async () => {
       try {
         const inst = await this.createInstrument(id, onProgress);
-        if (inst) {
-          this.instruments.set(id, inst);
-          this.markUsed(id);
+        if (!inst) {
+          throw new Error(`[SmplrProvider] Failed to load instrument: ${id}`);
         }
+        this.instruments.set(id, inst);
+        this.markUsed(id);
       } finally {
         this.loadingPromises.delete(id);
       }
@@ -218,56 +219,32 @@ class SmplrProvider {
       }
       case 'electric-piano-cp80': {
         try {
-          const { ElectricPiano } = await import('smplr');
-          const ep = new ElectricPiano(context, {
-            instrument: 'CP80',
+          const { Soundfont } = await import('smplr');
+          const ep = new Soundfont(context, {
+            instrument: 'electric_piano_1',
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });
           await ep.load;
           return ep as unknown as ISmplrInstrument;
         } catch (error) {
-          console.warn('CP80 samples unavailable, falling back to Soundfont:', error);
-          try {
-            const { Soundfont } = await import('smplr');
-            const fallback = new Soundfont(context, {
-              instrument: 'electric_piano_1',
-              onLoadProgress: handleProgress,
-              ...(cache ? { storage: cache as never } : {}),
-            });
-            await fallback.load;
-            return fallback as unknown as ISmplrInstrument;
-          } catch (fallbackError) {
-            console.error('Failed to load CP80 fallback:', fallbackError);
-            return null;
-          }
+          console.error('Failed to load electric_piano_1 (CP80):', error);
+          return null;
         }
       }
       case 'electric-piano-wurlitzer': {
         try {
-          const { ElectricPiano } = await import('smplr');
-          const ep = new ElectricPiano(context, {
-            instrument: 'WurlitzerEP200',
+          const { Soundfont } = await import('smplr');
+          const ep = new Soundfont(context, {
+            instrument: 'electric_piano_2',
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });
           await ep.load;
           return ep as unknown as ISmplrInstrument;
         } catch (error) {
-          console.warn('Wurlitzer samples unavailable, falling back to Soundfont:', error);
-          try {
-            const { Soundfont } = await import('smplr');
-            const fallback = new Soundfont(context, {
-              instrument: 'electric_piano_2',
-              onLoadProgress: handleProgress,
-              ...(cache ? { storage: cache as never } : {}),
-            });
-            await fallback.load;
-            return fallback as unknown as ISmplrInstrument;
-          } catch (fallbackError) {
-            console.error('Failed to load Wurlitzer fallback:', fallbackError);
-            return null;
-          }
+          console.error('Failed to load electric_piano_2 (Wurlitzer):', error);
+          return null;
         }
       }
       case 'acoustic-guitar': {

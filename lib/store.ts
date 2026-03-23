@@ -347,6 +347,11 @@ export const useStore = create<AppState>((set, get) => ({
       
       // 3秒後にエラーを消す
       setTimeout(() => set({ instrumentLoadError: null }), 3000);
+    } finally {
+      // Belt-and-suspenders: isInstrumentLoading が true のままになるのを防ぐ
+      if (get().isInstrumentLoading) {
+        set({ isInstrumentLoading: false });
+      }
     }
   },
 
