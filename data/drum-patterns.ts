@@ -62,6 +62,7 @@ export const drumPatterns: DrumPattern[] = [
     id: 'jazz-swing',
     name: 'ジャズスウィング',
     description: 'ジャズ風のスウィングリズム',
+    swing: 0.3,
     steps: Array.from({ length: 16 }, (_, i) => ({
       kick: i === 0 || i === 12,
       snare: i === 7 || i === 15,
