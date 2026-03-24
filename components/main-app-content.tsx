@@ -107,11 +107,12 @@ export function MainAppContent() {
         </button>
       </div>
 
+      <InstrumentSelector />
+      <InstrumentLoadProgress />
+
       <ChordTimeline />
       <VariationPanel />
 
-      <InstrumentSelector />
-      <InstrumentLoadProgress />
       <TransportControls />
       {showMelodyGuide && <MelodyGuidePanel />}
       <RhythmSelector />
