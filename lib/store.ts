@@ -57,6 +57,7 @@ export interface AppState {
   activeMelodyPatternId: MelodyPatternId | null;
   showMelodyGuide: boolean;
   includeBlueNotes: boolean;
+  isMelodyEnabled: boolean;
   chordToneInfos: ChordToneInfo[];
   isPreviewingMelody: boolean;
   previewingPatternId: MelodyPatternId | null;
@@ -113,6 +114,7 @@ export interface AppState {
   // Melody guide actions
   toggleMelodyGuide: () => void;
   toggleBlueNotes: () => void;
+  toggleMelody: () => void;
   setActiveMelodyPattern: (id: MelodyPatternId | null) => void;
   refreshMelodyData: () => void; // regenerates chordToneInfos + melodyPhrases from current chords/key
   startMelodyPreview: (patternId: MelodyPatternId) => void;
@@ -163,6 +165,7 @@ export const useStore = create<AppState>((set, get) => ({
   activeMelodyPatternId: null,
   showMelodyGuide: false,
   includeBlueNotes: false,
+  isMelodyEnabled: false,
   chordToneInfos: [],
   isPreviewingMelody: false,
   previewingPatternId: null,
@@ -642,6 +645,8 @@ export const useStore = create<AppState>((set, get) => ({
   // --------------------------------
 
   toggleMelodyGuide: () => set(state => ({ showMelodyGuide: !state.showMelodyGuide })),
+
+  toggleMelody: () => set(state => ({ isMelodyEnabled: !state.isMelodyEnabled })),
   
   toggleBlueNotes: () => {
     set(state => ({ includeBlueNotes: !state.includeBlueNotes }));

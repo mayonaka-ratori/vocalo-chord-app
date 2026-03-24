@@ -151,6 +151,8 @@ export function disposeAudio() {
   kickDrum = null;
   snareDrum = null;
   hihatDrum = null;
+  melodySynth = null;
+  melodyPart = null;
 }
 
 export function isAudioReady() {

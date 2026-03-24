@@ -3,6 +3,7 @@ import { getTone } from './engine';
 import { playDrumStep } from './drummer';
 import { playBassStep } from './bassist';
 import { playBackingStep } from './backing';
+import { playMelodyStep } from './melodist';
 
 import { drumPatterns } from '@/data/drum-patterns';
 import { bassPatterns } from '@/data/bass-patterns';
@@ -206,6 +207,8 @@ export async function startPlayback(config: PlaybackStateConfig) {
     if (dPattern) playDrumStep(dPattern, currentStepGlobal, time);
     if (bPattern) playBassStep(bPattern, currentStepGlobal, time, currentChord);
     if (bkPattern) playBackingStep(bkPattern, currentStepGlobal, time, currentChord);
+    // メロディ: isMelodyEnabled と activeMelodyPatternId は melodist.ts 内で store から直接読む
+    playMelodyStep(currentStepGlobal, time);
 
     currentStepGlobal++;
 
