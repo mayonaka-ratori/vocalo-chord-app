@@ -15,6 +15,8 @@ export function MelodyGuidePanel() {
     setActiveMelodyPattern,
     includeBlueNotes,
     toggleBlueNotes,
+    isMelodyEnabled,
+    toggleMelody,
     currentBar,
     isPreviewingMelody,
     previewingPatternId,
@@ -143,6 +145,17 @@ export function MelodyGuidePanel() {
             >
               <div className={`w-2 h-2 rounded-full ${includeBlueNotes ? 'bg-voca-accent-cyan shadow-glow-cyan animate-pulse' : 'bg-voca-bg-section'}`} />
               BLUE NOTE {includeBlueNotes ? 'ON' : 'OFF'}
+            </button>
+            <button
+              onClick={() => toggleMelody()}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full border-2 text-[10px] md:text-xs font-black uppercase tracking-wider transition-all duration-300 ${
+                isMelodyEnabled
+                  ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan text-voca-accent-cyan shadow-glow-cyan'
+                  : 'bg-voca-bg-elevated border-voca-border-subtle text-voca-text-muted hover:border-voca-accent-cyan/50'
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full ${isMelodyEnabled ? 'bg-voca-accent-cyan animate-pulse' : 'bg-voca-bg-section'}`} />
+              MELODY {isMelodyEnabled ? 'ON' : 'OFF'}
             </button>
           </div>
           <button 

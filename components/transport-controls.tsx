@@ -18,7 +18,8 @@ export function TransportControls() {
   const { 
     isPlaying, tempo, randomize, currentBar, chords, drumPatternId, bassPatternId, 
     key, isStructureMode, playbackMode, setPlaybackMode, sections, activeSectionIndex,
-    melodyPhrases, activeMelodyPatternId, activeInstrumentId
+    melodyPhrases, activeMelodyPatternId, activeInstrumentId,
+    isMelodyEnabled, toggleMelody
   } = useStore();
   const { toggle, stop } = usePlayback();
 
@@ -129,13 +130,24 @@ export function TransportControls() {
           )}
         </div>
 
-        {/* Right: Export */}
-        <div className="flex-1 flex justify-end">
+        {/* Right: Export + Melody toggle */}
+        <div className="flex-1 flex flex-col gap-2 items-end">
           <button
             onClick={handleMidiExport}
             className="px-6 py-3 rounded-xl font-bold transition-all border border-voca-semantic-success/50 hover:bg-voca-semantic-success/10 text-voca-semantic-success flex items-center space-x-2 active:scale-95 shadow-sm"
           >
             <span>📥 MIDI書き出し</span>
+          </button>
+          <button
+            onClick={() => toggleMelody()}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 text-xs font-bold tracking-wider transition-all duration-300 ${
+              isMelodyEnabled
+                ? 'border-voca-accent-cyan text-voca-accent-cyan bg-voca-accent-cyan/10 shadow-glow-cyan'
+                : 'border-voca-border-subtle text-voca-text-muted hover:border-voca-accent-cyan/50'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${isMelodyEnabled ? 'bg-voca-accent-cyan animate-pulse' : 'bg-voca-text-muted'}`} />
+            🎵 MELODY {isMelodyEnabled ? 'ON' : 'OFF'}
           </button>
         </div>
 
