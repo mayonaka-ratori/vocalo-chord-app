@@ -21,7 +21,7 @@ export const SMPLR_VOLUME_PROFILE: VolumeProfile = {
  * Calibrated for synth fallback (narrower dynamic range)
  */
 export const SYNTH_VOLUME_PROFILE: VolumeProfile = {
-  chord: 0,       // dB
+  chord: 2,       // dB
   bass: -8,       // dB
   melody: -2,     // dB
   drums: -10,     // dB

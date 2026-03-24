@@ -34,7 +34,8 @@ export async function playBackingStep(pattern: BackingPattern, stepIndex: number
   // エレクトリックピアノはルート音を1オクターブ上に重ねて存在感を補強する
   const activeInstrumentId = useStore.getState().activeInstrumentId;
   if (activeInstrumentId === 'electric-piano-cp80' ||
-      activeInstrumentId === 'electric-piano-wurlitzer') {
+      activeInstrumentId === 'electric-piano-wurlitzer' ||
+      activeInstrumentId === 'acoustic-guitar') {
     chordPitches.push(`${notes[0]}${baseOctave + 1}`);
   }
 
