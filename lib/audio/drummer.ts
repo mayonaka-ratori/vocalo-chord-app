@@ -1,7 +1,6 @@
 import { DrumPattern } from '@/types/audio';
 import { getKick, getSnare, getHihat, getTone } from './engine';
-import { useStore } from '../store';
-import { getVolumeProfile } from './volume-config';
+import { SYNTH_VOLUME_PROFILE } from './volume-config';
 
 export async function playDrumStep(pattern: DrumPattern, stepIndex: number, time: number) {
   const kick = getKick();
@@ -12,9 +11,7 @@ export async function playDrumStep(pattern: DrumPattern, stepIndex: number, time
 
   const currentStep = pattern.steps[stepIndex % pattern.steps.length];
   const Tone = await getTone();
-  const instrumentId = useStore.getState().activeInstrumentId;
-  const profile = getVolumeProfile(instrumentId);
-  const gain = Tone.dbToGain(profile.drums);
+  const gain = Tone.dbToGain(SYNTH_VOLUME_PROFILE.drums);
   
   if (currentStep.kick) {
     kick.triggerAttackRelease('C1', '16n', time, gain);
