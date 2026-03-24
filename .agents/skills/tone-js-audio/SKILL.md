@@ -54,4 +54,4 @@ loop.start(0);
 - Transport.stop() → Transport.cancel()
 - 画面遷移時は全 dispose する（useEffect の cleanup）
 
-詳細パターンは `references/tone-js-patterns.md` を参照すること。
+<!-- Reference: https://tonejs.github.io/docs/ -->

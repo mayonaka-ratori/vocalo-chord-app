@@ -33,4 +33,4 @@ description: 新機能を実装する際の標準ワークフロー
 
 8. **ブラウザ検証**
    - PC とモバイルの両方で動作確認する
-   - Antigravity Browser でスクリーンショットを撮影する
+   - ブラウザ（Chrome DevTools）で動作確認

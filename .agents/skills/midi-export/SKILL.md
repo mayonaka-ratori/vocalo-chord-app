@@ -62,4 +62,4 @@ C4 = 60, D4 = 62, E4 = 64, F4 = 65, G4 = 67, A4 = 69, B4 = 71
 - ベーストラックのみ
 - ドラムトラックのみ
 
-詳細は `references/midi-writer-js-guide.md` を参照すること。
+<!-- Reference: https://www.npmjs.com/package/midi-writer-js -->
