@@ -10,8 +10,9 @@ export const famousSongs: FamousSong[] = [
     key: 'Eb',
     bpm: 130,
     sections: [
-      { label: 'Aメロ', chords: ['Abmaj7', 'G7', 'Cm7', 'Bb7'] },
-      { label: 'サビ', chords: ['Abmaj7', 'G7', 'Cm7', 'Bbm7', 'Eb7'] }
+      { label: 'Aメロ', chords: ['Ebmaj7', 'F', 'Dm7', 'Gm7'] },
+      { label: 'Bメロ', chords: ['Abmaj7', 'Bb', 'G7', 'Cm7', 'Fm7', 'Gm7', 'Abmaj7', 'Bb'] },
+      { label: 'サビ', chords: ['Abmaj7', 'Bb', 'G7', 'Cm7', 'Abmaj7', 'Bb', 'G7', 'Cm7'] }
     ],
     tags: ['オシャレ', '中毒性', 'ボカロP'],
     searchAliases: ['よるにかける', 'yoru ni kakeru', 'racing into the night', 'yorunikakeru'],
@@ -25,8 +26,9 @@ export const famousSongs: FamousSong[] = [
     key: 'Ab',
     bpm: 166,
     sections: [
-      { label: 'Aメロ', chords: ['Fm', 'Db', 'Eb', 'Cm'] },
-      { label: 'サビ', chords: ['Db', 'Eb', 'Cm', 'Fm', 'Dbmaj7', 'C7', 'Fm', 'Eb'] }
+      { label: 'Aメロ', chords: ['Fm', 'Eb', 'Db', 'C7'] },
+      { label: 'Bメロ', chords: ['A', 'B', 'G#m', 'C#m', 'F#m', 'G#m', 'A', 'B'] },
+      { label: 'サビ', chords: ['C#m7', 'F#', 'D#m7', 'G#m', 'C#m7', 'D#7', 'G#m', 'G#7'] }
     ],
     tags: ['エモい', '疾走感', '中毒性'],
     searchAliases: ['あいどる', 'oshi no ko', '推しの子'],
@@ -37,11 +39,12 @@ export const famousSongs: FamousSong[] = [
     title: '千本桜',
     artist: '黒うさP',
     year: 2011,
-    key: 'Bm',
+    key: 'Dm',
     bpm: 154,
     sections: [
-      { label: 'Aメロ', chords: ['Bm', 'F#m', 'G', 'A'] },
-      { label: 'サビ', chords: ['G', 'A', 'F#m', 'Bm', 'G', 'A', 'F#m', 'Bm'] }
+      { label: 'Aメロ', chords: ['Dm', 'Bb', 'C', 'F', 'Dm', 'Bb', 'C', 'Dm'] },
+      { label: 'Bメロ', chords: ['Bb', 'C', 'Am', 'Dm', 'Bb', 'C', 'F', 'A7'] },
+      { label: 'サビ', chords: ['Bb', 'C', 'Am', 'Dm', 'Bb', 'C', 'F', 'A7'] }
     ],
     tags: ['疾走感', 'エモい'],
     searchAliases: ['せんぼんざくら', 'senbonzakura', '千本桜', 'kuro usa p', '黒うさ'],
@@ -52,11 +55,12 @@ export const famousSongs: FamousSong[] = [
     title: 'シャルル',
     artist: 'バルーン',
     year: 2016,
-    key: 'G',
+    key: 'Cm',
     bpm: 167,
     sections: [
-      { label: 'Aメロ', chords: ['Em', 'C', 'G', "D"] },
-      { label: 'サビ', chords: ['C', 'D', 'Bm', 'Em', 'C', 'D', 'G', 'G'] }
+      { label: 'Aメロ', chords: ['Fm7', 'Gm7', 'Abmaj7', 'Bb'] },
+      { label: 'Bメロ', chords: ['Fm7', 'Bb', 'Ebmaj7', 'Abmaj7', 'Dm7-5', 'G7', 'Cm', 'C7'] },
+      { label: 'サビ', chords: ['Abmaj7', 'Bb', 'G7', 'Cm7', 'Abmaj7', 'Bb', 'G7', 'Cm7'] }
     ],
     tags: ['エモい', '疾走感', '切ない'],
     searchAliases: ['しゃるる', 'sharuru', 'balloon', 'バルーン'],
@@ -70,8 +74,9 @@ export const famousSongs: FamousSong[] = [
     key: 'G#m',
     bpm: 87,
     sections: [
-      { label: 'Aメロ', chords: ['G#m', 'E', 'B', 'F#'] },
-      { label: 'サビ', chords: ['E', 'F#', 'D#m', 'G#m', 'E', 'F#', 'B', 'B'] }
+      { label: 'Aメロ', chords: ['G#m', 'F#', 'E', 'B', 'C#m', 'G#m', 'A#m7-5', 'D#7'] },
+      { label: 'Bメロ', chords: ['E', 'F#', 'D#m', 'G#m', 'C#m', 'D#7', 'G#m', 'G#7'] },
+      { label: 'サビ', chords: ['E', 'F#', 'B', 'G#m', 'C#m', 'D#7', 'G#m', 'G#7'] }
     ],
     tags: ['切ない', 'エモい'],
     searchAliases: ['れもん', 'yonezu kenshi', '米津玄師', 'kenshi yonezu'],
@@ -82,11 +87,12 @@ export const famousSongs: FamousSong[] = [
     title: 'ロキ',
     artist: 'みきとP',
     year: 2018,
-    key: 'Bm',
+    key: 'Em',
     bpm: 150,
     sections: [
-      { label: 'Aメロ', chords: ['Bm', 'Bm', 'G', 'A'] },
-      { label: 'サビ', chords: ['G', 'A', 'F#m', 'Bm', 'G', 'A', 'Bm', 'Bm'] }
+      { label: 'Aメロ', chords: ['Em', 'C', 'D', 'G'] },
+      { label: 'Bメロ', chords: ['C', 'D', 'Bm', 'Em', 'C', 'D', 'B7', 'B7'] },
+      { label: 'サビ', chords: ['C', 'D', 'Bm', 'Em', 'C', 'D', 'Bm', 'Em'] }
     ],
     tags: ['疾走感', 'ダーク', '中毒性'],
     searchAliases: ['ろき', 'mikito p', 'みきとp'],
@@ -100,8 +106,9 @@ export const famousSongs: FamousSong[] = [
     key: 'Dm',
     bpm: 160,
     sections: [
-      { label: 'Aメロ', chords: ['Dm', 'Bb', 'C', 'Am'] },
-      { label: 'サビ', chords: ['Bb', 'C', 'Am', 'Dm', 'Bb', 'C', 'Dm', 'Dm'] }
+      { label: 'Aメロ', chords: ['Eb', 'F', 'Dm', 'Gm'] },
+      { label: 'Bメロ', chords: ['Eb', 'F', 'Dm', 'Gm', 'Eb', 'F', 'Bb', 'D7'] },
+      { label: 'サビ', chords: ['Eb', 'F', 'D7', 'Gm', 'Eb', 'F', 'D7', 'Gm'] }
     ],
     tags: ['疾走感', '中毒性', 'ダーク'],
     searchAliases: ['ふぉにい', 'phony', 'tsumiki', 'ツミキ'],
@@ -129,8 +136,9 @@ export const famousSongs: FamousSong[] = [
     key: 'Gm',
     bpm: 146,
     sections: [
-      { label: 'Aメロ', chords: ['Gm', 'Eb', "F", 'D'] },
-      { label: 'サビ', chords: ['Eb', 'F', 'Dm', 'Gm', 'Eb', 'F', 'Gm', 'Gm'] }
+      { label: 'Aメロ', chords: ['Ab', 'Bb', 'Cm', 'Eb'] },
+      { label: 'Bメロ', chords: ['Ab', 'Bb', 'Cm', 'Eb', 'Ab', 'Bb', 'Eb', 'G7'] },
+      { label: 'サビ', chords: ['Ab', 'Bb', 'Cm', 'Eb', 'Ab', 'Bb', 'Cm', 'Eb'] }
     ],
     tags: ['ダーク', '中毒性', '疾走感'],
     searchAliases: ['きんぐ', 'kanaria', 'かなりあ'],
@@ -141,11 +149,12 @@ export const famousSongs: FamousSong[] = [
     title: 'メルト',
     artist: 'ryo(supercell)',
     year: 2007,
-    key: 'D',
+    key: 'F',
     bpm: 152,
     sections: [
-      { label: 'Aメロ', chords: ['D', 'A', 'Bm', 'F#m', 'G', 'D', 'G', 'A'] },
-      { label: 'サビ', chords: ['G', 'A', 'F#m', 'Bm', 'G', 'A', 'D', 'D'] }
+      { label: 'Aメロ', chords: ['F', 'C', 'Dm', 'Bb'] },
+      { label: 'Bメロ', chords: ['Bb', 'C', 'Am', 'Dm', 'Gm7', 'C', 'F', 'F7'] },
+      { label: 'サビ', chords: ['Bb', 'C', 'Am', 'Dm', 'Bb', 'C', 'Am', 'Dm'] }
     ],
     tags: ['明るい', '切ない'],
     searchAliases: ['めると', 'melt', 'ryo', 'supercell'],
@@ -170,11 +179,12 @@ export const famousSongs: FamousSong[] = [
     title: 'ヴィラン',
     artist: 'てにをは',
     year: 2020,
-    key: 'Am',
+    key: 'Em',
     bpm: 136,
     sections: [
-      { label: 'Aメロ', chords: ['Am', 'F', 'C', 'G'] },
-      { label: 'サビ', chords: ['F', 'G', 'Em', 'Am', 'F', 'G', 'Am', 'Am'] }
+      { label: 'Aメロ', chords: ['Am', 'B7', 'Em', 'D', 'C', 'B7', 'Em', 'Em'] },
+      { label: 'Bメロ', chords: ['C', 'B7', 'Em', 'D', 'C', 'B7', 'Em', 'Em'] },
+      { label: 'サビ', chords: ['C', 'D', 'Em', 'Em', 'C', 'D', 'Em', 'Em'] }
     ],
     tags: ['ダーク', 'オシャレ', '中毒性'],
     searchAliases: ['ヴィラン', 'びらん', 'villain', 'teniwoha', 'てにをは'],

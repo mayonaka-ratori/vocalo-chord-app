@@ -200,5 +200,15 @@ export const chordPresets: ChordPreset[] = [
     tags: ['疾走感', 'ダーク', '中毒性'],
     famousSongs: ['うっせぇわ / Ado', 'お勉強しといてよ / ずっと真夜中でいいのに。'],
     category: 'recent-hit'
+  },
+  {
+    id: 'just-the-two-of-us',
+    name: 'Just The Two of Us進行',
+    nameEn: 'Just The Two of Us Progression',
+    description: '都会的で切ないシティポップの定番。夜に駆けるなどで有名',
+    degrees: ['IVmaj7', 'V', 'IIIm7', 'VIm'],
+    tags: ['オシャレ', '切ない'],
+    famousSongs: ['夜に駆ける / YOASOBI', 'Just The Two of Us / Grover Washington Jr.'],
+    category: 'citypop'
   }
 ];
