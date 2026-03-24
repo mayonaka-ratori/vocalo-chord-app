@@ -25,6 +25,8 @@ const config: Config = {
         'glow-cyan':    '0 0 12px rgba(0,229,255,0.15)',
         'glow-magenta': '0 0 12px rgba(224,64,251,0.15)',
         'glow-blue':    '0 0 6px rgba(79,195,247,0.4)',
+        'glow-purple':  '0 0 12px rgba(124,77,255,0.15)',
+        'glow-pink':    '0 0 12px rgba(255,107,157,0.15)',
       },
       fontFamily: {
         chord: ["var(--font-chord)", 'monospace'],

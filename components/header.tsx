@@ -15,7 +15,7 @@ export default function Header() {
         {/* 右側に情報を置くスペース（将来用） */}
         <div className="hidden md:block">
           <p className="text-[10px] text-voca-text-muted font-mono tracking-widest uppercase">
-            Vocacore Chord App v1.4
+            Vocacore Chord App v1.9
           </p>
         </div>
       </div>

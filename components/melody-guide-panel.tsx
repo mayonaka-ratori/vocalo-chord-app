@@ -204,7 +204,8 @@ export function MelodyGuidePanel() {
                 <div
                   key={phrase.id}
                   onClick={() => setActiveMelodyPattern(phrase.patternId)}
-                  className={`text-left border-2 transition-all rounded-3xl p-6 group relative overflow-hidden cursor-pointer ${
+                  style={{ animationDelay: `${melodyPhrases.indexOf(phrase) * 50}ms`, animationFillMode: 'both' }}
+                  className={`text-left border-2 transition-all hover:scale-[1.02] duration-150 rounded-3xl p-6 group relative overflow-hidden cursor-pointer animate-fadeInUp ${
                     isSelected 
                       ? 'bg-voca-bg-card border-voca-accent-magenta shadow-glow-magenta/20' 
                       : 'bg-voca-bg-elevated/40 border-voca-border-subtle hover:border-voca-text-sub hover:bg-voca-bg-elevated/60'

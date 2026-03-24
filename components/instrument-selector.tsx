@@ -73,7 +73,7 @@ export function InstrumentSelector() {
                   ? 'bg-voca-bg-section border-voca-accent-cyan shadow-glow-cyan'
                   : isLoadingThis
                   ? 'bg-voca-bg-card border-voca-accent-magenta/50 animate-pulse'
-                  : 'bg-voca-bg-card border-voca-border-subtle hover:border-voca-accent-cyan/50'
+                  : 'bg-voca-bg-card border-voca-border-subtle hover:border-voca-accent-cyan/50 hover:scale-[1.02]'
               } ${isDisabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
             >
               {/* Network / Offline Badge */}

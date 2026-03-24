@@ -38,7 +38,7 @@ export default function PresetGrid() {
         )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
-        {filteredPresets.map((preset) => {
+        {filteredPresets.map((preset, index) => {
           const isActive = preset.id === selectedPresetId;
 
           // 現在のキーでの最初の4コードを計算
@@ -50,7 +50,8 @@ export default function PresetGrid() {
             <button
               key={preset.id}
               onClick={() => applyPreset(preset.id)}
-              className={`text-left p-4 rounded-xl border transition-all relative overflow-hidden group
+              style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+              className={`text-left p-4 rounded-xl border transition-all relative overflow-hidden group animate-fadeInUp hover:scale-[1.02] duration-150
                 ${isActive 
                   ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan shadow-glow-cyan' 
                   : 'bg-voca-bg border-voca-border-subtle hover:bg-voca-bg-card hover:border-voca-text-muted active:scale-[0.98]'
@@ -81,7 +82,7 @@ export default function PresetGrid() {
 
               <div className="flex flex-wrap gap-1 mt-auto">
                 {preset.tags.map(tag => (
-                  <span key={tag} className="text-[10px] bg-cyan-900/40 text-cyan-400 px-2 py-0.5 rounded-full border border-cyan-800/50">
+                  <span key={tag} className="text-[10px] bg-voca-accent-cyan/10 text-voca-accent-cyan px-2 py-0.5 rounded-full border border-voca-accent-cyan/30">
                     {tag}
                   </span>
                 ))}

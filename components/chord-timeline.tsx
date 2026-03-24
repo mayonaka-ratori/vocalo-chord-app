@@ -36,20 +36,20 @@ function getFuncStyle(func: string): {
   switch (func) {
     case 'Tonic':
       return {
-        borderClass: 'border-b-emerald-500',
-        badgeClass: 'bg-emerald-900/60 text-emerald-300 border-emerald-700',
+        borderClass: 'border-b-voca-semantic-success',
+        badgeClass: 'bg-voca-semantic-success/20 text-voca-semantic-success border-voca-semantic-success/40',
         badgeLabel: 'T',
       };
     case 'Subdominant':
       return {
-        borderClass: 'border-b-amber-500',
-        badgeClass: 'bg-amber-900/60 text-amber-300 border-amber-700',
+        borderClass: 'border-b-voca-semantic-warning',
+        badgeClass: 'bg-voca-semantic-warning/20 text-voca-semantic-warning border-voca-semantic-warning/40',
         badgeLabel: 'SD',
       };
     case 'Dominant':
       return {
-        borderClass: 'border-b-blue-500',
-        badgeClass: 'bg-blue-900/60 text-blue-300 border-blue-700',
+        borderClass: 'border-b-voca-tone-blue',
+        badgeClass: 'bg-voca-tone-blue/20 text-voca-tone-blue border-voca-tone-blue/40',
         badgeLabel: 'D',
       };
     default:
@@ -105,7 +105,7 @@ export default function ChordTimeline() {
           <span className="text-voca-accent-magenta">✧</span>
           コード進行
           {isPreviewing && (
-            <span className="ml-2 text-[10px] md:text-xs bg-amber-500/20 text-amber-400 border border-amber-500/50 px-2 py-0.5 rounded-full animate-[pulse_2s_ease-in-out_infinite]">
+            <span className="ml-2 text-[10px] md:text-xs bg-voca-semantic-warning/20 text-voca-semantic-warning border border-voca-semantic-warning/50 px-2 py-0.5 rounded-full animate-[pulse_2s_ease-in-out_infinite]">
               プレビュー中...
             </span>
           )}
@@ -139,7 +139,7 @@ export default function ChordTimeline() {
           if (isPreviewChanged) {
              buttonClass += 'border-voca-semantic-warning bg-voca-semantic-warning/10 shadow-glow-magenta animate-[pulse_2s_ease-in-out_infinite] md:scale-105';
           } else if (isActivePlay) {
-             buttonClass += 'border-voca-accent-cyan bg-voca-accent-cyan/10 shadow-glow-cyan md:scale-105';
+             buttonClass += 'border-voca-accent-cyan bg-voca-accent-cyan/10 shadow-glow-cyan animate-pulseGlow md:scale-105';
           } else {
              buttonClass += 'hover:bg-voca-bg-section hover:border-voca-text-sub active:scale-95';
           }
@@ -237,15 +237,15 @@ export default function ChordTimeline() {
       {/* 凡例 — モバイルは text-xs、デスクトップは text-sm */}
       <div className="flex flex-wrap gap-3 text-xs sm:text-sm font-bold text-voca-text-muted bg-voca-bg-card/50 px-4 py-2 rounded-xl border border-voca-border-subtle w-max">
         <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+          <span className="w-2.5 h-2.5 rounded-full bg-voca-semantic-success shrink-0" />
           <span>T <span className="font-medium opacity-50">安定</span></span>
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+          <span className="w-2.5 h-2.5 rounded-full bg-voca-semantic-warning shrink-0" />
           <span>SD <span className="font-medium opacity-50">展開</span></span>
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
+          <span className="w-2.5 h-2.5 rounded-full bg-voca-tone-blue shrink-0" />
           <span>D <span className="font-medium opacity-50">緊張</span></span>
         </span>
       </div>

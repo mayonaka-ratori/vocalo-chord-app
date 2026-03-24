@@ -71,10 +71,11 @@ export function VariationPanel() {
           </div>
         ) : (
           <div className="flex flex-col md:flex-row gap-5 overflow-x-auto snap-x snap-mandatory md:pb-4 max-h-[50vh] min-h-[40vh] md:min-h-0 md:max-h-none overflow-y-auto md:overflow-y-visible pr-1">
-            {variations.map(variation => (
+            {variations.map((variation, index) => (
               <div 
                 key={variation.id} 
-                className="snap-start shrink-0 w-full md:w-[280px] md:max-w-[320px] bg-voca-bg-elevated/80 border-2 border-voca-border-subtle rounded-2xl p-5 md:hover:border-voca-accent-cyan md:hover:shadow-glow-cyan/20 transition-all flex flex-col group relative overflow-hidden"
+                style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+                className="snap-start shrink-0 w-full md:w-[280px] md:max-w-[320px] bg-voca-bg-elevated/80 border-2 border-voca-border-subtle rounded-2xl p-5 md:hover:border-voca-accent-cyan md:hover:shadow-glow-cyan/20 transition-all hover:scale-[1.02] duration-150 flex flex-col group relative overflow-hidden animate-fadeInUp"
               >
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div className="flex items-center gap-3">
