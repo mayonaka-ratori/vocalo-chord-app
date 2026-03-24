@@ -55,11 +55,21 @@ export async function playUnifiedChord(event: UnifiedNoteEvent): Promise<void> {
   } else {
     // smplr を使用
     try {
-      const effectiveVelocity = Math.round(((event.velocity ?? 90) / 127) * profile.chord);
-      provider.playChord(instrumentId, event.notes, {
-        velocity: effectiveVelocity,
-        duration: event.duration,
-        time: event.time,
+      const baseVelocity = Math.round(((event.velocity ?? 90) / 127) * profile.chord);
+      const isStrum = instrumentId === 'acoustic-guitar';
+      const strumOffset = 0.012; // 12ms between strings
+      const strumVelocityVariation = [0.85, 1.0, 0.95, 0.88];
+
+      event.notes.forEach((note, index) => {
+        const noteTime = isStrum ? event.time + index * strumOffset : event.time;
+        const noteVelocity = isStrum
+          ? Math.round(baseVelocity * (strumVelocityVariation[index] ?? 0.9))
+          : baseVelocity;
+        provider.playNote(instrumentId, note, {
+          velocity: noteVelocity,
+          duration: event.duration,
+          time: noteTime,
+        });
       });
     } catch (smplrError) {
       console.warn('[UnifiedPlayer] smplr playChord failed, using Tone.js fallback:', smplrError);
