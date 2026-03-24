@@ -222,6 +222,7 @@ class SmplrProvider {
           const { Soundfont } = await import('smplr');
           const ep = new Soundfont(context, {
             instrument: 'electric_piano_1',
+            volume: 120,
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });
@@ -237,6 +238,7 @@ class SmplrProvider {
           const { Soundfont } = await import('smplr');
           const ep = new Soundfont(context, {
             instrument: 'electric_piano_2',
+            volume: 120,
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });
@@ -252,6 +254,7 @@ class SmplrProvider {
           const { Soundfont } = await import('smplr');
           const guitar = new Soundfont(context, {
             instrument: 'acoustic_guitar_nylon',
+            volume: 110,
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });
@@ -267,6 +270,7 @@ class SmplrProvider {
           const { Soundfont } = await import('smplr');
           const strings = new Soundfont(context, {
             instrument: 'string_ensemble_1',
+            volume: 110,
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });

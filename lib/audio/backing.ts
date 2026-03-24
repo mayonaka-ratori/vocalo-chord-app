@@ -2,6 +2,7 @@ import { BackingPattern } from '@/types/audio';
 import { getChordNotes } from '@/lib/music/chords';
 import { playUnifiedChord } from './unified-player';
 import { getTone, getChordSynth } from './engine';
+import { useStore } from '@/lib/store';
 
 export async function playBackingStep(pattern: BackingPattern, stepIndex: number, time: number, currentChord: string) {
   if (!currentChord || currentChord === 'N.C.') return;
@@ -29,6 +30,13 @@ export async function playBackingStep(pattern: BackingPattern, stepIndex: number
   // ['C3', 'E3', 'G3'] のような配列にする
   const chordPitches = notes.map(note => `${note}${baseOctave}`);
   const rootPitch = `${notes[0]}${baseOctave}`;
+
+  // エレクトリックピアノはルート音を1オクターブ上に重ねて存在感を補強する
+  const activeInstrumentId = useStore.getState().activeInstrumentId;
+  if (activeInstrumentId === 'electric-piano-cp80' ||
+      activeInstrumentId === 'electric-piano-wurlitzer') {
+    chordPitches.push(`${notes[0]}${baseOctave + 1}`);
+  }
 
   // Tone.js の音符の長さを秒数に変換 (smplr 用)
   const durationSeconds = Tone.Time(currentStep.duration).toSeconds();

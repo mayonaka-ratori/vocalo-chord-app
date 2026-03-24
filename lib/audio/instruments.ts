@@ -126,7 +126,7 @@ export async function createBackingInstrument(
       synth = new Tone.PolySynth(Tone.Synth, {
         oscillator: { type: 'sawtooth' },
         envelope: { attack: 0.001, decay: 0.3, sustain: 0.6, release: 0.2 },
-        volume: -15
+        volume: -10
       });
       const dist = new Tone.Distortion(0.8);
       const filter = new Tone.Filter({ type: 'lowpass', frequency: 3000 });
