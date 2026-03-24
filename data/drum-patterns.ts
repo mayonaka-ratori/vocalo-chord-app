@@ -68,5 +68,17 @@ export const drumPatterns: DrumPattern[] = [
       hihatClosed: i % 4 === 0 || i % 4 === 3,
       hihatOpen: i === 6 || i === 14,
     }))
+  },
+  {
+    id: 'electro-swing',
+    name: 'エレクトロスウィング',
+    description: 'シャッフル感のあるスウィングリズム',
+    swing: 0.5,
+    steps: Array.from({ length: 16 }, (_, i) => ({
+      kick: i === 0 || i === 8,
+      snare: i === 4 || i === 12,
+      hihatClosed: i % 2 === 0,
+      hihatOpen: i === 6 || i === 14,
+    }))
   }
 ];

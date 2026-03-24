@@ -79,7 +79,11 @@ export function setPlaybackCallbacks(
 export function updatePlaybackConfig(config: PlaybackStateConfig) {
   if (currentConfig) {
     currentConfig = config;
-    if (Tone) Tone.Transport.bpm.value = config.bpm;
+    if (Tone) {
+      Tone.Transport.bpm.value = config.bpm;
+      const dPattern = drumPatterns.find(p => p.id === config.drumPatternId);
+      Tone.Transport.swing = dPattern?.swing ?? 0;
+    }
     if (config.mode === 'song' && config.sections) {
       sectionBarMap = buildSectionBarMap(config.sections);
     }
@@ -97,6 +101,9 @@ export async function startPlayback(config: PlaybackStateConfig) {
 
   currentConfig = config;
   Tone.Transport.bpm.value = config.bpm;
+  Tone.Transport.swingSubdivision = '8n';
+  const startDPattern = drumPatterns.find(p => p.id === config.drumPatternId);
+  Tone.Transport.swing = startDPattern?.swing ?? 0;
   
   if (playbackLoop) {
     playbackLoop.stop();
@@ -179,6 +186,10 @@ export async function startPlayback(config: PlaybackStateConfig) {
             switchBackingInstrument(currentInstrumentId);
           }, time - 0.05); // slightly before to prevent gap
         }
+
+        // Apply swing for new section's drum pattern
+        const sectionDPattern = drumPatterns.find(p => p.id === mapNode.section.drumPatternId);
+        Tone!.Transport.swing = sectionDPattern?.swing ?? 0;
 
         Tone!.Draw.schedule(() => {
           if (onSectionChangeCallback) onSectionChangeCallback(sectionIdx);

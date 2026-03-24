@@ -15,6 +15,7 @@ export interface DrumPattern {
   id: string;
   name: string;        // '4つ打ち', 'エイトビート' など
   description?: string;
+  swing?: number;      // 0 = ストレート, 0.5 = 三連符スウィング (Tone.Transport.swing に渡す)
   steps: DrumPatternStep[]; // 長さは通常 16 (1小節) か 32 (2小節)
 }
 
