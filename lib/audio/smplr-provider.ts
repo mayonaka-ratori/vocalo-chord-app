@@ -206,7 +206,7 @@ class SmplrProvider {
         try {
           const { SplendidGrandPiano } = await import('smplr');
           const piano = new SplendidGrandPiano(context, {
-            volume: 90,
+            volume: 72,
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });

@@ -13,7 +13,7 @@ export interface VolumeProfile {
 export const SMPLR_VOLUME_PROFILE: VolumeProfile = {
   chord: 95,      // chords slightly quieter to leave space
   bass: 80,       // bass prominent but not overwhelming
-  melody: 90,     // melody sits on top
+  melody: 115,     // melody sits on top
   drums: 60,      // drums are a guide, not dominant
 };
 
@@ -23,7 +23,7 @@ export const SMPLR_VOLUME_PROFILE: VolumeProfile = {
 export const SYNTH_VOLUME_PROFILE: VolumeProfile = {
   chord: 2,       // dB
   bass: -8,       // dB
-  melody: -2,     // dB
+  melody: 4,     // dB
   drums: -10,     // dB
 };
 
