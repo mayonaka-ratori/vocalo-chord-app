@@ -6,7 +6,18 @@ import { getTone } from './engine';
 export async function playBassStep(pattern: BassPattern, stepIndex: number, time: number, currentChord: string) {
   if (!currentChord || currentChord === 'N.C.') return;
 
-  const currentStep = pattern.steps[stepIndex % pattern.steps.length];
+  // ストライドガード: パターンカーソルで正しいステップを特定し、最初のtickのみ発音する
+  const Tone = await getTone();
+  const firstStep = pattern.steps[0];
+  const stride16n = Math.round(
+    Tone.Time(firstStep.duration).toSeconds() / Tone.Time('16n').toSeconds()
+  );
+  const patternLengthInTicks = pattern.steps.length * stride16n;
+  const tickInPattern = stepIndex % patternLengthInTicks;
+  const patternStepIndex = Math.floor(tickInPattern / stride16n);
+  if (tickInPattern % stride16n !== 0) return;
+
+  const currentStep = pattern.steps[patternStepIndex];
   if (currentStep.type === 'REST') return;
 
   // コードからの構成音計算
@@ -35,13 +46,6 @@ export async function playBassStep(pattern: BassPattern, stepIndex: number, time
       pitchToPlay = `${rootNote}${baseOctave + 1}`;
       break;
   }
-
-  // ストライドガード: このステップが何tick分かを計算し、最初のtickのみ発音する
-  const Tone = await getTone();
-  const stride16n = Math.round(
-    Tone.Time(currentStep.duration).toSeconds() / Tone.Time('16n').toSeconds()
-  );
-  if (stepIndex % stride16n !== 0) return;
 
   // Tone.js の音符の長さを秒数に変換 (smplr 用)
   const durationSeconds = Tone.Time(currentStep.duration).toSeconds();

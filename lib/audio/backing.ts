@@ -6,15 +6,19 @@ import { getTone, getChordSynth } from './engine';
 export async function playBackingStep(pattern: BackingPattern, stepIndex: number, time: number, currentChord: string) {
   if (!currentChord || currentChord === 'N.C.') return;
 
-  const currentStep = pattern.steps[stepIndex % pattern.steps.length];
-  if (currentStep.type === 'REST') return;
-
-  // ストライドガード: このステップが何tick分かを計算し、最初のtickのみ発音する
+  // ストライドガード: パターンカーソルで正しいステップを特定し、最初のtickのみ発音する
   const Tone = await getTone();
+  const firstStep = pattern.steps[0];
   const stride16n = Math.round(
-    Tone.Time(currentStep.duration).toSeconds() / Tone.Time('16n').toSeconds()
+    Tone.Time(firstStep.duration).toSeconds() / Tone.Time('16n').toSeconds()
   );
-  if (stepIndex % stride16n !== 0) return;
+  const patternLengthInTicks = pattern.steps.length * stride16n;
+  const tickInPattern = stepIndex % patternLengthInTicks;
+  const patternStepIndex = Math.floor(tickInPattern / stride16n);
+  if (tickInPattern % stride16n !== 0) return;
+
+  const currentStep = pattern.steps[patternStepIndex];
+  if (currentStep.type === 'REST') return;
 
   // コードからの構成音計算
   const notes = getChordNotes(currentChord);

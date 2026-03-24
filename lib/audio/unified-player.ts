@@ -1,7 +1,7 @@
 import type * as ToneType from 'tone';
 import { getChordSynth, getBassSynth, getTone } from './engine';
 import { useStore } from '../store';
-import { getVolumeProfile } from './volume-config';
+import { getVolumeProfile, SYNTH_VOLUME_PROFILE } from './volume-config';
 
 /**
  * 統合されたノートイベント情報
@@ -31,7 +31,7 @@ export async function playUnifiedChord(event: UnifiedNoteEvent): Promise<void> {
       if (!Tone) return;
 
       const velocityFactor = event.velocity ? (event.velocity / 127) : 1;
-      const gain = velocityFactor * Tone.dbToGain(profile.chord);
+      const gain = velocityFactor * Tone.dbToGain(SYNTH_VOLUME_PROFILE.chord);
 
       if ('triggerAttackRelease' in chordSynth) {
         if (chordSynth.name === 'PolySynth') {
@@ -93,7 +93,7 @@ export async function playUnifiedBass(note: string, duration: number, time: numb
     if (bassSynth) {
       const Tone = await getTone();
       if (!Tone) return;
-      const gain = Tone.dbToGain(profile.bass);
+      const gain = Tone.dbToGain(SYNTH_VOLUME_PROFILE.bass);
       bassSynth.triggerAttackRelease(note, duration, time, (velocity / 127) * gain);
     }
   } else {
