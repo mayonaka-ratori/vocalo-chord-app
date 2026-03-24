@@ -18,10 +18,14 @@ description: プロジェクトのアーキテクチャルール
 - APIレスポンスの型を `types/` に定義する
 - エラーハンドリングは try-catch で行い、ユーザーに適切なエラーメッセージを返す
 
-## Tone.js 関連
-- AudioContext は必ずユーザーインタラクション後に初期化する
-- 全ての Tone.js オブジェクトは `lib/audio/engine.ts` で管理し、適切に dispose する
-- サーバーサイドレンダリング時に Tone.js がインポートされないよう dynamic import を使う
+## 音声エンジン (Tone.js + smplr)
+- AudioContext は必ずユーザーインタラクション後に初期化する (`engine.ts` で一元管理)
+- Tone.js PolySynth は synth-fallback として常時動作する。smplr に依存しない
+- smplr (SplendidGrandPiano / Soundfont) は必ず dynamic import で遅延読み込みする
+- 楽器は LRU キャッシュで最大3つが上限。超過時は最古をアンロードする
+- smplr が失敗した場合は必ず synth-fallback にフォールバックし、音声パイプラインを絶対に山止しない
+- 6楽器: Grand Piano (SplendidGrandPiano), CP80 / Wurlitzer / Acoustic Guitar / Strings (Soundfont), Synth-fallback (Tone.js)
+- SSR時に Tone.js ・ smplr がインポートされないよう dynamic import を必ず使う
 
 ## パフォーマンス
 - コンポーネントの不要な再レンダリングを防ぐため React.memo と useMemo を適切に使う
