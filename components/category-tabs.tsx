@@ -4,9 +4,9 @@ import { useStore } from '@/lib/store';
 
 const CATEGORIES = [
   { id: null, label: 'すべて' },
+  { id: 'standard', label: '定番' },
   { id: 'citypop', label: 'City Pop' },
   { id: 'vocaloid', label: 'ボカロ' },
-  { id: 'vocaloP-artist', label: 'ボカロP' },
   { id: 'recent-hit', label: '最近のヒット' },
 ];
 

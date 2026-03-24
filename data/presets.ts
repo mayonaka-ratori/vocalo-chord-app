@@ -89,7 +89,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['I', 'IVm', 'I', 'V'],
     tags: ['切ない', 'オシャレ'],
     famousSongs: ['花に亡霊', 'Creep'],
-    category: 'standard'
+    category: 'citypop'
   },
   {
     id: 'yoasobi-style',
@@ -149,7 +149,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['VIm', 'IV', 'I', 'V'],
     tags: ['切ない', '中毒性'],
     famousSongs: ['Lemon', 'アンノウン・マザーグース'],
-    category: 'vocaloP-artist'
+    category: 'recent-hit'
   },
   {
     id: 'ageage-pop',
@@ -159,6 +159,46 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['I', 'IV', 'V', 'I', 'VIm', 'IV', 'V', 'I'],
     tags: ['明るい', '疾走感'],
     famousSongs: ['テルユアワールド', 'ハッピーシンセサイザ'],
-    category: 'standard'
+    category: 'vocaloid'
+  },
+  {
+    id: 'plastic-love',
+    name: 'Plastic Love進行',
+    nameEn: 'Plastic Love Progression',
+    description: '竹内まりやの代表曲に使われたシティポップの象徴的進行',
+    degrees: ['IIm7', 'V7', 'Imaj7', 'VIm7'],
+    tags: ['オシャレ', '中毒性'],
+    famousSongs: ['Plastic Love / 竹内まりや'],
+    category: 'citypop'
+  },
+  {
+    id: 'mayonaka-door',
+    name: '真夜中のドア進行',
+    nameEn: 'Mayonaka no Door Progression',
+    description: '松原みきの名曲、世界的に再評価されたシティポップ進行',
+    degrees: ['VIm7', 'IIm7', 'V7', 'Imaj7'],
+    tags: ['オシャレ', '切ない'],
+    famousSongs: ['真夜中のドア〜Stay With Me / 松原みき'],
+    category: 'citypop'
+  },
+  {
+    id: 'citypop-jazzy',
+    name: 'シティポップ・ジャジーループ',
+    nameEn: 'City Pop Jazzy Loop',
+    description: '山下達郎や角松敏生を彷彿させる洗練されたコードワーク',
+    degrees: ['IVmaj7', 'IIIm7', 'IIm7', 'Imaj7'],
+    tags: ['オシャレ', '明るい'],
+    famousSongs: ['Ride on Time / 山下達郎', 'Tokyo Tower / 角松敏生'],
+    category: 'citypop'
+  },
+  {
+    id: 'ado-style',
+    name: 'Ado風アグレッシブ進行',
+    nameEn: 'Aggressive Pop Progression',
+    description: 'Adoやずとまよに見られる攻撃的でドラマチックな進行',
+    degrees: ['VIm', 'IV', 'V', 'IIIm'],
+    tags: ['疾走感', 'ダーク', '中毒性'],
+    famousSongs: ['うっせぇわ / Ado', 'お勉強しといてよ / ずっと真夜中でいいのに。'],
+    category: 'recent-hit'
   }
 ];

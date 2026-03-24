@@ -60,7 +60,7 @@ export default function PresetGrid() {
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-voca-text text-lg">{preset.name}</h3>
                 <span className="text-xs font-mono text-voca-text-muted bg-voca-bg px-2 py-1 rounded">
-                  {preset.category === 'recent-hit' ? '最近のヒット' : preset.category === 'vocaloid' ? 'ボカロ' : preset.category === 'vocaloP-artist' ? 'ボカロP' : preset.category === 'citypop' ? 'City Pop' : '定番'}
+                  {preset.category === 'recent-hit' ? '最近のヒット' : preset.category === 'vocaloid' ? 'ボカロ' : preset.category === 'citypop' ? 'City Pop' : '定番'}
                 </span>
               </div>
               
