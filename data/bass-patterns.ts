@@ -57,11 +57,14 @@ export const bassPatterns: BassPattern[] = [
     name: 'ボサノバ',
     description: 'ブラジル音楽風のシンコペーションベース',
     steps: [
-      { type: 'ROOT',  duration: '4n' },
+      { type: 'ROOT',  duration: '8n' },
+      { type: 'REST',  duration: '8n' },
       { type: 'REST',  duration: '8n' },
       { type: 'FIFTH', duration: '8n' },
-      { type: 'ROOT',  duration: '4n' },
-      { type: 'REST',  duration: '4n' },
+      { type: 'ROOT',  duration: '8n' },
+      { type: 'REST',  duration: '8n' },
+      { type: 'REST',  duration: '8n' },
+      { type: 'REST',  duration: '8n' },
     ]
   },
   {
