@@ -1,14 +1,15 @@
 import { BackingPattern } from '@/types/audio';
 import { getChordNotes } from '@/lib/music/chords';
 import { playUnifiedChord } from './unified-player';
-import { getTone, getChordSynth } from './engine';
+import { getToneSync, getChordSynth } from './engine';
 import { useStore } from '@/lib/store';
 
-export async function playBackingStep(pattern: BackingPattern, stepIndex: number, time: number, currentChord: string) {
+export function playBackingStep(pattern: BackingPattern, stepIndex: number, time: number, currentChord: string) {
   if (!currentChord || currentChord === 'N.C.') return;
 
   // ストライドガード: パターンカーソルで正しいステップを特定し、最初のtickのみ発音する
-  const Tone = await getTone();
+  const Tone = getToneSync();
+  if (!Tone) return;
   const firstStep = pattern.steps[0];
   const stride16n = Math.round(
     Tone.Time(firstStep.duration).toSeconds() / Tone.Time('16n').toSeconds()

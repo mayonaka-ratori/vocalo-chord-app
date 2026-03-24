@@ -37,6 +37,14 @@ export async function getTone() {
 }
 
 /**
+ * Synchronous getter — returns cached Tone module or null.
+ * Safe to call inside Transport Loop after initAudio() has been called.
+ */
+export function getToneSync(): typeof ToneType | null {
+  return ToneModule;
+}
+
+/**
  * Ensure AudioContext is running and Tone is started.
  * MUST be called by user interaction.
  */

@@ -1,6 +1,6 @@
 import { useStore } from '@/lib/store';
 import { playUnifiedMelody } from './unified-player';
-import { getTone } from './engine';
+import { getToneSync } from './engine';
 
 /**
  * メロディのステップ再生
@@ -17,10 +17,10 @@ import { getTone } from './engine';
  * ステップ変換: 1 beat = 4 sixteenth-note steps
  *   note.beat * 4 = phrase 内での 16n ステップ位置
  */
-export async function playMelodyStep(
+export function playMelodyStep(
   stepIndex: number,
   time: number,
-): Promise<void> {
+): void {
   const store = useStore.getState();
 
   if (!store.isMelodyEnabled) return;
@@ -40,7 +40,7 @@ export async function playMelodyStep(
   // フレーズをループさせるためのステップ位置
   const stepInPhrase = stepIndex % phraseLengthSteps;
 
-  const Tone = await getTone();
+  const Tone = getToneSync();
   if (!Tone) return;
 
   const secPer16n = Tone.Time('16n').toSeconds();
