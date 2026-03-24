@@ -123,8 +123,10 @@ export function generateMelodyPhrases(
     { id: 'chord-tone-descend', name: 'コードトーン下降', icon: '📉', description: 'コードの構成音を上から順に（4分音符）' },
     { id: 'arpeggio-up', name: 'アルペジオ上昇', icon: '✨', description: '分散和音で軽やかに上昇（8分音符）' },
     { id: 'arpeggio-down', name: 'アルペジオ下降', icon: '🌊', description: '分散和音でさらさらと下降（8分音符）' },
-    { id: 'stepwise-ascend', name: '順次進行上昇', icon: '🚶', description: 'スケールに沿って一歩ずつ上昇' },
-    { id: 'stepwise-descend', name: '順次進行下降', icon: '🏃', description: 'スケールに沿って一歩ずつ下降' }
+    { id: 'stepwise-ascend',    name: '順次進行上昇',     icon: '🚶', description: 'スケールに沿って一歩ずつ上昇' },
+    { id: 'stepwise-descend',   name: '順次進行下降',     icon: '🏃', description: 'スケールに沿って一歩ずつ下降' },
+    { id: '16th-arpeggio',      name: '16分アルペジオ',   icon: '⚡', description: '高速な分散和音で駆け上がる（16分音符）' },
+    { id: 'syncopated',         name: 'シンコペーション', icon: '🎭', description: '裏拍を活かしたリズミカルなメロディ' }
   ];
 
   return patternConfigs.map(config => {
@@ -180,6 +182,52 @@ export function generateMelodyPhrases(
           const extendedScale = [...scale.map(n => n - 12), ...scale];
           phraseNotes = extendedScale.reverse().slice(0, 4);
           duration = 1;
+          break;
+        }
+        case '16th-arpeggio': {
+          const tones16 = [...info.tones, info.tones[0] + 12];
+          const chordBeatOffset16 = chordIdx * beatsPerChord;
+          for (let i = 0; i < 16; i++) {
+            const midi = tones16[i % tones16.length] + (Math.floor(i / tones16.length) % 2 === 1 ? 12 : 0);
+            const noteName16 = getNoteFromIndex(midi % 12);
+            const octave16 = Math.floor(midi / 12) - 1;
+            notes.push({
+              midi,
+              name: `${noteName16}${octave16}`,
+              duration: 0.25,
+              beat: chordBeatOffset16 + (i * 0.25),
+              velocity: i % 4 === 0 ? 90 : 70,
+              isChordTone: info.tones.includes(midi),
+              isBlueNote: info.blueNotes.includes(midi),
+            });
+          }
+          phraseNotes = []; // already pushed directly; skip forEach
+          break;
+        }
+        case 'syncopated': {
+          const chordBeatOffsetSyn = chordIdx * beatsPerChord;
+          const synPattern = [
+            { beatOffset: 0,    dur: 0.75, toneIdx: 0, vel: 75 },
+            { beatOffset: 0.75, dur: 0.75, toneIdx: 1, vel: 95 },
+            { beatOffset: 1.5,  dur: 1.0,  toneIdx: 2, vel: 80 },
+            { beatOffset: 2.5,  dur: 0.5,  toneIdx: 1, vel: 95 },
+            { beatOffset: 3.0,  dur: 1.0,  toneIdx: 0, vel: 75 },
+          ];
+          for (const sp of synPattern) {
+            const midi = info.tones[sp.toneIdx % info.tones.length];
+            const noteNameSyn = getNoteFromIndex(midi % 12);
+            const octaveSyn = Math.floor(midi / 12) - 1;
+            notes.push({
+              midi,
+              name: `${noteNameSyn}${octaveSyn}`,
+              duration: sp.dur,
+              beat: chordBeatOffsetSyn + sp.beatOffset,
+              velocity: sp.vel,
+              isChordTone: info.tones.includes(midi),
+              isBlueNote: info.blueNotes.includes(midi),
+            });
+          }
+          phraseNotes = []; // already pushed directly; skip forEach
           break;
         }
       }

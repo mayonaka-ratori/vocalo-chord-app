@@ -101,6 +101,9 @@ export async function POST(req: NextRequest) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Using 1.5-flash as it's highly compatible
 
     const prompt = `あなたは音楽理論の専門家です。「${query}」のコード進行を教えてください。
+可能な限り、Aメロ（4〜8小節）、Bメロ（4〜8小節）、サビ（8小節）の3セクションに分けて回答してください。
+セクションが不明な場合は省略し、確実なセクションのみ含めてください。
+コードは絶対表記（C, Am, Fmaj7 など）で記述してください。
 以下のJSON形式のみで回答してください（前後に余分なテキストを含めないでください）:
 {
   "title": "曲名",
@@ -108,10 +111,9 @@ export async function POST(req: NextRequest) {
   "key": "キー（例: C, Am, Eb）",
   "bpm": 数値,
   "sections": [
-    {
-      "label": "サビ",
-      "chords": ["C", "G", "Am", "F"]
-    }
+    { "label": "Aメロ", "chords": ["Am", "F", "C", "G"] },
+    { "label": "Bメロ", "chords": ["F", "G", "Am", "E"] },
+    { "label": "サビ", "chords": ["C", "G", "Am", "F", "C", "G", "F", "G"] }
   ],
   "confidence": "high"
 }
@@ -158,7 +160,9 @@ confidence は "high" | "medium" | "low" のいずれか。`;
       artist: aiData.artist || "Unknown",
       key: aiData.key || "C",
       bpm: aiData.bpm || 120,
-      sections: aiData.sections,
+      sections: aiData.sections.filter((s: { label: string; chords: string[] }) =>
+        s.chords && s.chords.length > 0
+      ),
       confidence: aiData.confidence || 'medium',
       source: 'ai'
     };

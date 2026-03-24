@@ -193,7 +193,9 @@ export type MelodyPatternId =
   | 'arpeggio-up'          // アルペジオ上昇
   | 'arpeggio-down'        // アルペジオ下降
   | 'stepwise-ascend'      // 順次進行上昇（スケール）
-  | 'stepwise-descend';    // 順次進行下降（スケール）
+  | 'stepwise-descend'     // 順次進行下降（スケール）
+  | '16th-arpeggio'        // 16分音符アルペジオ
+  | 'syncopated';          // シンコペーション
 
 export interface MelodyNote {
   midi: number;          // MIDI note number (60 = C4)
