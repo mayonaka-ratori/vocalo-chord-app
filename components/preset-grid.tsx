@@ -11,15 +11,15 @@ import { NoteName, MoodTag } from "@/types/music";
 export default function PresetGrid() {
   const {
     key, selectedPresetId, applyPreset, activeMoodTags,
-    isStructureMode, sections, activeSectionIndex
+    isStructureMode, sections, activeSectionIndex, categoryFilter
   } = useStore();
 
   const activeSection = isStructureMode ? sections[activeSectionIndex] : null;
 
   const filteredPresets = chordPresets.filter(preset => {
-    if (activeMoodTags.length === 0) return true;
-    // 選択されたタグが一つでも含まれていれば表示（OR条件）。要件に応じてANDにも可能。
-    return activeMoodTags.some(tag => preset.tags.includes(tag as MoodTag));
+    const catOk = !categoryFilter || preset.category === categoryFilter;
+    const moodOk = activeMoodTags.length === 0 || activeMoodTags.some(tag => preset.tags.includes(tag as MoodTag));
+    return catOk && moodOk;
   });
 
   const semitonesFromC = getNoteIndex(key as NoteName) - getNoteIndex('C');
@@ -60,7 +60,7 @@ export default function PresetGrid() {
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-voca-text text-lg">{preset.name}</h3>
                 <span className="text-xs font-mono text-voca-text-muted bg-voca-bg px-2 py-1 rounded">
-                  {preset.category === 'famous-song' ? '有名曲' : '定番'}
+                  {preset.category === 'recent-hit' ? '最近のヒット' : preset.category === 'vocaloid' ? 'ボカロ' : preset.category === 'vocaloP-artist' ? 'ボカロP' : preset.category === 'citypop' ? 'City Pop' : '定番'}
                 </span>
               </div>
               

@@ -137,7 +137,7 @@ export interface ChordPreset {
   degrees: string[];        // 度数表記の配列（8小節 or 4小節）
   tags: MoodTag[];          // 雰囲気タグ
   famousSongs: string[];    // 使用有名曲（曲名のみ、歌詞は含めない）
-  category: 'standard' | 'famous-song' | 'genre';
+  category: 'standard' | 'vocaloid' | 'vocaloP-artist' | 'recent-hit' | 'citypop';
 }
 
 // 曲のキー情報

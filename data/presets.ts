@@ -49,7 +49,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['VIm', 'IIm', 'IIIm', 'VIm'],
     tags: ['中毒性', '疾走感', 'ダーク'],
     famousSongs: ['ドーナツホール', 'ベノム', 'アスノヨゾラ哨戒班'],
-    category: 'standard'
+    category: 'vocaloid'
   },
   {
     id: 'pop-punk',
@@ -69,7 +69,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['IIm', 'IIIm', 'IV', 'V'],
     tags: ['エモい', '疾走感'],
     famousSongs: ['六兆年と一夜物語', '紅蓮華'],
-    category: 'standard'
+    category: 'vocaloid'
   },
   {
     id: 'retro-50s',
@@ -99,7 +99,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['IV', 'V', 'IIIm', 'VIm', 'IVmaj7', 'III7', 'VIm7', 'V'],
     tags: ['オシャレ', 'エモい', '中毒性'],
     famousSongs: ['アイドル', '群青'],
-    category: 'famous-song'
+    category: 'recent-hit'
   },
   {
     id: 'vaundy-funk',
@@ -109,7 +109,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['IVmaj7', 'III7', 'VIm7', 'IIm7', 'IVmaj7', 'III7', 'VIm7', 'V7'],
     tags: ['オシャレ', '中毒性'],
     famousSongs: ['怪獣の花唄', '東京フラッシュ'],
-    category: 'famous-song'
+    category: 'recent-hit'
   },
   {
     id: 'yonanuki-style',
@@ -119,7 +119,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['I', 'IIm', 'IV', 'V', 'I', 'IIm', 'IV', 'V'],
     tags: ['明るい', '中毒性'],
     famousSongs: ['千本桜(一部)', '和楽器バンド等の楽曲'],
-    category: 'genre'
+    category: 'vocaloid'
   },
   {
     id: 'dark-minor-loop',
@@ -129,7 +129,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['VIm', 'VIm', 'IV', 'V'],
     tags: ['ダーク', 'エモい'],
     famousSongs: ['ロキ', 'シャルル', 'ヴィラン'],
-    category: 'genre'
+    category: 'vocaloid'
   },
   {
     id: 'vocalock-drop',
@@ -139,7 +139,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['VIm', 'IV', 'I', 'V'],
     tags: ['疾走感', '中毒性', 'ダーク'],
     famousSongs: ['グッバイ宣言', 'フォニイ', 'KING'],
-    category: 'genre'
+    category: 'vocaloid'
   },
   {
     id: 'melancholy-loop',
@@ -149,7 +149,7 @@ export const chordPresets: ChordPreset[] = [
     degrees: ['VIm', 'IV', 'I', 'V'],
     tags: ['切ない', '中毒性'],
     famousSongs: ['Lemon', 'アンノウン・マザーグース'],
-    category: 'genre'
+    category: 'vocaloP-artist'
   },
   {
     id: 'ageage-pop',

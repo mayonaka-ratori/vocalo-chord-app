@@ -94,11 +94,7 @@ export function MainAppContent() {
       <SongSearchBar />
       <KeyTempoSelector />
 
-      <InstrumentSelector />
-      <InstrumentLoadProgress />
-      <TransportControls />
       <CategoryTabs />
-      
       <MoodTagFilter />
       <PresetGrid />
 
@@ -113,6 +109,10 @@ export function MainAppContent() {
 
       <ChordTimeline />
       <VariationPanel />
+
+      <InstrumentSelector />
+      <InstrumentLoadProgress />
+      <TransportControls />
       {showMelodyGuide && <MelodyGuidePanel />}
       <RhythmSelector />
 

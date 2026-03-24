@@ -254,7 +254,7 @@ class SmplrProvider {
           const { Soundfont } = await import('smplr');
           const guitar = new Soundfont(context, {
             instrument: 'acoustic_guitar_nylon',
-            volume: 135,
+            volume: 148,
             onLoadProgress: handleProgress,
             ...(cache ? { storage: cache as never } : {}),
           });
