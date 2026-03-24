@@ -5,16 +5,27 @@ description: UI/UXデザインのルール。UIコンポーネントを作成・
 
 # UI デザインルール
 
-## デザインシステム
-- ダークテーマベース（背景: #0a0a1a ～ #1a1a3a 系）
-- アクセントカラー:
-  - ピンク (#ff4da6): メインCTA、再生ボタン
-  - パープル (#a855f7): セカンダリアクション、選択状態
-  - グリーン (#22c55e): トニック / 安定 / 成功
-  - オレンジ (#f97316): サブドミナント / 展開
-  - ブルー (#3b82f6): ドミナント / 緊張
-  - シアン (#06b6d4): タグ、フィルター
-- border-radius はカード: 12-16px、ボタン: 10-12px、タグ: 20px
+## デザインシステム (Vocacore Theme v1.9)
+
+**絶対ルール: 全コンポーネントは voca-* Tailwindトークンのみ使用する。slate-*, gray-*, zinc-*, pink-500, orange-400, emerald-*, amber-* は禁止。**
+
+### カラートークン
+- 背景: `bg-voca-bg` (#0D0D14), `bg-voca-bg-card` (#16162A), `bg-voca-bg-section` (#1E1E3A), `bg-voca-bg-elevated` (#222244)
+- アクセント: `voca-accent-cyan` (#00E5FF), `voca-accent-magenta` (#E040FB), `voca-accent-purple` (#7C4DFF)
+- テキスト: `text-voca-text` (#F0F0F8), `text-voca-text-sub` (#8888AA), `text-voca-text-muted` (#555570)
+- ボーダー: `border-voca-border-subtle` (#2A2A4A)
+- グラデーション: `gradient-hero` (cyan→purple→magenta), `gradient-card` (cyan→magenta)
+- グロー: `shadow-glow-cyan`, `shadow-glow-magenta`, `shadow-glow-purple`, `shadow-glow-pink`, `shadow-glow-blue`
+
+### アニメーション
+- 表示: `animate-fadeInUp`, `animate-slideInRight`
+- 強調: `animate-pulseGlow`
+- インタラクティブカード: `hover:scale-[1.02]` + `transition-transform duration-200`
+- ボタンホバー: `hover:scale-105` 0.2s
+- border-radius: カード `rounded-xl`、ボタン `rounded-lg`、タグ `rounded-full`
+
+### フォント
+- コード名: `font-chord` (JetBrains Mono)
 
 ## レスポンシブ設計（Mobile-First）
 - ブレークポイント: sm(640px), md(768px), lg(1024px)
