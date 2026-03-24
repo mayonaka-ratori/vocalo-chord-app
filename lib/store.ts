@@ -290,7 +290,7 @@ export const useStore = create<AppState>((set, get) => ({
   randomize: () => {
     const keys = ['C', 'G', 'D', 'F', 'Bb', 'Eb', 'A', 'E'];
     const randomKey = keys[Math.floor(Math.random() * keys.length)];
-    const randomTempo = Math.floor(Math.random() * (160 - 80 + 1)) + 80;
+    const randomTempo = Math.floor(Math.random() * (180 - 80 + 1)) + 80;
     const randomPreset = chordPresets[Math.floor(Math.random() * chordPresets.length)];
     const randomInstrument = instrumentPresets[Math.floor(Math.random() * instrumentPresets.length)].id;
     

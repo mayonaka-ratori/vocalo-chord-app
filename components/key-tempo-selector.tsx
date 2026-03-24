@@ -15,7 +15,7 @@ const KEY_OPTIONS = [
 ];
 
 const BPM_MIN = 60;
-const BPM_MAX = 180;
+const BPM_MAX = 220;
 
 /**
  * キー選択 + テンポ（BPM）スライダー＋数値入力コンポーネント
