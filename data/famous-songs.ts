@@ -237,7 +237,7 @@ export const famousSongs: FamousSong[] = [
     year: 1999,
     key: "Eb",
     bpm: 100,
-    sections: [{ label: 'サビ', chords: ["AbM7", "G7", "Cm7", "Bbm7", "Eb7"] }],
+    sections: [{ label: 'サビ', chords: ["Abmaj7", "G7", "Cm7", "Bbm7", "Eb7"] }],
     tags: ["オシャレ"],
     category: "citypop",
     searchAliases: ["marunouchi sadistic", "shiina ringo", "椎名林檎", "丸サ"]
@@ -303,42 +303,76 @@ export const famousSongs: FamousSong[] = [
     searchAliases: ["yume no naka e", "inoue yosui", "井上陽水"]
   },
   {
-    id: "senbonzakura-v1",
-    title: "千本桜",
-    artist: "黒うさP feat. 初音ミク",
-    year: 2011,
-    key: "Bm",
-    bpm: 154,
-    sections: [{ label: 'サビ', chords: ["Bm", "F#m", "G", "D", "Em", "Bm", "Em", "F#"] }],
+    id: "kick-back",
+    title: "KICK BACK",
+    artist: "米津玄師",
+    year: 2022,
+    key: "C#m",
+    bpm: 204,
+    sections: [{ label: 'サビ', chords: ["C#m", "B", "A", "G#"] }],
     tags: ["明るい", "エモい"],
-    category: "vocaloid",
-    searchAliases: ["senbonzakura", "senbon zakura", "kurousa", "千本桜"]
+    category: "recent-hit",
+    searchAliases: ["kick back", "kickback", "米津玄師", "chainsaw man", "チェンソーマン"]
   },
   {
-    id: "charles-v1",
-    title: "シャルル",
-    artist: "バルーン feat. flower",
-    year: 2016,
-    key: "Fm",
-    bpm: 95,
-    sections: [{ label: 'サビ', chords: ["Fm", "Db", "Ab", "Eb"] }],
-    tags: ["切ない"],
-    category: "vocaloid",
-    searchAliases: ["charles", "syaruru", "シャルル", "balloon", "バルーン"]
+    id: "iris-out",
+    title: "IRIS OUT",
+    artist: "米津玄師",
+    year: 2023,
+    key: "Em",
+    bpm: 135,
+    sections: [{ label: 'サビ', chords: ["Am", "Em", "B7", "G"] }],
+    tags: ["オシャレ", "エモい"],
+    category: "recent-hit",
+    searchAliases: ["iris out", "米津玄師", "yonezu"]
   },
-
-  // --- Batch 2 ---
   {
-    id: "roki-v2",
-    title: "ロキ",
-    artist: "みきとP feat. 初音ミク&鏡音リン",
-    year: 2018,
+    id: "haru-dorobou",
+    title: "春泥棒",
+    artist: "ヨルシカ",
+    year: 2021,
+    key: "G",
+    bpm: 130,
+    sections: [{ label: 'サビ', chords: ["G", "D", "Em", "C"] }],
+    tags: ["明るい"],
+    category: "recent-hit",
+    searchAliases: ["haru dorobou", "春泥棒", "yorushika", "ヨルシカ"]
+  },
+  {
+    id: "odoriko",
+    title: "踊り子",
+    artist: "Vaundy",
+    year: 2021,
+    key: "Dm",
+    bpm: 113,
+    sections: [{ label: 'サビ', chords: ["Dm", "Am", "Bb", "C"] }],
+    tags: ["オシャレ"],
+    category: "recent-hit",
+    searchAliases: ["odoriko", "踊り子", "vaundy"]
+  },
+  {
+    id: "sho",
+    title: "唱",
+    artist: "Ado",
+    year: 2023,
+    key: "Dm",
+    bpm: 130,
+    sections: [{ label: 'サビ', chords: ["Dm", "Gm", "A", "Bb"] }],
+    tags: ["エモい", "ダーク"],
+    category: "recent-hit",
+    searchAliases: ["sho", "唱", "ado"]
+  },
+  {
+    id: "usseewa",
+    title: "うっせぇわ",
+    artist: "Ado",
+    year: 2020,
     key: "Bm",
-    bpm: 200,
-    sections: [{ label: 'サビ', chords: ["Bm", "G", "D", "A", "Em", "F#"] }],
-    tags: ["明るい", "エモい"],
-    category: "vocaloid",
-    searchAliases: ["roki", "mikitop", "みきとP"]
+    bpm: 178,
+    sections: [{ label: 'サビ', chords: ["Bm", "G", "A", "F#m"] }],
+    tags: ["エモい", "ダーク"],
+    category: "recent-hit",
+    searchAliases: ["usseewa", "うっせぇわ", "ado"]
   },
   {
     id: "inochi-ni-kirawareteiru",
@@ -375,18 +409,6 @@ export const famousSongs: FamousSong[] = [
     tags: ["エモい", "ダーク"],
     category: "vocaloid",
     searchAliases: ["rolling girl", "wowaka", "ローリンガール"]
-  },
-  {
-    id: "melt-v2",
-    title: "メルト",
-    artist: "ryo(supercell) feat. 初音ミク",
-    year: 2007,
-    key: "D",
-    bpm: 172,
-    sections: [{ label: 'サビ', chords: ["D", "A", "Bm", "G"] }],
-    tags: ["明るい", "エモい"],
-    category: "vocaloid",
-    searchAliases: ["melt", "メルト", "supercell", "ryo"]
   },
   {
     id: "love-is-war",
@@ -443,7 +465,7 @@ export const famousSongs: FamousSong[] = [
     year: 2017,
     key: "F",
     bpm: 93,
-    sections: [{ label: 'サビ', chords: ["BbM7", "A7sus4", "Am7", "Dm7"] }],
+    sections: [{ label: 'サビ', chords: ["Bbmaj7", "A7sus4", "Am7", "Dm7"] }],
     tags: ["オシャレ", "切ない"],
     category: "vocaloid",
     searchAliases: ["quiet room", "有機酸", "uki3", "ewe"]
@@ -484,104 +506,6 @@ export const famousSongs: FamousSong[] = [
     category: "vocaloid",
     searchAliases: ["blessing", "breath", "ブレス", "ポルノグラフィティ"]
   },
-
-  // --- Batch 3 ---
-  {
-    id: "lemon-v3",
-    title: "Lemon",
-    artist: "米津玄師",
-    year: 2018,
-    key: "G#m",
-    bpm: 87,
-    sections: [{ label: 'サビ', chords: ["G#m", "E", "B", "F#"] }],
-    tags: ["切ない", "エモい"],
-    category: "vocaloP-artist",
-    searchAliases: ["lemon", "レモン", "yonezu kenshi", "米津玄師"]
-  },
-  {
-    id: "kick-back",
-    title: "KICK BACK",
-    artist: "米津玄師",
-    year: 2022,
-    key: "C#m",
-    bpm: 204,
-    sections: [{ label: 'サビ', chords: ["C#m", "B", "A", "G#"] }],
-    tags: ["明るい", "エモい"],
-    category: "vocaloP-artist",
-    searchAliases: ["kick back", "kickback", "米津玄師", "chainsaw man", "チェンソーマン"]
-  },
-  {
-    id: "iris-out",
-    title: "IRIS OUT",
-    artist: "米津玄師",
-    year: 2023,
-    key: "Em",
-    bpm: 135,
-    sections: [{ label: 'サビ', chords: ["Am", "Em", "B7", "G"] }],
-    tags: ["オシャレ", "エモい"],
-    category: "vocaloP-artist",
-    searchAliases: ["iris out", "米津玄師", "yonezu"]
-  },
-  {
-    id: "haru-dorobou",
-    title: "春泥棒",
-    artist: "ヨルシカ",
-    year: 2021,
-    key: "G",
-    bpm: 130,
-    sections: [{ label: 'サビ', chords: ["G", "D", "Em", "C"] }],
-    tags: ["明るい"],
-    category: "vocaloP-artist",
-    searchAliases: ["haru dorobou", "春泥棒", "yorushika", "ヨルシカ"]
-  },
-  {
-    id: "odoriko",
-    title: "踊り子",
-    artist: "Vaundy",
-    year: 2021,
-    key: "Dm",
-    bpm: 113,
-    sections: [{ label: 'サビ', chords: ["Dm", "Am", "Bb", "C"] }],
-    tags: ["オシャレ"],
-    category: "vocaloP-artist",
-    searchAliases: ["odoriko", "踊り子", "vaundy"]
-  },
-  {
-    id: "idol-v3",
-    title: "アイドル",
-    artist: "YOASOBI",
-    year: 2023,
-    key: "A",
-    bpm: 166,
-    sections: [{ label: 'サビ', chords: ["A", "E", "F#m", "D", "Bm"] }],
-    tags: ["明るい", "エモい"],
-    category: "recent-hit",
-    searchAliases: ["idol", "アイドル", "yoasobi", "推しの子", "oshi no ko"]
-  },
-  {
-    id: "sho",
-    title: "唱",
-    artist: "Ado",
-    year: 2023,
-    key: "Dm",
-    bpm: 130,
-    sections: [{ label: 'サビ', chords: ["Dm", "Gm", "A", "Bb"] }],
-    tags: ["エモい", "ダーク"],
-    category: "recent-hit",
-    searchAliases: ["sho", "唱", "ado"]
-  },
-  {
-    id: "usseewa",
-    title: "うっせぇわ",
-    artist: "Ado",
-    year: 2020,
-    key: "Bm",
-    bpm: 178,
-    sections: [{ label: 'サビ', chords: ["Bm", "G", "A", "F#m"] }],
-    tags: ["エモい", "ダーク"],
-    category: "recent-hit",
-    searchAliases: ["usseewa", "うっせぇわ", "ado"]
-  },
   {
     id: "bling-bang-bang-born",
     title: "Bling-Bang-Bang-Born",
@@ -601,7 +525,7 @@ export const famousSongs: FamousSong[] = [
     year: 2024,
     key: "F",
     bpm: 176,
-    sections: [{ label: 'サビ', chords: ["Dm", "BbM7", "A7", "Dm"] }],
+    sections: [{ label: 'サビ', chords: ["Dm", "Bbmaj7", "A7", "Dm"] }],
     tags: ["エモい", "オシャレ"],
     category: "recent-hit",
     searchAliases: ["propose", "プロポーズ", "natori", "なとり"]

@@ -158,7 +158,7 @@ export interface FamousSong {
   tags: MoodTag[];
   /** 検索用別名（ひらがな・ローマ字・英語タイトルなど） */
   searchAliases?: string[];
-  category?: 'citypop' | 'vocaloid' | 'vocaloP-artist' | 'recent-hit';
+  category?: 'citypop' | 'vocaloid' | 'recent-hit';
   source?: string;
 }
 
