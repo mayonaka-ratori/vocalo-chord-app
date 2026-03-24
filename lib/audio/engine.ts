@@ -93,7 +93,7 @@ export async function initAudio(initialPresetId: InstrumentPresetId = 'release-c
   await ensureAudioReady();
   const Tone = await getTone();
   
-  if (!backingNode) backingNode = createBackingInstrument(Tone, initialPresetId);
+  if (!backingNode) backingNode = await createBackingInstrument(Tone, initialPresetId);
   if (!padSynth) padSynth = createPadSynth(Tone);
   if (!bassSynth) bassSynth = createBassSynth(Tone);
   if (!kickDrum) kickDrum = createKick(Tone);
@@ -117,7 +117,7 @@ async function createMelodySynth(Tone: typeof ToneType): Promise<ToneType.Synth>
 /**
  * Switch backing instrument during runtime
  */
-export function switchBackingInstrument(presetId: InstrumentPresetId) {
+export async function switchBackingInstrument(presetId: InstrumentPresetId) {
   if (!ToneModule) return;
   
   // Dispose old nodes
@@ -126,7 +126,7 @@ export function switchBackingInstrument(presetId: InstrumentPresetId) {
     backingNode.effects.forEach(eff => eff.dispose());
   }
   
-  backingNode = createBackingInstrument(ToneModule, presetId);
+  backingNode = await createBackingInstrument(ToneModule, presetId);
 }
 
 /**

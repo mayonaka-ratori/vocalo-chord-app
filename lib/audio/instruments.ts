@@ -64,10 +64,10 @@ export function createHihat(Tone: typeof ToneType) {
 /**
  * カスタムバッキング音色ファクトリー
  */
-export function createBackingInstrument(
+export async function createBackingInstrument(
   Tone: typeof import('tone'),
   presetId: InstrumentPresetId
-): BackingInstrumentNode {
+): Promise<BackingInstrumentNode> {
   let synth: ToneType.PolySynth | ToneType.MonoSynth | ToneType.PluckSynth;
   const effects: ToneType.ToneAudioNode[] = [];
 
@@ -79,6 +79,7 @@ export function createBackingInstrument(
         volume: -8
       });
       const reverb = new Tone.Reverb({ decay: 0.3, wet: 0.1 });
+      await reverb.generate();
       effects.push(reverb);
       synth.chain(reverb, Tone.Destination);
       break;
@@ -152,6 +153,7 @@ export function createBackingInstrument(
       });
       const filter = new Tone.Filter({ type: 'lowpass', frequency: 4000 });
       const reverb = new Tone.Reverb({ decay: 2, wet: 0.2 });
+      await reverb.generate();
       effects.push(filter, reverb);
       synth.chain(filter, reverb, Tone.Destination);
       break;

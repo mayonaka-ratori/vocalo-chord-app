@@ -128,7 +128,7 @@ export async function startPlayback(config: PlaybackStateConfig) {
   // Ensure starting instrument is correct (only switch if actually changed)
   const { isAudioReady, switchBackingInstrument } = await import('./engine');
   if (isAudioReady() && currentInstrumentId !== lastSwitchedPresetId) {
-    switchBackingInstrument(currentInstrumentId);
+    await switchBackingInstrument(currentInstrumentId);
     lastSwitchedPresetId = currentInstrumentId;
   }
 
