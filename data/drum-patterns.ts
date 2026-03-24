@@ -57,5 +57,16 @@ export const drumPatterns: DrumPattern[] = [
       snare: i === 8, // 3拍目のみ
       hihatClosed: i % 4 === 0, // 4分音符
     }))
+  },
+  {
+    id: 'jazz-swing',
+    name: 'ジャズスウィング',
+    description: 'ジャズ風のスウィングリズム',
+    steps: Array.from({ length: 16 }, (_, i) => ({
+      kick: i === 0 || i === 12,
+      snare: i === 7 || i === 15,
+      hihatClosed: i % 4 === 0 || i % 4 === 3,
+      hihatOpen: i === 6 || i === 14,
+    }))
   }
 ];

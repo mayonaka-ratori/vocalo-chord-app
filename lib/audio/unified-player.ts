@@ -1,5 +1,5 @@
 import type * as ToneType from 'tone';
-import { getChordSynth, getBassSynth, getTone, getToneSync } from './engine';
+import { getChordSynth, getBassSynth, getMelodySynth, getTone, getToneSync } from './engine';
 import { getSmplrProvider } from './smplr-provider';
 import { useStore } from '../store';
 import { getVolumeProfile, SYNTH_VOLUME_PROFILE } from './volume-config';
@@ -128,17 +128,16 @@ export async function playUnifiedBass(note: string, duration: number, time: numb
 /**
  * 楽器の選択状態に応じて、smplr または Tone.js のシンセでメロディを再生する
  */
-export async function playUnifiedMelody(
+export function playUnifiedMelody(
   note: string | number,
   options: { duration: number; time: number; velocity?: number }
-): Promise<void> {
+): void {
   const store = useStore.getState();
   const instrumentId = store.activeInstrumentId;
   const provider = getSmplrProvider();
   const profile = getVolumeProfile(instrumentId);
 
   if (instrumentId === 'synth-fallback' || !provider.isLoaded(instrumentId)) {
-    const { getMelodySynth } = await import('./engine');
     const melodySynth = getMelodySynth();
     if (melodySynth) {
       const Tone = getToneSync();
@@ -163,7 +162,6 @@ export async function playUnifiedMelody(
       });
     } catch (smplrError) {
       console.warn('[UnifiedPlayer] smplr playNote (melody) failed, using Tone.js fallback:', smplrError);
-      const { getMelodySynth } = await import('./engine');
       const melodySynth = getMelodySynth();
       if (melodySynth) {
         const Tone = getToneSync();

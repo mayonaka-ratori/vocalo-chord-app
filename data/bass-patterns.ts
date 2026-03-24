@@ -40,5 +40,39 @@ export const bassPatterns: BassPattern[] = [
       { type: 'REST', duration: '8n' },
       { type: 'ROOT', duration: '8n' },
     ]
+  },
+  {
+    id: 'bass-walking',
+    name: 'ウォーキングベース',
+    description: 'ジャズ風の4分音符歩行ベースライン',
+    steps: [
+      { type: 'ROOT',  duration: '4n' },
+      { type: 'THIRD', duration: '4n' },
+      { type: 'FIFTH', duration: '4n' },
+      { type: 'THIRD', duration: '4n' },
+    ]
+  },
+  {
+    id: 'bass-bossanova',
+    name: 'ボサノバ',
+    description: 'ブラジル音楽風のシンコペーションベース',
+    steps: [
+      { type: 'ROOT',  duration: '4n' },
+      { type: 'REST',  duration: '8n' },
+      { type: 'FIFTH', duration: '8n' },
+      { type: 'ROOT',  duration: '4n' },
+      { type: 'REST',  duration: '4n' },
+    ]
+  },
+  {
+    id: 'bass-reggae',
+    name: 'レゲエ（ワンドロップ）',
+    description: '1拍目を抜いたレゲエ特有のベースライン',
+    steps: [
+      { type: 'REST',  duration: '4n' },
+      { type: 'REST',  duration: '4n' },
+      { type: 'ROOT',  duration: '4n' },
+      { type: 'FIFTH', duration: '4n' },
+    ]
   }
 ];
