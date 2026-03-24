@@ -197,9 +197,13 @@ export const famousSongs: FamousSong[] = [
     title: "プラスティック・ラブ",
     artist: "竹内まりや",
     year: 1984,
-    key: "Dm",
+    key: "Am",
     bpm: 108,
-    sections: [{ label: 'サビ', chords: ["Gm7", "C7", "Am7", "Dm7"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Fmaj7", "E7", "Am7", "Gm7", "C7"] },
+      { label: 'Bメロ', chords: ["Fmaj7", "E7", "Am7", "Gm7", "C7"] },
+      { label: 'サビ', chords: ["Fmaj7", "E7", "Am7", "Gm7", "C7"] }
+    ],
     tags: ["オシャレ"],
     category: "citypop",
     searchAliases: ["plastic love", "plasticlove", "takeuchi mariya", "竹内まりや"]
@@ -209,9 +213,13 @@ export const famousSongs: FamousSong[] = [
     title: "真夜中のドア〜Stay With Me",
     artist: "松原みき",
     year: 1979,
-    key: "F",
+    key: "Cm",
     bpm: 108,
-    sections: [{ label: 'サビ', chords: ["Am7", "Gm7", "C7", "Fmaj7"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Cm7", "Fm7", "Bb7", "Ebmaj7", "Abmaj7", "Dm7b5", "G7", "Cm7"] },
+      { label: 'Bメロ', chords: ["Fm7", "Bb7", "Ebmaj7", "Abmaj7", "Dm7b5", "G7", "Cm7", "C7"] },
+      { label: 'サビ', chords: ["Fm7", "Bb7", "Ebmaj7", "Abmaj7", "Dm7b5", "G7", "Cm7", "C7"] }
+    ],
     tags: ["オシャレ"],
     category: "citypop",
     searchAliases: ["mayonaka no door", "stay with me", "matsubara miki", "松原みき"]
@@ -223,7 +231,11 @@ export const famousSongs: FamousSong[] = [
     year: 1983,
     key: "D",
     bpm: 120,
-    sections: [{ label: 'サビ', chords: ["D", "A/C#", "Bm", "D/A", "G", "D/F#", "Em", "A"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Dmaj7", "A/C#", "Bm7", "A6", "Gmaj7", "F#m7", "Em7", "A7"] },
+      { label: 'Bメロ', chords: ["Gmaj7", "A/G", "F#m7", "Bm7", "Em7", "E7", "A7", "A7"] },
+      { label: 'サビ', chords: ["Gmaj7", "A", "F#m7", "Bm7", "Em7", "A7", "Dmaj7", "D7"] }
+    ],
     tags: ["エモい"],
     category: "citypop",
     searchAliases: ["christmas eve", "yamashita tatsuro", "山下達郎"]
@@ -247,7 +259,11 @@ export const famousSongs: FamousSong[] = [
     year: 1999,
     key: "Eb",
     bpm: 100,
-    sections: [{ label: 'サビ', chords: ["Abmaj7", "G7", "Cm7", "Bbm7", "Eb7"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Abmaj7", "G7", "Cm7", "Bbm7", "Eb7"] },
+      { label: 'Bメロ', chords: ["Abmaj7", "G7", "Cm7", "Bbm7", "Eb7"] },
+      { label: 'サビ', chords: ["Abmaj7", "G7", "Cm7", "Bbm7", "Eb7"] }
+    ],
     tags: ["オシャレ"],
     category: "citypop",
     searchAliases: ["marunouchi sadistic", "shiina ringo", "椎名林檎", "丸サ"]
@@ -317,9 +333,13 @@ export const famousSongs: FamousSong[] = [
     title: "KICK BACK",
     artist: "米津玄師",
     year: 2022,
-    key: "C#m",
+    key: "Cm",
     bpm: 204,
-    sections: [{ label: 'サビ', chords: ["C#m", "B", "A", "G#"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Cm", "Ab", "Eb", "Bb", "Cm", "Ab", "Eb", "Bb"] },
+      { label: 'Bメロ', chords: ["Fm", "Gm", "Ab", "Bb", "Cm", "Gm", "Ab", "Bb"] },
+      { label: 'サビ', chords: ["Ab", "Bb", "G/B", "Cm", "Ab", "Bb", "Eb", "G7"] }
+    ],
     tags: ["明るい", "エモい"],
     category: "recent-hit",
     searchAliases: ["kick back", "kickback", "米津玄師", "chainsaw man", "チェンソーマン"]
@@ -367,7 +387,11 @@ export const famousSongs: FamousSong[] = [
     year: 2023,
     key: "Dm",
     bpm: 130,
-    sections: [{ label: 'サビ', chords: ["Dm", "Gm", "A", "Bb"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Dm", "Bb", "C", "Am", "Dm", "Bb", "C", "A7"] },
+      { label: 'Bメロ', chords: ["Bb", "C", "Am", "Dm", "Gm", "A7", "Dm", "Dm"] },
+      { label: 'サビ', chords: ["Bb", "C", "Am", "Dm", "Bb", "C", "A7", "Dm"] }
+    ],
     tags: ["エモい", "ダーク"],
     category: "recent-hit",
     searchAliases: ["sho", "唱", "ado"]
@@ -379,7 +403,11 @@ export const famousSongs: FamousSong[] = [
     year: 2020,
     key: "Bm",
     bpm: 178,
-    sections: [{ label: 'サビ', chords: ["Bm", "G", "A", "F#m"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Bm", "G", "A", "F#m", "Bm", "G", "A", "F#7"] },
+      { label: 'Bメロ', chords: ["G", "A", "F#m", "Bm", "Em", "F#7", "Bm", "B7"] },
+      { label: 'サビ', chords: ["G", "A", "F#m", "Bm", "G", "A", "F#7", "Bm"] }
+    ],
     tags: ["エモい", "ダーク"],
     category: "recent-hit",
     searchAliases: ["usseewa", "うっせぇわ", "ado"]
@@ -389,9 +417,13 @@ export const famousSongs: FamousSong[] = [
     title: "命に嫌われている。",
     artist: "カンザキイオリ feat. 初音ミク",
     year: 2017,
-    key: "Bm",
+    key: "C",
     bpm: 162,
-    sections: [{ label: 'サビ', chords: ["Bm", "G", "D", "A"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["C", "G", "Am", "Em", "F", "C", "F", "G"] },
+      { label: 'Bメロ', chords: ["Am", "Em", "F", "C", "Dm", "Em", "F", "G"] },
+      { label: 'サビ', chords: ["F", "G", "Em", "Am", "F", "G", "C", "C"] }
+    ],
     tags: ["エモい", "ダーク"],
     category: "vocaloid",
     searchAliases: ["inochi ni kirawareteiru", "命に嫌われている", "カンザキイオリ"]
@@ -401,9 +433,13 @@ export const famousSongs: FamousSong[] = [
     title: "ゴーストルール",
     artist: "DECO*27 feat. 初音ミク",
     year: 2016,
-    key: "Am",
+    key: "Em",
     bpm: 210,
-    sections: [{ label: 'サビ', chords: ["Am", "F", "C", "G"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Em", "C", "D", "G", "Em", "C", "D", "B7"] },
+      { label: 'Bメロ', chords: ["C", "D", "Bm", "Em", "C", "D", "B7", "B7"] },
+      { label: 'サビ', chords: ["C", "D", "Bm", "Em", "C", "D", "G", "B7"] }
+    ],
     tags: ["エモい"],
     category: "vocaloid",
     searchAliases: ["ghost rule", "deco27", "ゴーストルール"]
@@ -415,7 +451,11 @@ export const famousSongs: FamousSong[] = [
     year: 2010,
     key: "Bm",
     bpm: 195,
-    sections: [{ label: 'サビ', chords: ["Bm", "G", "D", "F#m"] }],
+    sections: [
+      { label: 'Aメロ', chords: ["Bm", "G", "D", "A", "Bm", "G", "D", "A"] },
+      { label: 'Bメロ', chords: ["G", "A", "F#m", "Bm", "G", "A", "F#7", "F#7"] },
+      { label: 'サビ', chords: ["G", "A", "Bm", "D", "G", "A", "Bm", "Bm"] }
+    ],
     tags: ["エモい", "ダーク"],
     category: "vocaloid",
     searchAliases: ["rolling girl", "wowaka", "ローリンガール"]
