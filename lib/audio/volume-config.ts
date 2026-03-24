@@ -11,8 +11,8 @@ export interface VolumeProfile {
  * Calibrated for sampled instruments (piano has wide dynamic range)
  */
 export const SMPLR_VOLUME_PROFILE: VolumeProfile = {
-  chord: 70,      // chords slightly quieter to leave space
-  bass: 85,       // bass prominent but not overwhelming
+  chord: 85,      // chords slightly quieter to leave space
+  bass: 100,      // bass prominent but not overwhelming
   melody: 95,     // melody sits on top
   drums: 60,      // drums are a guide, not dominant
 };
@@ -21,10 +21,10 @@ export const SMPLR_VOLUME_PROFILE: VolumeProfile = {
  * Calibrated for synth fallback (narrower dynamic range)
  */
 export const SYNTH_VOLUME_PROFILE: VolumeProfile = {
-  chord: -8,      // dB
-  bass: -6,       // dB
+  chord: -4,      // dB
+  bass: -3,       // dB
   melody: -4,     // dB
-  drums: -12,     // dB
+  drums: -6,      // dB
 };
 
 export function getVolumeProfile(instrumentId: SmplrInstrumentId): VolumeProfile {
