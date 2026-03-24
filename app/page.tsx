@@ -14,6 +14,11 @@ const FloatingPlayer = dynamic(
   { ssr: false }
 );
 
+const DesktopFloatingBar = dynamic(
+  () => import("@/components/desktop-floating-bar").then(mod => mod.DesktopFloatingBar),
+  { ssr: false }
+);
+
 const ChordEditModal = dynamic(
   () => import("@/components/chord-edit-modal"),
   { ssr: false }
@@ -32,6 +37,7 @@ export default function Home() {
 
       <ClientOnly>
         <FloatingPlayer />
+        <DesktopFloatingBar />
         <ChordEditModal />
       </ClientOnly>
     </main>

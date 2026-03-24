@@ -46,7 +46,7 @@ export function TransportControls() {
   const activeInstrument = INSTRUMENT_PRESETS.find(p => p.id === activeInstrumentId) ?? null;
 
   return (
-    <div className="hidden md:flex flex-col items-center my-8">
+    <div id="transport-sentinel" className="hidden md:flex flex-col items-center my-8">
       {/* Control bar */}
       <div className="flex justify-between items-center bg-voca-bg-card/95 backdrop-blur-md p-6 rounded-2xl border border-voca-border-subtle shadow-2xl w-full min-w-[700px]">
         
