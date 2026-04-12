@@ -136,10 +136,12 @@ export function MelodyGuidePanel() {
               メロディガイド
             </h3>
             <button
+              type="button"
               onClick={() => toggleBlueNotes()}
+              aria-pressed={includeBlueNotes}
               className={`px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black border-2 transition-all flex items-center gap-2 uppercase tracking-wider ${
-                includeBlueNotes 
-                  ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan text-voca-accent-cyan shadow-glow-cyan/20' 
+                includeBlueNotes
+                  ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan text-voca-accent-cyan shadow-glow-cyan/20'
                   : 'bg-voca-bg-elevated border-voca-border-subtle text-voca-text-muted hover:border-voca-text-sub'
               }`}
             >
@@ -147,7 +149,9 @@ export function MelodyGuidePanel() {
               BLUE NOTE {includeBlueNotes ? 'ON' : 'OFF'}
             </button>
             <button
+              type="button"
               onClick={() => toggleMelody()}
+              aria-pressed={isMelodyEnabled}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-full border-2 text-[10px] md:text-xs font-black uppercase tracking-wider transition-all duration-300 ${
                 isMelodyEnabled
                   ? 'bg-voca-accent-cyan/10 border-voca-accent-cyan text-voca-accent-cyan shadow-glow-cyan'
@@ -158,8 +162,10 @@ export function MelodyGuidePanel() {
               MELODY {isMelodyEnabled ? 'ON' : 'OFF'}
             </button>
           </div>
-          <button 
-            onClick={() => toggleMelodyGuide()} 
+          <button
+            type="button"
+            onClick={() => toggleMelodyGuide()}
+            aria-label="閉じる"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-voca-bg-elevated text-voca-text-sub hover:text-voca-text hover:bg-voca-bg-section transition-all border border-voca-border-subtle/50 active:scale-90 shadow-sm"
           >
             ✕
@@ -208,19 +214,32 @@ export function MelodyGuidePanel() {
         {/* Melody Pattern Selector */}
         <div>
           <h4 className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em] mb-5 px-1">Select Melody Pattern</h4>
+          {/* aria-live region for preview state announcements */}
+          <div aria-live="polite" aria-atomic="true" className="sr-only">
+            {isPreviewingMelody ? '再生中' : ''}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 overflow-y-auto max-h-[40vh] md:max-h-none pr-1">
-            {melodyPhrases.map((phrase) => {
+            {melodyPhrases.map((phrase, phraseIndex) => {
               const isSelected = activeMelodyPatternId === phrase.patternId;
               const rhythmIcons = phrase.patternId.includes('arpeggio') ? '♪ ♪ ♪ ♪' : '♩ ♩ ♩ ♩';
-              
+
               return (
                 <div
                   key={phrase.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
                   onClick={() => setActiveMelodyPattern(phrase.patternId)}
-                  style={{ animationDelay: `${melodyPhrases.indexOf(phrase) * 50}ms`, animationFillMode: 'both' }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setActiveMelodyPattern(phrase.patternId);
+                    }
+                  }}
+                  style={{ animationDelay: `${phraseIndex * 50}ms`, animationFillMode: 'both' }}
                   className={`text-left border-2 transition-all hover:scale-[1.02] duration-150 rounded-3xl p-6 group relative overflow-hidden cursor-pointer animate-fadeInUp ${
-                    isSelected 
-                      ? 'bg-voca-bg-card border-voca-accent-magenta shadow-glow-magenta/20' 
+                    isSelected
+                      ? 'bg-voca-bg-card border-voca-accent-magenta shadow-glow-magenta/20'
                       : 'bg-voca-bg-elevated/40 border-voca-border-subtle hover:border-voca-text-sub hover:bg-voca-bg-elevated/60'
                   }`}
                 >

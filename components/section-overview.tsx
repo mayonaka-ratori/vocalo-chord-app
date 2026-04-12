@@ -51,19 +51,21 @@ export function SectionOverview() {
           const colorClass = getSectionColor(section.type);
 
           return (
-            <div
+            <button
               key={section.id}
+              type="button"
               onClick={() => setActiveSection(idx)}
               style={{ width: `${widthPercent}%` }}
-              className={`h-full group relative cursor-pointer flex items-center justify-center transition-all box-border border-r border-voca-bg/30 last:border-none rounded-lg mx-[1px]
+              className={`h-full group relative flex items-center justify-center transition-all box-border border-r border-voca-bg/30 last:border-none rounded-lg mx-[1px]
                 ${colorClass} ${isActive ? 'opacity-100 shadow-[inset_0_0_0_2px_rgba(255,255,255,0.4)] scale-[1.02] z-20' : 'opacity-40 hover:opacity-70'}
               `}
               title={`${section.label} (${section.bars}小節)`}
+              aria-label={`${section.label}（${section.bars}小節）${isActive ? '、選択中' : ''}`}
             >
               <span className={`text-[9px] font-black text-white whitespace-nowrap overflow-hidden px-1.5 uppercase tracking-tighter ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                 {section.label}
               </span>
-            </div>
+            </button>
           );
         })}
       </div>

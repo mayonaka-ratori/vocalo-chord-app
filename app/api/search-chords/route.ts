@@ -73,7 +73,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "クエリが不正です" }, { status: 400 });
   }
 
-  const normalizedQuery = query.trim().toLowerCase();
+  const MAX_QUERY_LENGTH = 200;
+  const trimmedQuery = query.trim();
+  if (trimmedQuery.length === 0 || trimmedQuery.length > MAX_QUERY_LENGTH) {
+    return NextResponse.json({ error: "クエリの長さが不正です（1〜200文字）" }, { status: 400 });
+  }
+
+  const normalizedQuery = trimmedQuery.toLowerCase();
 
   // 2. ローカルDB検索 (エイリアス対応済み)
   const localResults = searchLocal(normalizedQuery);

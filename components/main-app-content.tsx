@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useStore } from '@/lib/store';
 import KeyTempoSelector from "@/components/key-tempo-selector";
@@ -38,6 +38,12 @@ const MelodyGuidePanel = dynamic(
 export function MainAppContent() {
   const { isStructureMode, disableStructureMode, showMelodyGuide } = useStore();
   const [showPicker, setShowPicker] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      import('@/lib/audio/engine').then(({ disposeAudio }) => disposeAudio());
+    };
+  }, []);
 
   const handleDisableStructureMode = () => {
     if (window.confirm('シンプルモードに戻りますか？\n現在のセクション構成は失われます（表示中のコード進行のみ残ります）。')) {

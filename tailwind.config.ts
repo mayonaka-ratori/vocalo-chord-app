@@ -11,7 +11,7 @@ const config: Config = {
         voca: {
           bg:       { DEFAULT: '#0D0D14', card: '#16162A', section: '#1E1E3A', elevated: '#222244' },
           accent:   { cyan: '#00E5FF', magenta: '#E040FB', purple: '#7C4DFF' },
-          text:     { DEFAULT: '#F0F0F8', sub: '#8888AA', muted: '#7C7C9C' }, // WCAG AA (#555570 -> #7C7C9C)
+          text:     { DEFAULT: '#F0F0F8', sub: '#8888AA', muted: '#9494B0' }, // WCAG AA (#7C7C9C -> #9494B0, contrast ≥4.5:1)
           border:   { subtle: '#2A2A4A' },
           tone:     { pink: '#FF6B9D', blue: '#4FC3F7' },
           semantic: { success: '#69F0AE', warning: '#FFD740', error: '#FF5252' },

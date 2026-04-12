@@ -6,7 +6,7 @@
  */
 
 import { ChordVariation } from '@/types/music';
-import { NOTES_SHARP, NOTES_FLAT, getNoteIndex, parseChord } from './chords';
+import { getNoteIndex, getNoteFromIndexForKey, parseChord } from './chords';
 import { NoteName } from '@/types/music';
 
 // =============================
@@ -20,27 +20,6 @@ function parseKey(key: string): { root: string; isMinor: boolean } {
   const parts = key.split('/');
   const root = parts[0].trim();
   return { root, isMinor: false };
-}
-
-/**
- * キーのルート音に応じてシャープ/フラットのどちらの表記を使用するか決定する
- * シャープ系キー: C, G, D, A, E, B
- * フラット系キー: F, Bb, Eb, Ab, Db, Gb
- */
-function isFlatNotation(keyRoot: string): boolean {
-  const flatKeys = ['F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'];
-  return flatKeys.includes(keyRoot);
-}
-
-/**
- * 半音インデックスからキーに適したノート名を返す
- */
-function noteFromIndexForKey(index: number, keyRoot: string): NoteName {
-  const normalized = ((index % 12) + 12) % 12;
-  if (isFlatNotation(keyRoot)) {
-    return NOTES_FLAT[normalized] as NoteName;
-  }
-  return NOTES_SHARP[normalized] as NoteName;
 }
 
 /**
@@ -297,12 +276,12 @@ function applyTwoFive(
   let twoRoot: string;
   if (isTonicEnd) {
     // IIm7: ルートから全音上 (半音差2)
-    twoRoot = noteFromIndexForKey(getNoteIndex(keyRoot as NoteName) + 2, keyRoot);
+    twoRoot = getNoteFromIndexForKey(getNoteIndex(keyRoot as NoteName) + 2, keyRoot);
   } else {
     // VIm への II-V: VIm の完全5度上 = IIIm
     // VIm root: keyRoot + 9 semitones
     const viRoot = getNoteIndex(keyRoot as NoteName) + 9;
-    twoRoot = noteFromIndexForKey(viRoot + 2, keyRoot); // VIm から全音上
+    twoRoot = getNoteFromIndexForKey(viRoot + 2, keyRoot); // VIm から全音上
   }
 
   const newChords = [...chords];
@@ -340,7 +319,7 @@ function applyModalInterchange(
 
   // bVII = keyRoot - 2 半音 (= 完全5度下の全音上)
   const bVIIIndex = (getNoteIndex(keyRoot as NoteName) + 10) % 12;
-  const bVIIRoot = noteFromIndexForKey(bVIIIndex, keyRoot);
+  const bVIIRoot = getNoteFromIndexForKey(bVIIIndex, keyRoot);
 
   // V (半音差=7) のメジャーコードを bVII に置換
   chords.forEach((chord, i) => {
@@ -392,7 +371,7 @@ function applyDiminishedPass(
     // → 前者を「次のコードのルートから半音下のdim」に置換
     if (diff === 2) {
       const dimRootIdx = (idx2 - 1 + 12) % 12;
-      const dimRoot = noteFromIndexForKey(dimRootIdx, keyRoot);
+      const dimRoot = getNoteFromIndexForKey(dimRootIdx, keyRoot);
       newChords[i] = `${dimRoot}dim`;
       changedIndices.push(i);
     }
@@ -426,7 +405,7 @@ function applyRelativeMajorMinor(
   const changedIndices: number[] = [];
 
   // IVのルート = keyRoot + 5 半音
-  const ivRoot = noteFromIndexForKey(getNoteIndex(keyRoot as NoteName) + 5, keyRoot);
+  const ivRoot = getNoteFromIndexForKey(getNoteIndex(keyRoot as NoteName) + 5, keyRoot);
 
   chords.forEach((chord, i) => {
     if (changedIndices.length >= 1) return; // 1か所のみ

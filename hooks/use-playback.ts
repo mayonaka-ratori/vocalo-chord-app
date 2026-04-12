@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from '@/lib/store';
 
 export function usePlayback() {
@@ -10,13 +10,16 @@ export function usePlayback() {
 
   const [globalBar, setGlobalBar] = useState(0);
 
+  const stopPlaybackRef = useRef<() => Promise<void>>(async () => {});
+
   const play = useCallback(async () => {
     const { initAudio, ensureAudioReady } = await import('@/lib/audio/engine');
     await ensureAudioReady();
     await initAudio();
     setAudioInitialized(true);
 
-    const { startPlayback, setPlaybackCallbacks } = await import('@/lib/audio/playback-manager');
+    const { startPlayback, setPlaybackCallbacks, stopPlayback: stopAudioFn } = await import('@/lib/audio/playback-manager');
+    stopPlaybackRef.current = stopAudioFn;
     
     setPlaybackCallbacks(
       // onBarChange
@@ -77,12 +80,10 @@ export function usePlayback() {
     }
   }, [isPlaying, chords, tempo, drumPatternId, bassPatternId, backingPatternId, instrumentPresetId, playbackMode, isStructureMode, sections]);
 
-  // Clean up on unmount
+  // Clean up on unmount（ref経由で同期的に呼び出し、非同期競合を防ぐ）
   useEffect(() => {
     return () => {
-      import('@/lib/audio/playback-manager').then(({ stopPlayback }) => {
-        stopPlayback();
-      });
+      stopPlaybackRef.current();
     };
   }, []);
 

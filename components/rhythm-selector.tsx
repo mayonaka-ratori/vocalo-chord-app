@@ -51,14 +51,24 @@ export const RhythmSelector: React.FC = () => {
 
       <section className="bg-voca-bg-card border border-voca-border-subtle rounded-2xl overflow-hidden shadow-xl">
         {/* Mobile Tabs */}
-        <div className="flex md:hidden border-b border-voca-border-subtle bg-voca-bg-elevated/50">
+        <div
+          role="tablist"
+          aria-label="リズム・伴奏カテゴリ"
+          className="flex md:hidden border-b border-voca-border-subtle bg-voca-bg-elevated/50"
+        >
           {[
-            { id: 'drum', label: '🥁 ドラム' },
-            { id: 'bass', label: '🎸 ベース' },
-            { id: 'backing', label: '🎹 伴奏' }
+            { id: 'drum', label: '🥁 ドラム', panelId: 'rhythm-panel-drum' },
+            { id: 'bass', label: '🎸 ベース', panelId: 'rhythm-panel-bass' },
+            { id: 'backing', label: '🎹 伴奏', panelId: 'rhythm-panel-backing' }
           ].map(tab => (
             <button
               key={tab.id}
+              type="button"
+              role="tab"
+              id={`rhythm-tab-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              aria-controls={tab.panelId}
+              tabIndex={activeTab === tab.id ? 0 : -1}
               onClick={() => setActiveTab(tab.id as 'drum'|'bass'|'backing')}
               className={`flex-1 py-3.5 text-xs font-black transition-all border-b-2 uppercase tracking-tight ${
                 activeTab === tab.id
@@ -74,10 +84,34 @@ export const RhythmSelector: React.FC = () => {
         {/* Content */}
         <div className="p-5">
           {/* Mobile View: Single Category */}
-          <div className="md:hidden space-y-3">
-            {activeTab === 'drum' && renderCards(drumPatterns, drumPatternId, setDrumPattern)}
-            {activeTab === 'bass' && renderCards(bassPatterns, bassPatternId, setBassPattern)}
-            {activeTab === 'backing' && renderCards(backingPatterns, backingPatternId, setBackingPattern)}
+          <div className="md:hidden">
+            <div
+              id="rhythm-panel-drum"
+              role="tabpanel"
+              aria-labelledby="rhythm-tab-drum"
+              hidden={activeTab !== 'drum'}
+              className="space-y-3"
+            >
+              {renderCards(drumPatterns, drumPatternId, setDrumPattern)}
+            </div>
+            <div
+              id="rhythm-panel-bass"
+              role="tabpanel"
+              aria-labelledby="rhythm-tab-bass"
+              hidden={activeTab !== 'bass'}
+              className="space-y-3"
+            >
+              {renderCards(bassPatterns, bassPatternId, setBassPattern)}
+            </div>
+            <div
+              id="rhythm-panel-backing"
+              role="tabpanel"
+              aria-labelledby="rhythm-tab-backing"
+              hidden={activeTab !== 'backing'}
+              className="space-y-3"
+            >
+              {renderCards(backingPatterns, backingPatternId, setBackingPattern)}
+            </div>
           </div>
 
           {/* Desktop View: 3 Columns Grid */}

@@ -99,12 +99,15 @@ export async function startPlayback(config: PlaybackStateConfig) {
   Tone = await getTone();
   if (!Tone) return;
 
+  // ループクロージャ内で non-null を保証するためローカルに束縛
+  const tone = Tone;
+
   currentConfig = config;
-  Tone.Transport.bpm.value = config.bpm;
-  Tone.Transport.swingSubdivision = '8n';
+  tone.Transport.bpm.value = config.bpm;
+  tone.Transport.swingSubdivision = '8n';
   const startDPattern = drumPatterns.find(p => p.id === config.drumPatternId);
-  Tone.Transport.swing = startDPattern?.swing ?? 0;
-  
+  tone.Transport.swing = startDPattern?.swing ?? 0;
+
   if (playbackLoop) {
     playbackLoop.stop();
     playbackLoop.dispose();
@@ -129,10 +132,10 @@ export async function startPlayback(config: PlaybackStateConfig) {
 
   let lastReportedBar = -1;
   let currentSectionIndexInternal = -1;
-  let currentInstrumentId = config.mode === 'song' && config.sections 
-      ? config.sections[0].instrumentPresetId 
+  let currentInstrumentId = config.mode === 'song' && config.sections
+      ? config.sections[0].instrumentPresetId
       : config.instrumentPresetId;
-      
+
   // Ensure starting instrument is correct (only switch if actually changed)
   const { isAudioReady, switchBackingInstrument } = await import('./engine');
   if (isAudioReady() && currentInstrumentId !== lastSwitchedPresetId) {
@@ -142,7 +145,7 @@ export async function startPlayback(config: PlaybackStateConfig) {
 
   const stepsPerBar = 16;
 
-  playbackLoop = new Tone.Loop((time) => {
+  playbackLoop = new tone.Loop((time) => {
     if (!currentConfig) return;
 
     const globalBarFloor = Math.floor(currentStepGlobal / stepsPerBar);
@@ -158,7 +161,7 @@ export async function startPlayback(config: PlaybackStateConfig) {
     if (currentConfig.mode === 'song') {
       if (globalBarFloor >= sectionBarMap.length) {
         // Playback complete
-        Tone!.Draw.schedule(() => {
+        tone.Draw.schedule(() => {
           if (onPlaybackCompleteCallback) onPlaybackCompleteCallback();
           stopPlayback();
         }, time);
@@ -170,7 +173,7 @@ export async function startPlayback(config: PlaybackStateConfig) {
       localBar = mapNode.localBar;
       sectionIdx = mapNode.sectionIndex;
       currentChord = mapNode.section.chords[localBar] || 'C';
-      
+
       currentDrumPatternId = mapNode.section.drumPatternId;
       currentBassPatternId = mapNode.section.bassPatternId;
       currentBackingPatternId = mapNode.section.backingPatternId;
@@ -178,20 +181,21 @@ export async function startPlayback(config: PlaybackStateConfig) {
       // Handle Section Transition
       if (currentStepGlobal % stepsPerBar === 0 && sectionIdx !== currentSectionIndexInternal) {
         currentSectionIndexInternal = sectionIdx;
-        
+
         // Check if instrument changed
         if (mapNode.section.instrumentPresetId !== currentInstrumentId) {
           currentInstrumentId = mapNode.section.instrumentPresetId;
-          Tone!.Draw.schedule(() => {
-            switchBackingInstrument(currentInstrumentId);
-          }, time - 0.05); // slightly before to prevent gap
+          lastSwitchedPresetId = currentInstrumentId;
+          // Fire-and-forget is intentional here: instrument switch is best-effort
+          // and cannot be awaited inside the Loop callback.
+          void switchBackingInstrument(currentInstrumentId);
         }
 
         // Apply swing for new section's drum pattern
         const sectionDPattern = drumPatterns.find(p => p.id === mapNode.section.drumPatternId);
-        Tone!.Transport.swing = sectionDPattern?.swing ?? 0;
+        tone.Transport.swing = sectionDPattern?.swing ?? 0;
 
-        Tone!.Draw.schedule(() => {
+        tone.Draw.schedule(() => {
           if (onSectionChangeCallback) onSectionChangeCallback(sectionIdx);
         }, time);
       }
@@ -205,7 +209,7 @@ export async function startPlayback(config: PlaybackStateConfig) {
 
     if (currentStepGlobal % stepsPerBar === 0 && activeBar !== lastReportedBar) {
       lastReportedBar = activeBar;
-      Tone!.Draw.schedule(() => {
+      tone.Draw.schedule(() => {
         if (onBarChangeCallback) onBarChangeCallback(activeBar, localBar, sectionIdx);
       }, time);
     }
@@ -226,7 +230,7 @@ export async function startPlayback(config: PlaybackStateConfig) {
   }, '16n');
 
   playbackLoop.start(0);
-  Tone!.Transport.start();
+  tone.Transport.start();
 }
 
 export async function stopPlayback() {

@@ -84,7 +84,7 @@ class SmplrProvider {
       this.markUsed(id);
       return;
     }
-    if (this.loadingPromises.has(id)) return this.loadingPromises.get(id);
+    if (this.loadingPromises.has(id)) return this.loadingPromises.get(id) ?? Promise.resolve();
 
     this.evictIfNeeded();
 
@@ -192,7 +192,7 @@ class SmplrProvider {
    * 楽器インスタンスを生成する内部メソッド（Dynamic Importを使用）
    */
   private async createInstrument(id: SmplrInstrumentId, onProgress?: OnProgressCallback): Promise<ISmplrInstrument | null> {
-    const context = await getAudioContext();
+    const context = getAudioContext();
     const cache = await getSampleCache();
     
     const handleProgress = (p: { loaded: number; total: number }) => {
@@ -213,7 +213,7 @@ class SmplrProvider {
           await piano.load;
           return piano as unknown as ISmplrInstrument;
         } catch (error) {
-          console.error('Failed to load SplendidGrandPiano:', error);
+          if (process.env.NODE_ENV !== 'production') console.error('Failed to load SplendidGrandPiano:', error);
           return null;
         }
       }
@@ -229,7 +229,7 @@ class SmplrProvider {
           await ep.load;
           return ep as unknown as ISmplrInstrument;
         } catch (error) {
-          console.error('Failed to load electric_piano_1 (CP80):', error);
+          if (process.env.NODE_ENV !== 'production') console.error('Failed to load electric_piano_1 (CP80):', error);
           return null;
         }
       }
@@ -245,7 +245,7 @@ class SmplrProvider {
           await ep.load;
           return ep as unknown as ISmplrInstrument;
         } catch (error) {
-          console.error('Failed to load electric_piano_2 (Wurlitzer):', error);
+          if (process.env.NODE_ENV !== 'production') console.error('Failed to load electric_piano_2 (Wurlitzer):', error);
           return null;
         }
       }
@@ -261,7 +261,7 @@ class SmplrProvider {
           await guitar.load;
           return guitar as unknown as ISmplrInstrument;
         } catch (error) {
-          console.error('Failed to load acoustic guitar:', error);
+          if (process.env.NODE_ENV !== 'production') console.error('Failed to load acoustic guitar:', error);
           return null;
         }
       }
@@ -277,7 +277,7 @@ class SmplrProvider {
           await strings.load;
           return strings as unknown as ISmplrInstrument;
         } catch (error) {
-          console.error('Failed to load string ensemble:', error);
+          if (process.env.NODE_ENV !== 'production') console.error('Failed to load string ensemble:', error);
           return null;
         }
       }

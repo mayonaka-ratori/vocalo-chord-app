@@ -1,5 +1,5 @@
 import { NoteName, KeyData, DegreeName } from '@/types/music';
-import { getNoteIndex, getNoteFromIndex } from './chords';
+import { getNoteIndex, getNoteFromIndexForKey } from './chords';
 
 // ダイアトニックスケールの半音間隔（メジャースケール）
 const MAJOR_SCALE_INTERVALS = [0, 2, 4, 5, 7, 9, 11];
@@ -25,7 +25,7 @@ export function getDiatonicChords(key: KeyData): { note: NoteName, degree: strin
   
   return scaleIntervals.map((interval, i) => {
     const noteIndex = (rootIndex + interval) % 12;
-    const note = getNoteFromIndex(noteIndex);
+    const note = getNoteFromIndexForKey(noteIndex, key.root);
     const { degree, quality } = DIATONIC_CHORDS[i];
     
     return { note, degree, quality };

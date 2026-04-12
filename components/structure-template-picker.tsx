@@ -1,8 +1,10 @@
 'use client';
 
+import { useRef } from 'react';
 import { useStore } from '@/lib/store';
 import { STRUCTURE_TEMPLATES } from '@/data/structure-templates';
 import { SECTION_TYPES } from '@/data/section-types';
+import { useFocusTrap } from '@/hooks/use-focus-trap';
 
 interface StructureTemplatePickerProps {
   onClose: () => void;
@@ -10,6 +12,8 @@ interface StructureTemplatePickerProps {
 
 export function StructureTemplatePicker({ onClose }: StructureTemplatePickerProps) {
   const { applyStructureTemplate, enableStructureMode } = useStore();
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, true, onClose);
 
   const handleApplyTemplate = (id: string) => {
     applyStructureTemplate(id);
@@ -31,17 +35,28 @@ export function StructureTemplatePicker({ onClose }: StructureTemplatePickerProp
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       
       {/* モーダル本体 */}
-      <div className="absolute bottom-0 left-0 right-0 md:relative md:max-w-2xl md:w-full md:mx-auto bg-voca-bg-card md:border md:border-voca-border-subtle md:rounded-3xl rounded-t-3xl max-h-[85vh] overflow-y-auto animate-slide-up shadow-2xl safe-area-inset-bottom ring-1 ring-white/10 uppercase tracking-tight">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="structure-template-title"
+        className="absolute bottom-0 left-0 right-0 md:relative md:max-w-2xl md:w-full md:mx-auto bg-voca-bg-card md:border md:border-voca-border-subtle md:rounded-3xl rounded-t-3xl max-h-[85vh] overflow-y-auto animate-slide-up shadow-2xl safe-area-inset-bottom ring-1 ring-white/10 uppercase tracking-tight"
+      >
         <div className="md:hidden flex justify-center pt-4 pb-2" onClick={onClose}>
           <div className="w-12 h-1.5 bg-voca-bg-elevated rounded-full" />
         </div>
 
         <div className="p-8">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-black text-voca-text tracking-[0.1em] flex items-center gap-3">
+            <h2 id="structure-template-title" className="text-xl font-black text-voca-text tracking-[0.1em] flex items-center gap-3">
               <span className="text-voca-accent-cyan text-2xl">⚡</span> 曲の構成テンプレート
             </h2>
-            <button onClick={onClose} className="text-voca-text-sub hover:text-voca-text w-10 h-10 rounded-full bg-voca-bg-elevated flex items-center justify-center transition-all border border-voca-border-subtle/50 active:scale-90">
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="閉じる"
+              className="text-voca-text-sub hover:text-voca-text w-10 h-10 rounded-full bg-voca-bg-elevated flex items-center justify-center transition-all border border-voca-border-subtle/50 active:scale-90"
+            >
               ✕
             </button>
           </div>

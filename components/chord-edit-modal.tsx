@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useStore } from "@/lib/store";
 import { getDiatonicChords, getChordFunction } from "@/lib/music/keys";
 import { getNoteIndex } from "@/lib/music/chords";
 import { transposeProgression } from "@/lib/music/transpose";
 import { DegreeName, NoteName } from "@/types/music";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 
 const MODAL_MODE_KEY = 'vocalo-modal-mode';
 
@@ -94,6 +95,8 @@ function ChordButton({ name, func, advancedLabel, onClick }: ChordButtonProps) {
 export default function ChordEditModal() {
   const { editingBarIndex, key, setChordAtBar, closeChordEditor } = useStore();
   const [isSimple, setIsSimple] = useState(true);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, editingBarIndex !== null, closeChordEditor);
 
   // localStorage からモードを復元
   useEffect(() => {
@@ -167,6 +170,10 @@ export default function ChordEditModal() {
       onClick={closeChordEditor}
     >
       <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="chord-edit-modal-title"
         className="bg-voca-bg-card w-full max-w-2xl md:rounded-3xl rounded-t-3xl border border-voca-border-subtle max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-up md:animate-fade-in ring-1 ring-white/10"
         onClick={e => e.stopPropagation()}
       >
@@ -177,11 +184,13 @@ export default function ChordEditModal() {
 
         {/* Header */}
         <div className="px-8 py-5 border-b border-voca-border-subtle flex justify-between items-center bg-voca-bg-card/90 top-0 z-10 sticky backdrop-blur-sm">
-          <h2 className="text-xl font-black text-voca-text uppercase tracking-widest flex items-center gap-2">
+          <h2 id="chord-edit-modal-title" className="text-xl font-black text-voca-text uppercase tracking-widest flex items-center gap-2">
             <span className="text-voca-accent-cyan">✏️</span> BAR {editingBarIndex + 1}
           </h2>
           <button
+            type="button"
             onClick={closeChordEditor}
+            aria-label="閉じる"
             className="w-10 h-10 rounded-full bg-voca-bg-elevated text-voca-text-sub hover:text-voca-text flex items-center justify-center font-bold border border-white/5 active:scale-90 transition-all"
           >
             ✕
@@ -193,7 +202,9 @@ export default function ChordEditModal() {
           <span className="text-[10px] font-black text-voca-text-muted uppercase tracking-[0.2em]">DISPLAY MODE:</span>
           <div className="flex rounded-xl overflow-hidden border-2 border-voca-border-subtle bg-voca-bg-elevated p-1">
             <button
+              type="button"
               onClick={() => handleModeToggle(true)}
+              aria-pressed={isSimple}
               className={`px-5 py-1.5 text-xs font-black uppercase tracking-widest transition-all rounded-lg ${
                 isSimple
                   ? 'bg-gradient-hero text-white shadow-glow-cyan/20'
@@ -203,7 +214,9 @@ export default function ChordEditModal() {
               SIMPLE
             </button>
             <button
+              type="button"
               onClick={() => handleModeToggle(false)}
+              aria-pressed={!isSimple}
               className={`px-5 py-1.5 text-xs font-black uppercase tracking-widest transition-all rounded-lg ${
                 !isSimple
                   ? 'bg-gradient-hero text-white shadow-glow-cyan/20'

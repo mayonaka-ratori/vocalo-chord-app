@@ -1,11 +1,11 @@
-import { 
-  NoteName, 
-  ChordToneInfo, 
-  MelodyPhrase, 
-  MelodyPatternId, 
-  MelodyNote 
+import {
+  NoteName,
+  ChordToneInfo,
+  MelodyPhrase,
+  MelodyPatternId,
+  MelodyNote
 } from '@/types/music';
-import { parseChord, getNoteIndex, getNoteFromIndex } from './chords';
+import { parseChord, getNoteIndex, getNoteFromIndexForKey } from './chords';
 
 // ─── Unified NoteGenerator interface ───────────────────────────────────────
 
@@ -15,6 +15,7 @@ interface NoteGenContext {
   totalChords: number;
   beatsPerChord: number;
   includeBlueNotes: boolean;
+  keyRoot: string;
 }
 
 type NoteGenerator = (ctx: NoteGenContext) => MelodyNote[];
@@ -25,10 +26,11 @@ function makeNote(
   duration: number,
   info: ChordToneInfo,
   velocity: number = 80,
+  keyRoot: string = '',
 ): MelodyNote {
   return {
     midi,
-    name: `${getNoteFromIndex(midi % 12)}${Math.floor(midi / 12) - 1}`,
+    name: `${getNoteFromIndexForKey(midi % 12, keyRoot)}${Math.floor(midi / 12) - 1}`,
     duration,
     beat,
     velocity,
@@ -92,12 +94,12 @@ export function getChordTones(chordName: string, baseOctave: number = 4): ChordT
 
   const tones = intervals.map(interval => baseMidi + interval);
   const toneNames = tones.map(midi => {
-    const note = getNoteFromIndex(midi % 12);
+    const note = getNoteFromIndexForKey(midi % 12, root);
     const octave = Math.floor(midi / 12) - 1;
     return `${note}${octave}`;
   });
 
-  // スケール音（Cメジャー固定ではなく、コードのルートに基づいたメジャースケールを仮定）
+  // スケール音（コードのルートに基づいたメジャースケール）
   const scaleIntervals = [0, 2, 4, 5, 7, 9, 11];
   const scaleTones = scaleIntervals.map(interval => baseMidi + interval);
 
@@ -121,7 +123,7 @@ export function getScaleNotes(key: string, baseOctave: number = 4): number[] {
   const rootNote = key.split('/')[0] as NoteName;
   const rootIndex = getNoteIndex(rootNote);
   const baseMidi = (baseOctave + 1) * 12 + rootIndex;
-  
+
   // とりあえずメジャースケール
   const majorScale = [0, 2, 4, 5, 7, 9, 11];
   return majorScale.map(interval => baseMidi + interval);
@@ -134,7 +136,7 @@ export function getBlueNotes(key: string, baseOctave: number = 4): number[] {
   const rootNote = key.split('/')[0] as NoteName;
   const rootIndex = getNoteIndex(rootNote);
   const baseMidi = (baseOctave + 1) * 12 + rootIndex;
-  
+
   // b3, b5, b7
   return [3, 6, 10].map(offset => baseMidi + offset);
 }
@@ -156,64 +158,64 @@ const PATTERN_META: { id: MelodyPatternId; name: string; icon: string; descripti
 
 const NOTE_GENERATORS: Record<MelodyPatternId, NoteGenerator> = {
 
-  'chord-tone-ascend': ({ info, chordIndex, beatsPerChord, includeBlueNotes }) => {
+  'chord-tone-ascend': ({ info, chordIndex, beatsPerChord, includeBlueNotes, keyRoot }) => {
     let midis = [...info.tones];
     if (includeBlueNotes) midis.push(info.blueNotes[2]);
     midis = midis.slice(0, 4);
     const beat0 = chordIndex * beatsPerChord;
-    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info));
+    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info, 80, keyRoot));
   },
 
-  'chord-tone-descend': ({ info, chordIndex, beatsPerChord, includeBlueNotes }) => {
+  'chord-tone-descend': ({ info, chordIndex, beatsPerChord, includeBlueNotes, keyRoot }) => {
     let midis = [...info.tones].reverse();
     if (includeBlueNotes) midis.push(info.blueNotes[2]);
     midis = midis.slice(0, 4);
     const beat0 = chordIndex * beatsPerChord;
-    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info));
+    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info, 80, keyRoot));
   },
 
-  'arpeggio-up': ({ info, chordIndex, beatsPerChord, includeBlueNotes }) => {
+  'arpeggio-up': ({ info, chordIndex, beatsPerChord, includeBlueNotes, keyRoot }) => {
     let midis = [...info.tones, info.tones[0] + 12];
     if (includeBlueNotes) midis.splice(2, 0, info.blueNotes[2]);
     midis = [...midis, ...midis].slice(0, 8);
     const beat0 = chordIndex * beatsPerChord;
-    return midis.map((midi, i) => makeNote(midi, beat0 + i * 0.5, 0.5, info));
+    return midis.map((midi, i) => makeNote(midi, beat0 + i * 0.5, 0.5, info, 80, keyRoot));
   },
 
-  'arpeggio-down': ({ info, chordIndex, beatsPerChord, includeBlueNotes }) => {
+  'arpeggio-down': ({ info, chordIndex, beatsPerChord, includeBlueNotes, keyRoot }) => {
     let midis = [info.tones[0] + 12, ...[...info.tones].reverse()];
     if (includeBlueNotes) midis.splice(2, 0, info.blueNotes[0]);
     midis = [...midis, ...midis].slice(0, 8);
     const beat0 = chordIndex * beatsPerChord;
-    return midis.map((midi, i) => makeNote(midi, beat0 + i * 0.5, 0.5, info));
+    return midis.map((midi, i) => makeNote(midi, beat0 + i * 0.5, 0.5, info, 80, keyRoot));
   },
 
-  'stepwise-ascend': ({ info, chordIndex, beatsPerChord, includeBlueNotes }) => {
+  'stepwise-ascend': ({ info, chordIndex, beatsPerChord, includeBlueNotes, keyRoot }) => {
     const extended = [...info.scaleTones, ...info.scaleTones.map(n => n + 12)];
     const midis = extended.slice(0, 4);
     if (includeBlueNotes) midis[3] = info.blueNotes[2];
     const beat0 = chordIndex * beatsPerChord;
-    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info));
+    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info, 80, keyRoot));
   },
 
-  'stepwise-descend': ({ info, chordIndex, beatsPerChord }) => {
+  'stepwise-descend': ({ info, chordIndex, beatsPerChord, keyRoot }) => {
     const extended = [...info.scaleTones.map(n => n - 12), ...info.scaleTones];
     const midis = [...extended].reverse().slice(0, 4);
     const beat0 = chordIndex * beatsPerChord;
-    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info));
+    return midis.map((midi, i) => makeNote(midi, beat0 + i * 1, 1, info, 80, keyRoot));
   },
 
-  '16th-arpeggio': ({ info, chordIndex, beatsPerChord, includeBlueNotes }) => {
+  '16th-arpeggio': ({ info, chordIndex, beatsPerChord, includeBlueNotes, keyRoot }) => {
     const tones = [...info.tones, info.tones[0] + 12];
     if (includeBlueNotes) tones.splice(2, 0, info.blueNotes[2]);
     const beat0 = chordIndex * beatsPerChord;
     return Array.from({ length: 16 }, (_, i) => {
       const midi = tones[i % tones.length] + (Math.floor(i / tones.length) % 2 === 1 ? 12 : 0);
-      return makeNote(midi, beat0 + i * 0.25, 0.25, info, i % 4 === 0 ? 90 : 70);
+      return makeNote(midi, beat0 + i * 0.25, 0.25, info, i % 4 === 0 ? 90 : 70, keyRoot);
     });
   },
 
-  'syncopated': ({ info, chordIndex, beatsPerChord, includeBlueNotes }) => {
+  'syncopated': ({ info, chordIndex, beatsPerChord, includeBlueNotes, keyRoot }) => {
     const beat0 = chordIndex * beatsPerChord;
     const pattern = [
       { beatOffset: 0,    dur: 0.75, toneIdx: 0, vel: 75 },
@@ -225,7 +227,7 @@ const NOTE_GENERATORS: Record<MelodyPatternId, NoteGenerator> = {
     return pattern.map(sp => {
       const baseMidi = info.tones[sp.toneIdx % info.tones.length];
       const midi = (includeBlueNotes && sp.toneIdx === 1) ? info.blueNotes[2] : baseMidi;
-      return makeNote(midi, beat0 + sp.beatOffset, sp.dur, info, sp.vel);
+      return makeNote(midi, beat0 + sp.beatOffset, sp.dur, info, sp.vel, keyRoot);
     });
   },
 };
@@ -241,6 +243,9 @@ export function generateMelodyPhrases(
   includeBlueNotes: boolean,
   beatsPerChord: number = 4
 ): MelodyPhrase[] {
+  const keyRoot = key.split('/')[0];
+  const chordsKey = chords.join('-').replace(/#/g, 's').replace(/[^a-zA-Z0-9]/g, '');
+
   return PATTERN_META.map(({ id, name, icon, description }) => {
     const generator = NOTE_GENERATORS[id];
     const notes = chords.flatMap((chord, chordIndex) =>
@@ -250,10 +255,11 @@ export function generateMelodyPhrases(
         totalChords: chords.length,
         beatsPerChord,
         includeBlueNotes,
+        keyRoot,
       })
     );
     return {
-      id: `${id}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `${id}-${chordsKey}`,
       patternId: id,
       name,
       icon,

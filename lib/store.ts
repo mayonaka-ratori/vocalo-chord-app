@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { NoteName, ChordVariation, SmplrInstrumentId } from '@/types/music';
+import { NoteName, ChordVariation, SmplrInstrumentId, INSTRUMENT_PRESETS } from '@/types/music';
 import { generateVariations as computeVariations } from './music/variation';
 import { chordPresets } from '@/data/presets';
 import { transposeProgression } from './music/transpose';
@@ -179,15 +179,24 @@ export const useStore = create<AppState>((set, get) => ({
 
   // Actions
   setKey: (newKey: string) => {
-    const { key: oldKey, chords } = get();
+    const { key: oldKey, chords, isStructureMode, sections } = get();
     if (newKey === oldKey) return;
-    
+
     // 現在のコードを指定のキー分だけトランスポーズする
     const rootNew = newKey.split('/')[0] as NoteName;
     const rootOld = oldKey.split('/')[0] as NoteName;
     const semitones = getNoteIndex(rootNew) - getNoteIndex(rootOld);
     const transposedChords = transposeProgression(chords, semitones);
-    set({ key: newKey, chords: transposedChords });
+
+    // Structure Mode の全セクションも転調
+    const transposedSections = isStructureMode
+      ? sections.map(sec => ({
+          ...sec,
+          chords: transposeProgression(sec.chords, semitones),
+        }))
+      : sections;
+
+    set({ key: newKey, chords: transposedChords, sections: transposedSections });
     get().refreshMelodyData();
   },
 
@@ -294,8 +303,11 @@ export const useStore = create<AppState>((set, get) => ({
     const randomPreset = chordPresets[Math.floor(Math.random() * chordPresets.length)];
     const randomInstrument = instrumentPresets[Math.floor(Math.random() * instrumentPresets.length)].id;
     
+    const smplrIds = INSTRUMENT_PRESETS.filter(p => p.requiresNetwork).map(p => p.id);
+    const randomSmplrId = smplrIds[Math.floor(Math.random() * smplrIds.length)];
+
     // keyとtempoをセットしてからプリセットを適用する
-    set({ key: randomKey, tempo: randomTempo, instrumentPresetId: randomInstrument });
+    set({ key: randomKey, tempo: randomTempo, instrumentPresetId: randomInstrument, activeInstrumentId: randomSmplrId });
     get().applyPreset(randomPreset.id);
   },
 
@@ -339,7 +351,7 @@ export const useStore = create<AppState>((set, get) => ({
         instrumentLoadProgress: null 
       });
     } catch (error) {
-      console.error('Failed to load instrument:', error);
+      if (process.env.NODE_ENV !== 'production') console.error('Failed to load instrument:', error);
       // Fall back to synth on failure
       set({ 
         activeInstrumentId: 'synth-fallback', 

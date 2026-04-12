@@ -106,9 +106,12 @@ export const FloatingPlayer = () => {
       )}
 
       <div className="flex items-center justify-between px-4 pt-4">
-        <div 
-          className={`flex flex-col truncate pr-2 max-w-[45%] ${isStructureMode ? 'cursor-pointer active:scale-95 transition-transform' : ''}`}
+        <button
+          type="button"
           onClick={handleModeToggle}
+          disabled={!isStructureMode}
+          aria-label={isStructureMode ? `再生モード切替（現在: ${playbackMode === 'song' ? 'ソング' : 'セクション'}）` : undefined}
+          className={`flex flex-col truncate pr-2 max-w-[45%] text-left ${isStructureMode ? 'cursor-pointer active:scale-95 transition-transform' : 'cursor-default'}`}
         >
           <div className="flex items-center gap-1.5 text-sm font-black text-voca-text truncate uppercase tracking-tight">
             {isStructureMode && (
@@ -121,7 +124,7 @@ export const FloatingPlayer = () => {
           <div className="text-[10px] text-voca-text-muted font-black mt-1 pl-[1px] tracking-widest uppercase opacity-70 truncate">
             BPM {tempo} • {key} {activeInstrument && ` • ${activeInstrument.icon} ${activeInstrument.labelJa}`}
           </div>
-        </div>
+        </button>
 
         <div className="flex items-center space-x-2.5 shrink-0">
           <button

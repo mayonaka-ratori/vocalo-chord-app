@@ -38,59 +38,64 @@ export function SectionNav() {
     }
   }, [activeSectionIndex, sections.length]);
 
+  const getAnchorRect = (el: EventTarget & Element): DOMRect =>
+    el.getBoundingClientRect();
+
   const handleMenuClick = (e: React.MouseEvent, sectionId: string) => {
     e.stopPropagation();
     e.preventDefault();
-    setMenuAnchorRect({
-      bottom: e.currentTarget.getBoundingClientRect().bottom,
-      left: e.currentTarget.getBoundingClientRect().left,
-      width: e.currentTarget.getBoundingClientRect().width,
-      height: e.currentTarget.getBoundingClientRect().height,
-      top: e.currentTarget.getBoundingClientRect().top,
-      right: e.currentTarget.getBoundingClientRect().right,
-      x: e.currentTarget.getBoundingClientRect().x,
-      y: e.currentTarget.getBoundingClientRect().y,
-      toJSON: () => {}
-    } as DOMRect);
+    setMenuAnchorRect(getAnchorRect(e.currentTarget));
     setMenuSectionId(sectionId);
   };
 
   const menuSection = sections.find(s => s.id === menuSectionId);
 
   const handleAddClick = (e: React.MouseEvent) => {
-    setAddMenuRect({
-      bottom: e.currentTarget.getBoundingClientRect().bottom,
-      left: e.currentTarget.getBoundingClientRect().left,
-      width: e.currentTarget.getBoundingClientRect().width,
-      height: e.currentTarget.getBoundingClientRect().height,
-      top: e.currentTarget.getBoundingClientRect().top,
-      right: e.currentTarget.getBoundingClientRect().right,
-      x: e.currentTarget.getBoundingClientRect().x,
-      y: e.currentTarget.getBoundingClientRect().y,
-      toJSON: () => {}
-    } as DOMRect);
+    setAddMenuRect(getAnchorRect(e.currentTarget));
     setShowAddMenu(true);
+  };
+
+  const handleTabKeyDown = (e: React.KeyboardEvent, idx: number) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const next = (idx + 1) % sections.length;
+      setActiveSection(next);
+      const tabs = scrollContainerRef.current?.querySelectorAll<HTMLElement>('[role="tab"]');
+      tabs?.[next]?.focus();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prev = (idx - 1 + sections.length) % sections.length;
+      setActiveSection(prev);
+      const tabs = scrollContainerRef.current?.querySelectorAll<HTMLElement>('[role="tab"]');
+      tabs?.[prev]?.focus();
+    }
   };
 
   return (
     <div className="relative mb-6">
-      <div 
+      <div
         ref={scrollContainerRef}
+        role="tablist"
+        aria-label="セクション"
         className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-2 py-1 px-4 md:px-0"
       >
         {sections.map((section, idx) => {
           const isActive = idx === activeSectionIndex;
           const typeInfo = SECTION_TYPES.find(s => s.type === section.type);
           const icon = typeInfo?.icon || '🎵';
-          
+
           return (
-            <div 
+            <div
               key={section.id}
+              role="tab"
+              aria-selected={isActive}
+              tabIndex={isActive ? 0 : -1}
               onClick={() => setActiveSection(idx)}
+              onKeyDown={(e) => handleTabKeyDown(e, idx)}
               onContextMenu={(e) => handleMenuClick(e, section.id)}
               className={`flex-none group relative rounded-xl snap-start cursor-pointer transition-all flex items-center h-10 md:h-12 min-w-[80px] md:min-w-[120px] px-3 md:px-4 select-none border-2
-                ${isActive 
-                  ? 'bg-gradient-hero border-white/20 shadow-glow-purple scale-100 z-10' 
+                ${isActive
+                  ? 'bg-gradient-hero border-white/20 shadow-glow-purple scale-100 z-10'
                   : 'bg-voca-bg-card text-voca-text-muted border-voca-border-subtle hover:bg-voca-bg-section hover:border-voca-text-sub scale-95 opacity-80 z-0'
                 }
                 ${isActive && isPlaying && playbackMode === 'song' ? 'animate-pulse' : ''}
@@ -103,8 +108,10 @@ export function SectionNav() {
 
               {/* Action Button inside active tab */}
               {isActive && (
-                <button 
+                <button
+                  type="button"
                   onClick={(e) => handleMenuClick(e, section.id)}
+                  aria-label="セクションメニュー"
                   className="ml-auto flex items-center justify-center w-6 h-6 rounded-full hover:bg-white/20 active:bg-white/30 transition-colors -mr-1 text-white opacity-80 hover:opacity-100"
                 >
                   <span className="mb-2">...</span>

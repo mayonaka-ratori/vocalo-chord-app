@@ -72,7 +72,7 @@ export async function playUnifiedChord(event: UnifiedNoteEvent): Promise<void> {
         });
       });
     } catch (smplrError) {
-      console.warn('[UnifiedPlayer] smplr playChord failed, using Tone.js fallback:', smplrError);
+      if (process.env.NODE_ENV !== 'production') console.warn('[UnifiedPlayer] smplr playChord failed, using Tone.js fallback:', smplrError);
       const chordSynth = getChordSynth();
       if (chordSynth) {
         const Tone = getToneSync();
@@ -115,7 +115,7 @@ export async function playUnifiedBass(note: string, duration: number, time: numb
         time,
       });
     } catch (smplrError) {
-      console.warn('[UnifiedPlayer] smplr playNote (bass) failed, using Tone.js fallback:', smplrError);
+      if (process.env.NODE_ENV !== 'production') console.warn('[UnifiedPlayer] smplr playNote (bass) failed, using Tone.js fallback:', smplrError);
       const bassSynth = getBassSynth();
       if (bassSynth) {
         const Tone = getToneSync();
@@ -161,7 +161,7 @@ export function playUnifiedMelody(
         time: options.time,
       });
     } catch (smplrError) {
-      console.warn('[UnifiedPlayer] smplr playNote (melody) failed, using Tone.js fallback:', smplrError);
+      if (process.env.NODE_ENV !== 'production') console.warn('[UnifiedPlayer] smplr playNote (melody) failed, using Tone.js fallback:', smplrError);
       const melodySynth = getMelodySynth();
       if (melodySynth) {
         const Tone = getToneSync();

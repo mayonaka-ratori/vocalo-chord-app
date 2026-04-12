@@ -218,13 +218,14 @@ export async function previewMelody(notes: { midi: number; duration: number; vel
 /**
  * Stop melody preview
  */
-export function stopMelodyPreview() {
+export async function stopMelodyPreview() {
   if (melodyPreviewTimeout) {
     clearTimeout(melodyPreviewTimeout);
     melodyPreviewTimeout = null;
   }
-  
-  import('./unified-player').then(m => m.stopUnifiedMelody());
+
+  const { stopUnifiedMelody } = await import('./unified-player');
+  stopUnifiedMelody();
 
   if (melodyPart) {
     melodyPart.stop();

@@ -43,8 +43,11 @@ export function InstrumentSelector() {
             IN SECTION
           </div>
         )}
-        <button 
+        <button
+          type="button"
           onClick={() => setIsExpanded(!isExpanded)}
+          aria-expanded={isExpanded}
+          aria-controls="instrument-selector-grid"
           className="md:hidden flex items-center gap-2 px-3 py-1.5 bg-voca-bg-card border border-voca-border-subtle rounded-full text-xs font-bold text-voca-text-sub"
         >
           {activePreset.icon} {activePreset.labelJa}
@@ -53,7 +56,7 @@ export function InstrumentSelector() {
       </div>
 
       {/* Grid Container */}
-        <div className={`${!isExpanded ? 'hidden md:grid' : 'grid'} grid-cols-2 md:grid-cols-6 gap-3`}>
+        <div id="instrument-selector-grid" className={`${!isExpanded ? 'hidden md:grid' : 'grid'} grid-cols-2 md:grid-cols-6 gap-3`}>
         {INSTRUMENT_PRESETS.map((preset) => {
           const isActive = preset.id === activeInstrumentId;
           const isLoadingThis = isInstrumentLoading && activeInstrumentId === preset.id;

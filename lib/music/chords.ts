@@ -59,6 +59,24 @@ export function getNoteFromIndex(index: number): NoteName {
   return NOTES_SHARP[normalizedIndex];
 }
 
+/** フラット表記を使用するキー */
+export const FLAT_KEYS = ['F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'];
+
+/** キーのルート音がフラット系かどうか判定する */
+export function isFlatKey(keyRoot: string): boolean {
+  return FLAT_KEYS.includes(keyRoot);
+}
+
+/**
+ * 半音インデックスをキーに適したノート名（フラット/シャープ）に変換する
+ */
+export function getNoteFromIndexForKey(index: number, keyRoot: string): NoteName {
+  const normalizedIndex = ((index % 12) + 12) % 12;
+  return isFlatKey(keyRoot)
+    ? NOTES_FLAT[normalizedIndex] as NoteName
+    : NOTES_SHARP[normalizedIndex];
+}
+
 /**
  * クオリティから構成音のインターバル（半音数）の配列を返す
  * 例: 'm' -> [0, 3, 7] (ルート、マイナー3度、完全5度)

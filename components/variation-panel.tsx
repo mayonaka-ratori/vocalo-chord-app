@@ -57,8 +57,10 @@ export function VariationPanel() {
               コードを少し変えるだけで雰囲気がガラッと変わります
             </p>
           </div>
-          <button 
-            onClick={handleClose} 
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label="閉じる"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-voca-bg-elevated text-voca-text-sub hover:text-voca-text hover:bg-voca-bg-section transition-all border border-voca-border-subtle/50 active:scale-90"
           >
             ✕

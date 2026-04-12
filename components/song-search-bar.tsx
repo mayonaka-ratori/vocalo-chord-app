@@ -90,12 +90,14 @@ export const SongSearchBar: React.FC = () => {
 
           const data: SearchChordsResponse = await response.json();
           setResults(data.results);
-          
-          // 履歴に追加
+
+          // 履歴に追加（関数型更新で依存配列に searchHistory を含めない）
           if (data.results.length > 0) {
-            const newHistory = [trimmedQuery, ...searchHistory.filter(h => h !== trimmedQuery)].slice(0, 10);
-            setSearchHistory(newHistory);
-            localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+            setSearchHistory(prev => {
+              const newHistory = [trimmedQuery, ...prev.filter(h => h !== trimmedQuery)].slice(0, 10);
+              localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+              return newHistory;
+            });
           }
         } catch (err: unknown) {
           const errorMessage = err instanceof Error ? err.message : "検索に失敗しました";
@@ -107,7 +109,7 @@ export const SongSearchBar: React.FC = () => {
     }, 500); // 少し長めにデバウンス
 
     return () => clearTimeout(handler);
-  }, [query, searchHistory, categoryFilter]); // categoryFilter を追加
+  }, [query, categoryFilter]);
 
   const handleApplySection = (chords: string[], key: string, bpm: number) => {
     setKey(key);
