@@ -1,5 +1,31 @@
 # Audit Log
 
+## 2026-04-13 — Axis 2/3/5 audit (commit `aed72cf` 以前)
+
+### Axis 3: 状態管理
+| ID | ファイル | 対応 |
+|----|----------|------|
+| A3-1 | `lib/store.ts:181` | `setKey()` が structure mode で `sections[].chords` を転調しない致命的バグを修正 |
+| A3-2 | `lib/store.ts:299` | `randomize()` で smplr の `activeInstrumentId` も同時にランダム化するよう修正 |
+
+### Axis 5: 音楽ロジック
+| ID | ファイル | 対応 |
+|----|----------|------|
+| A5-1 | `lib/music/chords.ts` | `isFlatKey()` + `getNoteFromIndexForKey()` を追加。フラット系キー（Bb/Eb/Ab 等）で正しい表記を返す |
+| A5-2 | `lib/music/keys.ts` | `getDiatonicChords()` で `getNoteFromIndexForKey` を使用、フラットキー対応 |
+| A5-3 | `lib/music/melody.ts` | `NoteGenContext` に `keyRoot` を追加し、全 8 ジェネレータと `makeNote()` を通じてキー対応ノート名を生成 |
+| A5-4 | `lib/music/melody.ts:254` | melody ID をランダム生成から `${id}-${chordsKey}` の安定形式に変更 |
+
+### Axis 2: オーディオ
+| ID | ファイル | 対応 |
+|----|----------|------|
+| A2-1 | `components/main-app-content.tsx` | `useEffect` cleanup で `disposeAudio()` を呼び、ページ離脱時にリソースを解放 |
+| A2-2 | `lib/audio/engine.ts:221` | `stopMelodyPreview()` を `async/await` に変更し fire-and-forget を解消 |
+| A2-3 | `lib/audio/smplr-provider.ts:87` | `loadingPromises.get(id)` の `undefined` を `?? Promise.resolve()` でガード |
+| A2-4 | `lib/audio/smplr-provider.ts:195` | 同期関数 `getAudioContext()` への不要な `await` を除去 |
+
+---
+
 ## 2026-04-13 — Axis 1/4/6 audit (commit `60a58b2`)
 
 ### Axis 6: セキュリティ
